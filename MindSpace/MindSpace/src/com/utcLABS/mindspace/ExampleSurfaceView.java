@@ -47,6 +47,11 @@ public class ExampleSurfaceView extends SurfaceView implements SurfaceHolder.Cal
 		sociability.setName("Sociability");
 		root.addChildNode(sociability);
 		
+		// Titi
+		ConceptModel titi = new ConceptModel(0.1f, 0.95f, null);
+		titi.setName("People");
+		sociability.addChildNode(titi);
+		
 		this.conceptView = new ConceptView(root, 1280, 800);
 		
 		test = 0.8f;
