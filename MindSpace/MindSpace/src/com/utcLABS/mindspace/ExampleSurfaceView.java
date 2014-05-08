@@ -14,7 +14,7 @@ import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-public class ExampleSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
+/*public class ExampleSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
     // Le holder
     SurfaceHolder mSurfaceHolder;
     // Le thread dans lequel le dessin se fera
@@ -126,4 +126,4 @@ public class ExampleSurfaceView extends SurfaceView implements SurfaceHolder.Cal
             }
         }
     }
-}
+}*/
