@@ -1,25 +1,47 @@
 package com.utcLABS.mindspace.model;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.LinkedList;
 
 import android.graphics.Color;
+import android.graphics.PointF;
 
+@SuppressWarnings("serial")
 public class ConceptModel {
 	
-	enum MindSpaceShapes{
-		square,
-		circle,
-		triangle
+	/*
+	 * Constant
+	 */
+	public final static String			NP_NAME						= "name";
+	public final static String			NP_POSITION					= "position";
+	public final static String			NP_SIZE						= "size";
+	public final static String			NP_COLOR					= "color";
+	public final static String			NP_SHAPE					= "shape";
+	
+	public final static float			DEFAULT_SIZE				= 100f;
+	public final static float			DEFAULT_SIZE_RATIO			= 0.8f;
+	public final static int				DEFAULT_COLOR				= Color.TRANSPARENT;
+	public final static MindSpaceShape	DEFAULT_SHAPE				= MindSpaceShape.rectangle;
+	
+	// Available Shape
+	public enum MindSpaceShape{
+		rectangle,
+		oval
 	}
 
+	/*
+	 * Member
+	 */
+	
 	// Data Members
 	private String						name;
 	
 	// Form Members
-	private float						x;
-	private float						y;
-	private Color						color;
-	private MindSpaceShapes				shape;
+	private PointF						position;
+	private float						size;
+	private int							color;
+	private MindSpaceShape				shape;
 	
 	// Link Members
 	private ConceptModel				parent;
@@ -27,25 +49,32 @@ public class ConceptModel {
 	private LinkedList<ConceptModel>	children;
 	//private LinkedList<ConceptModel>	externalLink;
 	
+	// Bean
+	private PropertyChangeSupport		propertyChangeSupport;
+	
 	// Constructor
 	public ConceptModel(float x, float y, ConceptModel parent) {
 		super();
 		
 		// Data
-		this.name = "";
+		this.name = "Concept";
 		
 		// Forms
-		this.x = x;
-		this.y = y;
-		this.color = null;
-		this.shape = null;
+		this.position.x = x;
+		this.position.y = y;
+		this.size = defaultSize(parent);
+		this.color = defaultColor(parent);
+		this.shape = defaultShape(parent);
+		
+		// Bean
+		this.propertyChangeSupport = new PropertyChangeSupport(this);
 
 		// Link
 		if( parent != null )
 			parent.addChildNode(this);
 		else
 			this.parent = null;
-		children = new LinkedList<ConceptModel>();
+		this.children = new LinkedList<ConceptModel>();
 	}
 	
 	// Getters & Setters
@@ -53,31 +82,49 @@ public class ConceptModel {
 		return name;
 	}
 	public void setName(String name) {
-		this.name = name;
+		if(!this.name.equals(name)){
+			this.propertyChangeSupport.firePropertyChange(NP_NAME, this.name, name);
+			this.name = name;
+		}
 	}
-	public float getX() {
-		return x;
+	public PointF getPosition() {
+		return position;
 	}
-	public void setX(float x) {
-		this.x = x;
+	public void setPosition(PointF position) {
+		if(!this.position.equals(position)){
+			this.propertyChangeSupport.firePropertyChange(NP_POSITION, this.position, position);
+			this.position = position;
+		}
 	}
-	public float getY() {
-		return y;
+	public void setPosition(float x, float y){
+		setPosition(new PointF(x,y));
 	}
-	public void setY(float y) {
-		this.y = y;
+	public float getSize() {
+		return size;
 	}
-	public Color getColor() {
+	public void setSize(float size) {
+		if(this.size!=size){
+			this.propertyChangeSupport.firePropertyChange(NP_SIZE, this.size, size);
+			this.size = size;
+		}
+	}
+	public int getColor() {
 		return color;
 	}
-	public void setColor(Color color) {
-		this.color = color;
+	public void setColor(int color) {
+		if(this.color!=color){
+			this.propertyChangeSupport.firePropertyChange(NP_COLOR, this.color, color);
+			this.color = color;
+		}
 	}
-	public MindSpaceShapes getShape() {
+	public MindSpaceShape getShape() {
 		return shape;
 	}
-	public void setShape(MindSpaceShapes shape) {
-		this.shape = shape;
+	public void setShape(MindSpaceShape shape) {
+		if(this.shape!=shape){
+			this.propertyChangeSupport.firePropertyChange(NP_SHAPE, this.shape, shape);
+			this.shape = shape;
+		}
 	}
 	public ConceptModel getParent() {
 		return parent;
@@ -89,12 +136,44 @@ public class ConceptModel {
 		return children;
 	}
 	
+	// Default Values
+	private float defaultSize(ConceptModel parent){
+		if(parent!=null)
+			return parent.size*DEFAULT_SIZE_RATIO;
+		else
+			return DEFAULT_SIZE;
+	}
+	
+	private int defaultColor(ConceptModel parent){
+		if(parent!=null)
+			return parent.color;
+		else
+			return DEFAULT_COLOR;
+	}
+	
+	private MindSpaceShape defaultShape(ConceptModel parent){
+		if(parent!=null)
+			return parent.shape;
+		else
+			return DEFAULT_SHAPE;
+	}
+	
 	// Method
 	public void addChildNode(ConceptModel child){
 		if( child != null && !children.contains(child) ){
 			children.add(child);
 			child.parent = this;
 		}
+	}
+	
+	// For General PropertyChangeListener
+	public void addPropertyChangeListener(PropertyChangeListener listener){
+		this.propertyChangeSupport.addPropertyChangeListener(listener);
+	}
+
+	// For Specific PropertyChangeListener
+	public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener){
+		this.propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
 	}
 	
 }

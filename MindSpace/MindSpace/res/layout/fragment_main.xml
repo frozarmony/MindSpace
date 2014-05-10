@@ -4,13 +4,15 @@
     android:layout_height="match_parent"
     tools:context="com.utcLABS.mindspace.MainActivity$PlaceholderFragment" >
 
-    <com.utcLABS.mindspace.view.MindMapPanel
-        android:id="@+id/mindMapPanel1"
+    <com.utcLABS.mindspace.view.MindMapView
+        android:id="@+id/mindMapView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true" />
+        android:layout_alignParentTop="true" >
+
+    </com.utcLABS.mindspace.view.MindMapView>
 
 </RelativeLayout>

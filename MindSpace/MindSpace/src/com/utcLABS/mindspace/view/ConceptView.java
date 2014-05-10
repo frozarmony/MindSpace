@@ -1,21 +1,23 @@
 package com.utcLABS.mindspace.view;
 
 import java.util.LinkedList;
-
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
+import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
-
+import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.util.AttributeSet;
+import android.widget.TextView;
 import com.utcLABS.mindspace.model.ConceptModel;
+import com.utcSABB.mindspace.R;
 
 public class ConceptView {
-	
-	private enum ViewMode{
-		root,
-		simpleBranch
-	}
 
 	// Model Member
 	private ConceptModel				model;
@@ -23,25 +25,16 @@ public class ConceptView {
 	// View Member
 	private ConceptView					parentView;
 	private LinkedList<ConceptView>		childrenViews;
-	private ViewMode					viewMode;
-	private int							depth;
 	
-	// Text
-	private Paint						textPaint;
-	
-	// Parent Branch
-	private Path						parentBranch;
-	private Paint						parentBranchPaint;
-	
-	// Shape Node
-	
+	// Node
+	private NodeView					nodeView;	
 
 	/*
 	 * Inititialisation
 	 */
 	
 	// Constructor
-	public ConceptView(ConceptModel model, ConceptView parentView) {
+	public ConceptView(MindMapView mainView, ConceptModel model, ConceptView parentView) {
 		super();
 		
 		// Init Model
@@ -49,107 +42,25 @@ public class ConceptView {
 		
 		// Init View Member
 		this.parentView = parentView;
-		this.viewMode = ViewMode.root;
 		
-		if(parentView == null)
-			depth = 0;
-		else
-			depth = parentView.depth+1;
-		
-		initTextPaint();
+		// Init NodeView
+		initNodeView(mainView);		
     	
     	// Children Views
     	this.childrenViews = new LinkedList<ConceptView>();
     	for( ConceptModel m : model.getChildren() ){
-    		ConceptView childView = new ConceptView(m, this);
+    		ConceptView childView = new ConceptView(mainView, m, this);
     		this.childrenViews.add(childView);
     	}
 	}
-	
-	// Init TextPaint
-	private void initTextPaint(){
-		textPaint = new Paint();
-		textPaint.setStyle(Paint.Style.FILL);
-		textPaint.setColor(Color.BLACK);
-		textPaint.setAntiAlias(true);
-		textPaint.setTextAlign(Paint.Align.CENTER);
-		textPaint.setTextSize(100);
-	}
-	
-	// Init Parent Branch
-	private void initParentBranch(){
-		// Init Path
-		parentBranch = new Path();
-		updateParentBranch();
-		
-		// Init Paint
-		parentBranchPaint = new Paint();
-		parentBranchPaint.setStyle(Paint.Style.STROKE);
-		parentBranchPaint.setColor(Color.BLACK);
-		parentBranchPaint.setAntiAlias(true);
-	}
-	
-	/*
-	 * Drawing Update
-	 */
-	
-	// Update Path
-	private void updateParentBranch(){
-		parentBranch.reset();
-		float parentOrientation = (float) Math.atan2(parentView.getX()-getX(), parentView.getY()-getY());
-		PointF begin = parentView.getBoundPointFromAngle(parentOrientation+(float)Math.PI);
-		PointF end = getBoundPointFromAngle(parentOrientation);
-		
-		if(parentView.getX()<this.getX()){
-			parentBranch.moveTo(begin.x, begin.y);
-			parentBranch.lineTo(end.x, end.y);
-		}
-		else{
-			parentBranch.moveTo(end.x, end.y);
-			parentBranch.lineTo(begin.x, begin.y);
-		}
-	}
-	
-	/*
-	 * Draw
-	 */
-	public void draw(Canvas pCanvas){
 
-		// Children first
-		for( ConceptView v : this.childrenViews )
-			v.draw(pCanvas);
-		
-		pCanvas.save();
-		pCanvas.translate(getX(), getY());
-		pCanvas.scale(1.0f-depth*0.2f, 1.0f-depth*0.2f);
-		
-		// This Draw
-		switch(viewMode){
-		case root:
-			pCanvas.drawText(model.getName(), 0, 0, textPaint);
-			break;
-		case simpleBranch:
-			pCanvas.drawPath(this.parentBranch, this.parentBranchPaint);
-			pCanvas.drawTextOnPath(model.getName(), this.parentBranch, 0, 0, this.textPaint);
-			break;
-		default:
-			break;
-		}
-		
-		pCanvas.restore();
-		/*if( this.parentBranch != null ){
-			
-			
-		}
-		else{
-			RectF rect = new RectF(model.getX()*width-50f,model.getY()*height-50f,model.getX()*width+50f,model.getY()*height+50f);
-			pCanvas.
-			pCanvas.drawOval(rect, paint);
-			this.paint.setColor(Color.WHITE);
-			pCanvas.drawText(model.getName(), model.getX()*width, model.getY()*height+10f, paint);
-			this.paint.setColor(Color.BLACK);
-		}*/
-		
+	@SuppressLint("NewApi")
+	private void initNodeView(MindMapView mainView){
+		nodeView = new NodeView(mainView.getContext(), model);
+		nodeView.setText(model.getName());
+		nodeView.setX(this.getX() - nodeView.getWidth()/2);
+		nodeView.setY(this.getY() - nodeView.getHeight()/2);
+		mainView.addView(nodeView);
 	}
 	
 	/*
@@ -157,19 +68,25 @@ public class ConceptView {
 	 */
 	
 	// Getters
-	public float getX(){	return model.getX();	}
-	public float getY(){	return model.getY();	}
+	public float getX(){	return model.getPosition().x;	}
+	public float getY(){	return model.getPosition().y;	}
 	
-	// For Path Drawing
-	public PointF getBoundPointFromAngle(float radiant){
-		switch(viewMode){
-		case root:
-			return new PointF(getX(), getY());
-		case simpleBranch:
-			return new PointF(getX(), getY());
-		default:
-			return new PointF(getX(), getY());
+	// Node View without link
+	public class NodeView extends TextView {
+		
+		// Member
+		Drawable shape;
+
+		@SuppressLint("NewApi")
+		public NodeView(Context context, ConceptModel model) {
+			super(context);
+			
+			Resources res = getResources();
+			shape = res.getDrawable(R.drawable.nodeshape);
+			this.setTextSize(64);
+			this.setBackground(shape);
 		}
+
 	}
 	
 }

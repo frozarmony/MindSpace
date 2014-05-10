@@ -25,6 +25,8 @@ public class MindMapPanel extends SurfaceView implements SurfaceHolder.Callback 
 	public MindMapPanel(Context context, AttributeSet attrs) { 
         super(context, attrs); 
         getHolder().addCallback(this);
+        
+        
         /*testPaint = new Paint();
         testPaint.setStyle(Style.STROKE);
         testPaint.setColor(Color.BLACK);
@@ -36,7 +38,7 @@ public class MindMapPanel extends SurfaceView implements SurfaceHolder.Callback 
         rec = new Rect();*/
         // Creation Test ConceptModel
  		// Root
- 		ConceptModel root = new ConceptModel(1000f, 500f, null);
+ 		/*ConceptModel root = new ConceptModel(1000f, 500f, null);
  		root.setName("Music");
  		
  		// Creativity
@@ -61,18 +63,18 @@ public class MindMapPanel extends SurfaceView implements SurfaceHolder.Callback 
  		
  		this.conceptView = new ConceptView(root, null);
         
- 		zoom = 1.4f;
+ 		zoom = 0.7f;*/
     }
 
 
     @Override 
     public void onDraw(Canvas canvas) {
     	
-    	canvas.drawColor(Color.WHITE);
+    	//canvas.drawColor(Color.WHITE);
     	
-    	canvas.scale(zoom, zoom);
+    	//canvas.scale(zoom, zoom);
     	
-    	this.conceptView.draw(canvas);
+    	//this.conceptView.draw(canvas);
     	
     	/*canvas.save();
     	canvas.translate(canvas.getWidth()/2f, canvas.getHeight()/2f);
