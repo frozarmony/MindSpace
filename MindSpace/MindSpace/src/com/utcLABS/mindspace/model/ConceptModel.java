@@ -19,10 +19,10 @@ public class ConceptModel {
 	public final static String			NP_COLOR					= "color";
 	public final static String			NP_SHAPE					= "shape";
 	
-	public final static float			DEFAULT_SIZE				= 100f;
-	public final static float			DEFAULT_SIZE_RATIO			= 0.8f;
+	public final static float			DEFAULT_SIZE				= 80f;
+	public final static float			DEFAULT_SIZE_RATIO			= 0.7f;
 	public final static int				DEFAULT_COLOR				= Color.TRANSPARENT;
-	public final static MindSpaceShape	DEFAULT_SHAPE				= MindSpaceShape.rectangle;
+	public final static MindSpaceShape	DEFAULT_SHAPE				= MindSpaceShape.oval;
 	
 	// Available Shape
 	public enum MindSpaceShape{
@@ -60,8 +60,7 @@ public class ConceptModel {
 		this.name = "Concept";
 		
 		// Forms
-		this.position.x = x;
-		this.position.y = y;
+		this.position = new PointF(x,y);
 		this.size = defaultSize(parent);
 		this.color = defaultColor(parent);
 		this.shape = defaultShape(parent);
