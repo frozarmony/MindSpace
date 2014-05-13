@@ -18,11 +18,14 @@ import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.ArcShape;
 import android.graphics.drawable.shapes.OvalShape;
+import android.graphics.drawable.shapes.PathShape;
 import android.graphics.drawable.shapes.RectShape;
 import android.graphics.drawable.shapes.Shape;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.TextView;
 
 import com.utcLABS.mindspace.model.ConceptModel;
@@ -40,6 +43,10 @@ public class ConceptView {
 	// Node
 	private NodeView					nodeView;
 	
+	// Branch
+	private View				branchView;
+	private Path				branchPath;
+	
 	// Property Change Listener
 	private PropertyChangeListener		onNameChanged;
 	private PropertyChangeListener		onPositionChanged;
@@ -52,6 +59,7 @@ public class ConceptView {
 	 */
 	
 	// Constructor
+	@SuppressLint("NewApi")
 	public ConceptView(MindMapView mainView, ConceptModel model, ConceptView parentView) {
 		super();
 		
@@ -63,6 +71,30 @@ public class ConceptView {
 		
 		// Init NodeView
 		initNodeView(mainView);
+		
+		// Init BranchView
+		if(parentView != null){
+			// Geometry
+			PointF relativeP = new PointF(model.getPosition().x-parentView.model.getPosition().x, model.getPosition().y-parentView.model.getPosition().y);
+			float length = relativeP.length();
+			relativeP = new PointF(relativeP.x/length, relativeP.y/length);
+			
+			// Prepare Shape
+			this.branchPath = new Path();
+			this.branchPath.lineTo(relativeP.x*0.5f+0.5f, relativeP.y*0.5f+0.5f);
+			PathShape pathShape = new PathShape(branchPath, 400, 400);
+			ShapeDrawable shapeDrawable = new ShapeDrawable(pathShape);
+			shapeDrawable.getPaint().setColor(Color.BLACK);
+			shapeDrawable.getPaint().setStyle(Paint.Style.STROKE);
+			shapeDrawable.getPaint().setStrokeWidth(4);
+			//shapeDrawable.setBounds(0, 0, , 1);
+			
+			this.branchView = new View(mainView.getContext());
+			this.branchView.setBackground(shapeDrawable);
+			this.branchView.setX(model.getPosition().x);
+			this.branchView.setY(model.getPosition().y);
+			mainView.addView(this.branchView, 400, 400);
+		}
 		
 		// Init Listeners
 		initPropertyChangeListeners(model);
@@ -106,7 +138,27 @@ public class ConceptView {
 		};
 		model.addPropertyChangeListener(ConceptModel.NP_POSITION, this.onPositionChanged);
 
-		// TO DO Size, Color, Shape
+		// OnSizeChanged
+		this.onSizeChanged = new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent event) {
+				nodeView.setTextSize((float)event.getNewValue());
+				setNodePosition(new PointF(getX(), getY()));
+			}
+		};
+		model.addPropertyChangeListener(ConceptModel.NP_SIZE, this.onSizeChanged);
+		
+		// OnColorChanged
+		this.onColorChanged = new PropertyChangeListener() {
+			@SuppressLint("NewApi")
+			@Override
+			public void propertyChange(PropertyChangeEvent event) {
+				nodeView.shapeView.setColors(new int[]{(int)event.getNewValue(), Color.GRAY, (int)event.getNewValue()});
+			}
+		};
+		model.addPropertyChangeListener(ConceptModel.NP_COLOR, this.onColorChanged);
+		
+		// TO DO Shape
 	}
 	
 	/*
@@ -139,24 +191,38 @@ public class ConceptView {
 			// Init TextView
 			this.setText(model.getName());
 			this.setTextSize(model.getSize());
-			int padding = 20;
-			this.setPadding(padding*2, padding/3, padding*2, padding/2);
 			
 			// Init Background
 			this.shapeView = new GradientDrawable();
 			this.shapeView.setOrientation(GradientDrawable.Orientation.LEFT_RIGHT);
 			this.shapeView.setStroke(3, Color.BLACK);
-			this.shapeView.setShape(getShape(model.getShape()));
-			this.shapeView.setColors(new int[]{model.getColor(), Color.LTGRAY, model.getColor()});
+			this.shapeView.setColors(new int[]{model.getColor(), Color.GRAY, model.getColor()});
+			this.configureShape(model.getShape());
 			
 			this.setBackground(this.shapeView);
 		}
 		
-		private int getShape(ConceptModel.MindSpaceShape mindspaceShape){
+		private void configureShape(ConceptModel.MindSpaceShape mindspaceShape){
+			int padding;
+			
+			// Specific Config according to shape
 			switch(mindspaceShape){
-			case oval:			return GradientDrawable.OVAL;
-			case rectangle: 	return GradientDrawable.RECTANGLE;
-			default:			return GradientDrawable.OVAL;
+			case oval:
+				padding = 20;
+				this.shapeView.setShape(GradientDrawable.OVAL);
+				this.setPadding(padding*2, padding/3, padding*2, padding/2);
+				break;
+			case rectangle:
+				this.shapeView.setShape(GradientDrawable.RECTANGLE);
+				padding = 10;
+				this.setPadding(padding, padding, padding, padding);
+				break;
+			case roundedRectangle:
+				this.shapeView.setShape(GradientDrawable.RECTANGLE);
+				this.shapeView.setCornerRadius(20);
+				padding = 10;
+				this.setPadding(padding, padding, padding, padding);
+				break;
 			}
 		}
 

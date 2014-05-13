@@ -27,6 +27,7 @@ public class ConceptModel {
 	// Available Shape
 	public enum MindSpaceShape{
 		rectangle,
+		roundedRectangle,
 		oval
 	}
 

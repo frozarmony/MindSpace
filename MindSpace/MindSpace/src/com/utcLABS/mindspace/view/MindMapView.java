@@ -1,6 +1,7 @@
 package com.utcLABS.mindspace.view;
 
 import com.utcLABS.mindspace.model.ConceptModel;
+import com.utcLABS.mindspace.model.ConceptModel.MindSpaceShape;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -26,6 +27,7 @@ public class MindMapView extends RelativeLayout  {
  		// Root
  		root = new ConceptModel(500f, 250f, null);
  		root.setName("Music");
+ 		root.setShape(MindSpaceShape.rectangle);
  		
  		// Creativity
  		ConceptModel creativity = new ConceptModel(250f, 125f, root);
