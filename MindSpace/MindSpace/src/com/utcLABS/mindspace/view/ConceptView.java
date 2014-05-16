@@ -15,6 +15,7 @@ import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.RadialGradient;
 import android.graphics.Shader;
+import android.graphics.Path.Direction;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.ShapeDrawable;
@@ -44,8 +45,8 @@ public class ConceptView {
 	private NodeView					nodeView;
 	
 	// Branch
-	private View				branchView;
-	private Path				branchPath;
+	private View						branchView;
+	private Path						branchPath;
 	
 	// Property Change Listener
 	private PropertyChangeListener		onNameChanged;
@@ -75,14 +76,16 @@ public class ConceptView {
 		// Init BranchView
 		if(parentView != null){
 			// Geometry
-			PointF relativeP = new PointF(model.getPosition().x-parentView.model.getPosition().x, model.getPosition().y-parentView.model.getPosition().y);
-			float length = relativeP.length();
-			relativeP = new PointF(relativeP.x/length, relativeP.y/length);
+			PointF relativeP = new PointF(parentView.model.getPosition().x-model.getPosition().x, parentView.model.getPosition().y-model.getPosition().y);
+			float width = Math.abs(relativeP.x) * 2.0f;
+			float height = Math.abs(relativeP.y) * 2.0f;
 			
 			// Prepare Shape
 			this.branchPath = new Path();
-			this.branchPath.lineTo(relativeP.x*0.5f+0.5f, relativeP.y*0.5f+0.5f);
-			PathShape pathShape = new PathShape(branchPath, 400, 400);
+			this.branchPath.addRect(0, 0, width, height, Direction.CCW);
+			this.branchPath.moveTo(width*0.5f, height*0.5f);
+			this.branchPath.lineTo(relativeP.x+width*0.5f, relativeP.y+height*0.5f);
+			PathShape pathShape = new PathShape(branchPath, width, height);
 			ShapeDrawable shapeDrawable = new ShapeDrawable(pathShape);
 			shapeDrawable.getPaint().setColor(Color.BLACK);
 			shapeDrawable.getPaint().setStyle(Paint.Style.STROKE);
@@ -91,9 +94,14 @@ public class ConceptView {
 			
 			this.branchView = new View(mainView.getContext());
 			this.branchView.setBackground(shapeDrawable);
-			this.branchView.setX(model.getPosition().x);
-			this.branchView.setY(model.getPosition().y);
-			mainView.addView(this.branchView, 400, 400);
+			this.branchView.setX(model.getPosition().x - width*0.5f );
+			this.branchView.setY(model.getPosition().y - height*0.5f );
+			mainView.addView(this.branchView, (int)width, (int)height);
+			
+			/*Paint p = new Paint();
+			p.setColor(Color.BLACK);
+			p.setStyle(Paint.Style.STROKE);
+			p.setStrokeWidth(4);*/
 		}
 		
 		// Init Listeners
@@ -225,6 +233,14 @@ public class ConceptView {
 				break;
 			}
 		}
+
+		@Override
+		protected void onDraw(Canvas canvas) {
+			super.onDraw(canvas);
+			setNodePosition(model.getPosition());
+		}
+		
+		
 
 	}
 	

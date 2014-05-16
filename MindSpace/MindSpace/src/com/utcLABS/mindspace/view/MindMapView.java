@@ -27,7 +27,7 @@ public class MindMapView extends RelativeLayout  {
  		// Root
  		root = new ConceptModel(500f, 250f, null);
  		root.setName("Music");
- 		root.setShape(MindSpaceShape.rectangle);
+ 		root.setShape(MindSpaceShape.roundedRectangle);
  		
  		// Creativity
  		ConceptModel creativity = new ConceptModel(250f, 125f, root);
@@ -38,6 +38,7 @@ public class MindMapView extends RelativeLayout  {
  		ConceptModel rigour = new ConceptModel(750f, 125f, root);
  		rigour.setName("Rigour");
  		rigour.setColor(Color.rgb(200, 50, 50));
+ 		rigour.setShape(MindSpaceShape.oval);
  		
  		// Theory
  		ConceptModel theory = new ConceptModel(950f, 25f, rigour);
@@ -61,6 +62,7 @@ public class MindMapView extends RelativeLayout  {
 			public boolean onTouch(View v, MotionEvent event) {
 				if( event.getAction() == MotionEvent.ACTION_DOWN ){
 					root.setPosition(event.getX(),event.getY());
+
 				}
 				return false;
 			}
