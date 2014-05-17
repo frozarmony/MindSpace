@@ -16,18 +16,23 @@
         <activity
             android:name="com.utcLABS.mindspace.MainActivity"
             android:label="@string/app_name" >
-        </activity>
-        <activity
-            android:name="com.utcLABS.mindspace.HomeActivity"
-            android:label="@string/title_activity_home" >
             <intent-filter>
-        	    <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
+            android:name="com.utcLABS.mindspace.HomeActivity"
+            android:label="@string/title_activity_home" >
+        </activity>
+        <activity
             android:name="android.view.ext.MenuActivity"
             android:label="@string/title_activity_menu" >
+        </activity>
+        <activity
+            android:name="com.utcLABS.mindspace.VisualisationActivity"
+            android:label="@string/title_activity_visualisation" >
         </activity>
     </application>
 

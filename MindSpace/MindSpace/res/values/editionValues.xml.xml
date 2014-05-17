@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">HelloWorld</string>
+    <string name="hello_world">Hello world!</string>
+    
+    <string name="menu_edit">Edit</string>
+    <string name="menu_see">Visualisation</string>
+    <string name="menu_settings">Settings</string>
+    
+    <string name="title_activity_visualisation">Visualisation</string>
+    
+    <string name="edit_concept">Edition du concept</string>
+    <string name="edit_text">Editer le titre du concept</string>
+    <string name="edit_desc">Editer la description du concept</string>
+    <string name="edit_picture">Images associées au concept</string>
+    
+    
+    
+
+</resources>

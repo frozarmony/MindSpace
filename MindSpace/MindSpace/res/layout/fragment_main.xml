@@ -1,16 +1,77 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.utcLABS.mindspace.MainActivity$PlaceholderFragment" >
+    android:background="@android:color/white">
 
-    <com.utcLABS.mindspace.ExampleSurfaceView
-        android:id="@+id/exampleSurfaceView1"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-</RelativeLayout>
+     <com.utcLABS.mindspace.ExampleSurfaceView
+	     android:id="@+id/exampleSurfaceView1"
+	     android:layout_width="match_parent"
+	     android:layout_height="match_parent"
+     />
+   
+     <LinearLayout 
+         android:id="@+id/layout_fragment"
+	    android:layout_width="320dp"
+	    android:layout_height="match_parent"
+	    android:orientation="vertical"
+	    android:layout_gravity="right"
+	    android:background="#046380"
+    >
+    
+         <RelativeLayout 
+             android:id="@+id/container_fragment"
+             android:orientation="vertical" 
+             android:layout_width="match_parent"
+             android:layout_height="625dp" 
+         />
+         
+      	<LinearLayout 
+	        android:id="@+id/layout_bouton"
+		    android:layout_width="320dp"
+		    android:layout_height="match_parent"
+		    android:orientation="horizontal"
+		    android:layout_gravity="right"
+		    android:background="#E6E2AF"		    
+   		 >
+ 
+   		  <ImageButton
+		    android:id="@+id/edit_concept"
+		   	android:padding="10dip"
+		    android:layout_width="60dp"
+		    android:layout_height="wrap_content"
+		    android:src="@drawable/rename" />
+   		  
+   		  <ImageButton
+		    android:id="@+id/edit_shape"
+			android:padding="10dip"
+		    android:layout_width="60dp"		   
+		    android:layout_height="wrap_content"
+		    android:src="@drawable/rename" />
+   		  
+   		  <ImageButton
+		    android:id="@+id/edit_picture"
+  			android:padding="10dip"
+		    android:layout_width="60dp"
+		    android:layout_height="wrap_content"
+		    android:src="@drawable/rename" />
+   		  
+   		  <ImageButton
+		    android:id="@+id/wikipedia"
+		    android:padding="10dip"
+		    android:layout_width="60dp"
+		    android:layout_height="wrap_content"
+		    android:src="@drawable/rename" />
+   		  
+   		   <ImageButton
+		    android:id="@+id/camera"
+		    android:padding="10dip"
+		    android:layout_width="60dp"
+		    android:layout_height="wrap_content"
+		    android:src="@drawable/rename" />
+         
+        </LinearLayout>
+       </LinearLayout>
+     
+</android.support.v4.widget.DrawerLayout>
