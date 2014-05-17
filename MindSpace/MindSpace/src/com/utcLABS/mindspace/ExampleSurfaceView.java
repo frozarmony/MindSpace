@@ -1,18 +1,15 @@
 package com.utcLABS.mindspace;
 
-import com.utcLABS.mindspace.model.ConceptModel;
-import com.utcLABS.mindspace.view.ConceptView;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.PathEffect;
 import android.util.AttributeSet;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+
+import com.utcLABS.mindspace.model.ConceptModel;
+import com.utcLABS.mindspace.view.ConceptView;
 
 public class ExampleSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
     // Le holder

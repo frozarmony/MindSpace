@@ -1,4 +1,7 @@
-package com.utcLABS.mindspace;
+package android.view.ext;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -8,14 +11,13 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ext.R;
 
-public class MainActivity extends ActionBarActivity {
+public class MenuActivity extends ActionBarActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);		
+		setContentView(R.layout.activity_menu);
 
 		if (savedInstanceState == null) {
 			getSupportFragmentManager().beginTransaction()
@@ -27,7 +29,7 @@ public class MainActivity extends ActionBarActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
+		getMenuInflater().inflate(R.menu.menu, menu);
 		return true;
 	}
 
@@ -54,8 +56,18 @@ public class MainActivity extends ActionBarActivity {
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_main, container,
+			View rootView = inflater.inflate(R.layout.fragment_menu, container,
 					false);
+			
+		    SatelliteMenu menu = (SatelliteMenu) rootView.findViewById(R.id.menu);
+            List<SatelliteMenuItem> items = new ArrayList<SatelliteMenuItem>();
+            items.add(new SatelliteMenuItem(4, R.drawable.ic_launcher));
+            items.add(new SatelliteMenuItem(4, R.drawable.ic_launcher));
+            items.add(new SatelliteMenuItem(4, R.drawable.ic_launcher));
+            items.add(new SatelliteMenuItem(3, R.drawable.ic_launcher));
+            items.add(new SatelliteMenuItem(2, R.drawable.ic_launcher));
+            items.add(new SatelliteMenuItem(1, R.drawable.ic_launcher));
+            menu.addItems(items);
 			return rootView;
 		}
 	}
