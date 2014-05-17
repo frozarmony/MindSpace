@@ -2,11 +2,15 @@ package com.utcLABS.mindspace.view;
 
 import java.util.LinkedList;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnTouchListener;
 
 import com.utcLABS.mindspace.model.ConceptModel;
 
@@ -22,7 +26,6 @@ public class ConceptView {
 
 	// Constructor
 	public ConceptView(ConceptModel model, float width, float height) {
-		super();
 		this.model = model;
 		
 		// Paint Config

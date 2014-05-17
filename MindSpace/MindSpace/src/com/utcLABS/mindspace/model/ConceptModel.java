@@ -12,6 +12,7 @@ public class ConceptModel {
 		triangle
 	}
 
+	
 	// Data Members
 	private String						name;
 	
