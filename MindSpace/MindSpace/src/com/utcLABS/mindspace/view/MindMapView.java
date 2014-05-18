@@ -11,17 +11,24 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 
-public class MindMapView extends RelativeLayout  {
+public class MindMapView extends ScrollView  {
 
 	// Member
 	private ConceptModel			root;
+	private RelativeLayout			mapView;
 	private ConceptView				conceptView;
 	
 	@SuppressLint("NewApi")
 	public MindMapView(Context context, AttributeSet attrs) {
 		super(context, attrs);
+		
+		// Init Map
+		this.mapView = new RelativeLayout(context);
+		this.addView(this.mapView, 4000,4000);
 		
 		float coef = 1f;
 		
@@ -64,11 +71,21 @@ public class MindMapView extends RelativeLayout  {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				if( event.getAction() == MotionEvent.ACTION_DOWN ){
-					root.getChildren().getFirst().setPosition(event.getX(),event.getY());
+					//root.getChildren().getFirst().setPosition(event.getX(),event.getY());
+					setScrollX(getScrollX()+50);
+					setScrollY(getScrollY()+50);
 				}
 				return false;
 			}
 		});
+	}
+	
+	public void addViewToMap(View v){
+		this.mapView.addView(v);
+	}
+	
+	public void addViewToMap(View v, int index, LayoutParams params){
+		this.mapView.addView(v, index, params);
 	}
 
 }

@@ -85,7 +85,7 @@ public class ConceptView {
 		nodeView = new NodeView(mainView.getContext(), model);
 		nodeView.setX(this.getX() - nodeView.getWidth()/2);
 		nodeView.setY(this.getY() - nodeView.getHeight()/2);
-		mainView.addView(nodeView);
+		mainView.addViewToMap(nodeView);
 	}
 	
 	@SuppressLint("NewApi")
@@ -114,7 +114,7 @@ public class ConceptView {
 			this.branchView.setX(model.getPosition().x - BRANCH_BASE_WIDTH);
 			this.branchView.setY(model.getPosition().y - BRANCH_BASE_HEIGHT/2f);
 			
-			mainView.addView(this.branchView, 0, new LayoutParams((int)(BRANCH_BASE_WIDTH*2f), (int)(BRANCH_BASE_HEIGHT)));
+			mainView.addViewToMap(this.branchView, 0, new android.widget.FrameLayout.LayoutParams((int)(BRANCH_BASE_WIDTH*2f), (int)(BRANCH_BASE_HEIGHT)));
 		}
 	}
 	
