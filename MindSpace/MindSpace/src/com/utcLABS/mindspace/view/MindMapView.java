@@ -23,35 +23,38 @@ public class MindMapView extends RelativeLayout  {
 	public MindMapView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		
+		float coef = 1f;
+		
 		// Creation Test ConceptModel
  		// Root
- 		root = new ConceptModel(500f, 250f, null);
+ 		root = new ConceptModel(500f*coef+600f, 250f*coef+300f, null);
  		root.setName("Music");
  		root.setShape(MindSpaceShape.roundedRectangle);
+ 		root.setSize(ConceptModel.DEFAULT_SIZE*coef);
+ 		
+ 		// Sociability
+ 		ConceptModel sociability = new ConceptModel(200f*coef+600f, 400f*coef+300f, root);
+ 		sociability.setName("Sociability");
+ 		sociability.setColor(Color.rgb(50, 50, 200));
+ 		
+ 		// Titi
+ 		ConceptModel titi = new ConceptModel(100f*coef+600f, 475f*coef+300f, sociability);
+ 		titi.setName("People");
  		
  		// Creativity
- 		ConceptModel creativity = new ConceptModel(250f, 125f, root);
+ 		ConceptModel creativity = new ConceptModel(250f*coef+600f, 125f*coef+300f, root);
  		creativity.setName("Creativity");
  		creativity.setColor(Color.rgb(50, 200, 50));
  		
  		// Rigour
- 		ConceptModel rigour = new ConceptModel(750f, 125f, root);
+ 		ConceptModel rigour = new ConceptModel(750f*coef+600f, 125f*coef+300f, root);
  		rigour.setName("Rigour");
  		rigour.setColor(Color.rgb(200, 50, 50));
  		rigour.setShape(MindSpaceShape.oval);
  		
  		// Theory
- 		ConceptModel theory = new ConceptModel(950f, 25f, rigour);
+ 		ConceptModel theory = new ConceptModel(950f*coef+600f, 25f*coef+300f, rigour);
  		theory.setName("Theory");
- 		
- 		// Sociability
- 		ConceptModel sociability = new ConceptModel(200f, 400f, root);
- 		sociability.setName("Sociability");
- 		sociability.setColor(Color.rgb(50, 50, 200));
- 		
- 		// Titi
- 		ConceptModel titi = new ConceptModel(100f, 475f, sociability);
- 		titi.setName("People");
  		
  		this.conceptView = new ConceptView(this, root, null);
  		
@@ -61,8 +64,7 @@ public class MindMapView extends RelativeLayout  {
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 				if( event.getAction() == MotionEvent.ACTION_DOWN ){
-					root.setPosition(event.getX(),event.getY());
-
+					root.getChildren().getFirst().setPosition(event.getX(),event.getY());
 				}
 				return false;
 			}

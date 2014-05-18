@@ -19,9 +19,9 @@ public class ConceptModel {
 	public final static String			NP_COLOR					= "color";
 	public final static String			NP_SHAPE					= "shape";
 	
-	public final static float			DEFAULT_SIZE				= 80f;
+	public final static float			DEFAULT_SIZE				= 100f;
 	public final static float			DEFAULT_SIZE_RATIO			= 0.7f;
-	public final static int				DEFAULT_COLOR				= Color.TRANSPARENT;
+	public final static int				DEFAULT_COLOR				= Color.WHITE;
 	public final static MindSpaceShape	DEFAULT_SHAPE				= MindSpaceShape.oval;
 	
 	// Available Shape

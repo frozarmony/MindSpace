@@ -5,34 +5,26 @@ import java.beans.PropertyChangeListener;
 import java.util.LinkedList;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
-import android.graphics.RadialGradient;
-import android.graphics.Shader;
-import android.graphics.Path.Direction;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.ArcShape;
-import android.graphics.drawable.shapes.OvalShape;
 import android.graphics.drawable.shapes.PathShape;
-import android.graphics.drawable.shapes.RectShape;
-import android.graphics.drawable.shapes.Shape;
-import android.os.Build;
-import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.TextView;
 
 import com.utcLABS.mindspace.model.ConceptModel;
-import com.utcSABB.mindspace.R;
 
 public class ConceptView {
+	
+	// Constants
+	private static final float			BRANCH_BASE_WIDTH = 500f;
+	private static final float			BRANCH_BASE_HEIGHT = 50f;
 
 	// Model Member
 	private ConceptModel				model;
@@ -46,7 +38,7 @@ public class ConceptView {
 	
 	// Branch
 	private View						branchView;
-	private Path						branchPath;
+	private Paint						branchPaint;
 	
 	// Property Change Listener
 	private PropertyChangeListener		onNameChanged;
@@ -54,6 +46,7 @@ public class ConceptView {
 	private PropertyChangeListener		onSizeChanged;
 	private PropertyChangeListener		onColorChanged;
 	private PropertyChangeListener		onShapeChanged;
+	
 
 	/*
 	 * Inititialisation
@@ -74,35 +67,7 @@ public class ConceptView {
 		initNodeView(mainView);
 		
 		// Init BranchView
-		if(parentView != null){
-			// Geometry
-			PointF relativeP = new PointF(parentView.model.getPosition().x-model.getPosition().x, parentView.model.getPosition().y-model.getPosition().y);
-			float width = Math.abs(relativeP.x) * 2.0f;
-			float height = Math.abs(relativeP.y) * 2.0f;
-			
-			// Prepare Shape
-			this.branchPath = new Path();
-			this.branchPath.addRect(0, 0, width, height, Direction.CCW);
-			this.branchPath.moveTo(width*0.5f, height*0.5f);
-			this.branchPath.lineTo(relativeP.x+width*0.5f, relativeP.y+height*0.5f);
-			PathShape pathShape = new PathShape(branchPath, width, height);
-			ShapeDrawable shapeDrawable = new ShapeDrawable(pathShape);
-			shapeDrawable.getPaint().setColor(Color.BLACK);
-			shapeDrawable.getPaint().setStyle(Paint.Style.STROKE);
-			shapeDrawable.getPaint().setStrokeWidth(4);
-			//shapeDrawable.setBounds(0, 0, , 1);
-			
-			this.branchView = new View(mainView.getContext());
-			this.branchView.setBackground(shapeDrawable);
-			this.branchView.setX(model.getPosition().x - width*0.5f );
-			this.branchView.setY(model.getPosition().y - height*0.5f );
-			mainView.addView(this.branchView, (int)width, (int)height);
-			
-			/*Paint p = new Paint();
-			p.setColor(Color.BLACK);
-			p.setStyle(Paint.Style.STROKE);
-			p.setStrokeWidth(4);*/
-		}
+		initBranchView(mainView);
 		
 		// Init Listeners
 		initPropertyChangeListeners(model);
@@ -121,6 +86,36 @@ public class ConceptView {
 		nodeView.setX(this.getX() - nodeView.getWidth()/2);
 		nodeView.setY(this.getY() - nodeView.getHeight()/2);
 		mainView.addView(nodeView);
+	}
+	
+	@SuppressLint("NewApi")
+	private void initBranchView(MindMapView mainView){
+		if(parentView != null){
+			// Geometry
+			PointF relativeP = new PointF(parentView.model.getPosition().x-model.getPosition().x, parentView.model.getPosition().y-model.getPosition().y);
+			
+			Path branchPath = new Path();
+			branchPath.moveTo(BRANCH_BASE_WIDTH, BRANCH_BASE_HEIGHT/2f);
+			branchPath.lineTo(BRANCH_BASE_WIDTH*2f, BRANCH_BASE_HEIGHT/2f);
+			
+			PathShape pathShape = new PathShape(branchPath, BRANCH_BASE_WIDTH*2f, BRANCH_BASE_HEIGHT);
+			ShapeDrawable branchDrawable = new ShapeDrawable(pathShape);
+			
+			this.branchPaint = branchDrawable.getPaint();
+			this.branchPaint.setColor(model.getColor());
+			this.branchPaint.setStyle(Paint.Style.STROKE);
+			this.branchPaint.setStrokeWidth(BRANCH_BASE_HEIGHT/2f);
+			
+			this.branchView = new View(mainView.getContext());
+			this.branchView.setBackground(branchDrawable);
+			this.branchView.setScaleX(relativeP.length()/BRANCH_BASE_WIDTH);
+			this.branchView.setScaleY(model.getSize()/ConceptModel.DEFAULT_SIZE);
+			this.branchView.setRotation(getAngle(relativeP));
+			this.branchView.setX(model.getPosition().x - BRANCH_BASE_WIDTH);
+			this.branchView.setY(model.getPosition().y - BRANCH_BASE_HEIGHT/2f);
+			
+			mainView.addView(this.branchView, 0, new LayoutParams((int)(BRANCH_BASE_WIDTH*2f), (int)(BRANCH_BASE_HEIGHT)));
+		}
 	}
 	
 	/*
@@ -142,16 +137,21 @@ public class ConceptView {
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				setNodePosition((PointF) event.getNewValue());
+				updateBranch((PointF) event.getNewValue());
 			}
 		};
 		model.addPropertyChangeListener(ConceptModel.NP_POSITION, this.onPositionChanged);
 
 		// OnSizeChanged
 		this.onSizeChanged = new PropertyChangeListener() {
+			@SuppressLint("NewApi")
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
-				nodeView.setTextSize((float)event.getNewValue());
+				float newSize = (float)event.getNewValue();
+				nodeView.setTextSize(newSize);
 				setNodePosition(new PointF(getX(), getY()));
+				
+				branchView.setScaleY(newSize/ConceptModel.DEFAULT_SIZE);
 			}
 		};
 		model.addPropertyChangeListener(ConceptModel.NP_SIZE, this.onSizeChanged);
@@ -184,6 +184,30 @@ public class ConceptView {
 		nodeView.setY(p.y - nodeView.getHeight()/2);
 	}
 	
+	// Update Branch
+	@SuppressLint("NewApi")
+	private void updateBranch(PointF modelPos){
+		if(parentView != null){
+			// Geometry
+			PointF relativeP = new PointF(parentView.model.getPosition().x-modelPos.x, parentView.model.getPosition().y-modelPos.y);
+			
+			// Update scale and rotation
+			this.branchView.setScaleX(relativeP.length()/BRANCH_BASE_WIDTH);
+			this.branchView.setRotation(getAngle(relativeP));
+			this.branchView.setX(modelPos.x - BRANCH_BASE_WIDTH);
+			this.branchView.setY(modelPos.y - BRANCH_BASE_HEIGHT/2f);
+		}
+	}
+	
+	/*
+	 * Tool
+	 */
+	private static float getAngle(PointF vector) {
+		float angle = (float) Math.toDegrees(Math.atan2(vector.y, vector.x));
+		if(angle < 0){angle += 360;}
+	    return angle;
+	}
+	
 	/*
 	 *  Node View
 	 */
@@ -192,6 +216,7 @@ public class ConceptView {
 		// Member
 		GradientDrawable	shapeView;
 
+		// Constructor
 		@SuppressLint("NewApi")
 		public NodeView(Context context, ConceptModel model) {
 			super(context);
@@ -203,44 +228,44 @@ public class ConceptView {
 			// Init Background
 			this.shapeView = new GradientDrawable();
 			this.shapeView.setOrientation(GradientDrawable.Orientation.LEFT_RIGHT);
-			this.shapeView.setStroke(3, Color.BLACK);
+			this.shapeView.setStroke(1, Color.BLACK);
 			this.shapeView.setColors(new int[]{model.getColor(), Color.GRAY, model.getColor()});
 			this.configureShape(model.getShape());
 			
 			this.setBackground(this.shapeView);
 		}
-		
-		private void configureShape(ConceptModel.MindSpaceShape mindspaceShape){
-			int padding;
-			
-			// Specific Config according to shape
-			switch(mindspaceShape){
-			case oval:
-				padding = 20;
-				this.shapeView.setShape(GradientDrawable.OVAL);
-				this.setPadding(padding*2, padding/3, padding*2, padding/2);
-				break;
-			case rectangle:
-				this.shapeView.setShape(GradientDrawable.RECTANGLE);
-				padding = 10;
-				this.setPadding(padding, padding, padding, padding);
-				break;
-			case roundedRectangle:
-				this.shapeView.setShape(GradientDrawable.RECTANGLE);
-				this.shapeView.setCornerRadius(20);
-				padding = 10;
-				this.setPadding(padding, padding, padding, padding);
-				break;
-			}
-		}
 
+		// For First Update
 		@Override
 		protected void onDraw(Canvas canvas) {
 			super.onDraw(canvas);
 			setNodePosition(model.getPosition());
 		}
 		
-		
+		// Shape
+		private void configureShape(ConceptModel.MindSpaceShape mindspaceShape){
+			int padding;
+			
+			// Specific Config according to shape
+			switch(mindspaceShape){
+			case oval:
+				padding = (int)(20f*model.getSize()/ConceptModel.DEFAULT_SIZE);
+				this.shapeView.setShape(GradientDrawable.OVAL);
+				this.setPadding(padding*2, padding/3, padding*2, padding/2);
+				break;
+			case rectangle:
+				this.shapeView.setShape(GradientDrawable.RECTANGLE);
+				padding = (int)(10f*model.getSize()/ConceptModel.DEFAULT_SIZE);
+				this.setPadding(padding, padding, padding, padding);
+				break;
+			case roundedRectangle:
+				this.shapeView.setShape(GradientDrawable.RECTANGLE);
+				this.shapeView.setCornerRadius(20);
+				padding = (int)(10f*model.getSize()/ConceptModel.DEFAULT_SIZE);
+				this.setPadding(padding, padding, padding, padding);
+				break;
+			}
+		}
 
 	}
 	
