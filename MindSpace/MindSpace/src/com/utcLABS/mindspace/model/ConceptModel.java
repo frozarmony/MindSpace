@@ -92,8 +92,17 @@ public class ConceptModel {
 	}
 	public void setPosition(PointF position) {
 		if(!this.position.equals(position)){
+			// Compute Translation
+			PointF translation = new PointF(position.x-this.position.x, position.y-this.position.y);
+			
+			// Update this concept Position
 			this.propertyChangeSupport.firePropertyChange(NP_POSITION, this.position, position);
 			this.position = position;
+			
+			// Update Children Positions
+			for(ConceptModel child : children){
+				child.setPosition(child.position.x+translation.x, child.position.y+translation.y);
+			}
 		}
 	}
 	public void setPosition(float x, float y){
