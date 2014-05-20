@@ -15,7 +15,6 @@ import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.PathShape;
 import android.view.View;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.TextView;
 
 import com.utcLABS.mindspace.model.ConceptModel;
@@ -32,7 +31,6 @@ public class ConceptView {
 	// View Member
 	private MindMapView					mainView;
 	private ConceptView					parentView;
-	private LinkedList<ConceptView>		childrenViews;
 	
 	// Node
 	private NodeView					nodeView;
@@ -46,9 +44,8 @@ public class ConceptView {
 	private PropertyChangeListener		onPositionChanged;
 	private PropertyChangeListener		onSizeChanged;
 	private PropertyChangeListener		onColorChanged;
-	private PropertyChangeListener		onShapeChanged;
+	//private PropertyChangeListener		onShapeChanged;
 	
-	private PropertyChangeListener		onChildAdded;
 	private PropertyChangeListener		onMoved;
 	private PropertyChangeListener		onDeleted;
 	
@@ -77,13 +74,6 @@ public class ConceptView {
 		
 		// Init Listeners
 		initPropertyChangeListeners(model);
-    	
-    	// Children Views
-    	this.childrenViews = new LinkedList<ConceptView>();
-    	for( ConceptModel m : model.getChildren() ){
-    		ConceptView childView = new ConceptView(mainView, m, this);
-    		this.childrenViews.add(childView);
-    	}
 	}
 
 	@SuppressLint("NewApi")
@@ -167,27 +157,17 @@ public class ConceptView {
 			@SuppressLint("NewApi")
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
-				nodeView.shapeView.setColors(new int[]{(int)event.getNewValue(), Color.GRAY, (int)event.getNewValue()});
+				int color = (int)event.getNewValue();
+				nodeView.shapeView.setColors(new int[]{color, Color.GRAY, color});
+				branchPaint.setColor(color);
 			}
 		};
 		model.addPropertyChangeListener(ConceptModel.NP_COLOR, this.onColorChanged);
 		
 		// TO DO Shape
 		
-		// OnChildAdded
-		this.onChildAdded = new PropertyChangeListener() {
-			@SuppressLint("NewApi")
-			@Override
-			public void propertyChange(PropertyChangeEvent event) {
-				ConceptModel m = (ConceptModel)event.getNewValue();
-				ConceptView childView = new ConceptView(mainView, m, ConceptView.this);
-	    		childrenViews.add(childView);
-			}
-		};
-		model.addPropertyChangeListener(ConceptModel.NP_ADD, this.onChildAdded);
-		
 		// OnMoved
-		this.onMoved = new PropertyChangeListener() {
+		/*this.onMoved = new PropertyChangeListener() {
 			@SuppressLint("NewApi")
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
@@ -223,7 +203,7 @@ public class ConceptView {
 				// TO DO remove from mindMapView if no parents
 			}
 		};
-		model.addPropertyChangeListener(ConceptModel.NP_DELETE, this.onDeleted);
+		model.addPropertyChangeListener(ConceptModel.NP_DELETE, this.onDeleted);*/
 	}
 	
 	/*
@@ -259,7 +239,7 @@ public class ConceptView {
 	/*
 	 * Tool
 	 */
-	public ConceptView searchViewOfModel(ConceptModel model){
+	/*public ConceptView searchViewOfModel(ConceptModel model){
 		if( this.model == model )
 			return this;
 		
@@ -269,7 +249,7 @@ public class ConceptView {
 				return res;
 		
 		return null;
-	}
+	}*/
 	
 	private static float getAngle(PointF vector) {
 		float angle = (float) Math.toDegrees(Math.atan2(vector.y, vector.x));
@@ -280,9 +260,6 @@ public class ConceptView {
 	private void removeView(){
 		mainView.removeViewFromMap(this.branchView);
 		mainView.removeViewFromMap(this.nodeView);
-		
-		for(ConceptView v : childrenViews)
-			v.removeView();
 	}
 	
 	/*

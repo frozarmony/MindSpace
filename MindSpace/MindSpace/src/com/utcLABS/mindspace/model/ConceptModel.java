@@ -7,7 +7,7 @@ import java.util.LinkedList;
 import android.graphics.Color;
 import android.graphics.PointF;
 
-public class ConceptModel {
+public class ConceptModel implements Comparable<ConceptModel> {
 	
 	/*
 	 * Constant
@@ -17,7 +17,6 @@ public class ConceptModel {
 	public final static String			NP_SIZE						= "size";
 	public final static String			NP_COLOR					= "color";
 	public final static String			NP_SHAPE					= "shape";
-	public final static String			NP_ADD						= "add";
 	public final static String			NP_MOVE						= "move";
 	public final static String			NP_DELETE					= "delete";
 	
@@ -55,8 +54,10 @@ public class ConceptModel {
 	
 	// Bean
 	private PropertyChangeSupport		propertyChangeSupport;
-	
-	// Constructor
+
+	/*
+	 * Constructor
+	 */
 	public ConceptModel(MindMapModel mindMap, float x, float y, ConceptModel parent) {
 		super();
 		// Init
@@ -81,20 +82,38 @@ public class ConceptModel {
 		else
 			this.parent = null;
 	}
+
+	/*
+	 * Getters
+	 */
 	
-	// Getters & Setters
-	public String getName() {
-		return name;
+	// Property
+	public String getName() {					return name;			}
+	public PointF getPosition() {				return position;		}
+	public float getSize() {					return size;			}
+	public int getColor() {						return color;			}
+	public MindSpaceShape getShape() {			return shape;			}
+	public ConceptModel getParent() {			return parent;			}
+	
+	// Children
+	public int getChildrenCount(){				return children.size();	}
+	
+	public ConceptModel getChildAt(int index){
+		if(index >= children.size())
+			return null;
+		return children.get(index);
 	}
+
+	/*
+	 * Setters
+	 */
 	public void setName(String name) {
 		if(!this.name.equals(name)){
 			this.propertyChangeSupport.firePropertyChange(NP_NAME, this.name, name);
 			this.name = name;
 		}
 	}
-	public PointF getPosition() {
-		return position;
-	}
+	
 	public void setPosition(PointF position) {
 		if(!this.position.equals(position)){
 			// Compute Translation
@@ -110,44 +129,35 @@ public class ConceptModel {
 			}
 		}
 	}
+	
 	public void setPosition(float x, float y){
 		setPosition(new PointF(x,y));
 	}
-	public float getSize() {
-		return size;
-	}
+	
 	public void setSize(float size) {
 		if(this.size!=size){
 			this.propertyChangeSupport.firePropertyChange(NP_SIZE, this.size, size);
 			this.size = size;
 		}
 	}
-	public int getColor() {
-		return color;
-	}
+	
 	public void setColor(int color) {
 		if(this.color!=color){
 			this.propertyChangeSupport.firePropertyChange(NP_COLOR, this.color, color);
 			this.color = color;
 		}
 	}
-	public MindSpaceShape getShape() {
-		return shape;
-	}
+	
 	public void setShape(MindSpaceShape shape) {
 		if(this.shape!=shape){
 			this.propertyChangeSupport.firePropertyChange(NP_SHAPE, this.shape, shape);
 			this.shape = shape;
 		}
 	}
-	public ConceptModel getParent() {
-		return parent;
-	}
-	public LinkedList<ConceptModel> getChildren(){
-		return children;
-	}
-	
-	// Default Values
+
+	/*
+	 * Default Values
+	 */
 	private float defaultSize(ConceptModel parent){
 		if(parent!=null)
 			return parent.size*DEFAULT_SIZE_RATIO;
@@ -174,7 +184,6 @@ public class ConceptModel {
 		if( child != null && !children.contains(child) ){
 			children.add(child);
 			child.parent = this;
-			this.propertyChangeSupport.firePropertyChange(NP_ADD, null, child);
 		}
 	}
 	
@@ -222,6 +231,19 @@ public class ConceptModel {
 	// For Specific PropertyChangeListener
 	public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener){
 		this.propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
+	}
+
+	@Override
+	public int compareTo(ConceptModel another) {
+		// Check another
+		if( another == null )
+			return -1;
+		
+		// Compare
+		int sizeC = Float.compare(this.size, another.size);
+		if( sizeC != 0 )
+			return sizeC;
+		return this.name.compareTo(another.name);
 	}
 	
 }

@@ -1,49 +1,67 @@
 package com.utcLABS.mindspace.view;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.TreeMap;
+
 import com.utcLABS.mindspace.model.ConceptModel;
 import com.utcLABS.mindspace.model.MindMapModel;
 import com.utcLABS.mindspace.model.ConceptModel.MindSpaceShape;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PointF;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
 public class MindMapView extends ScrollView  {
 
-	// Member
-	private MindMapModel			mindMapModel;
-	private RelativeLayout			mapView;
-	private ConceptView				rootConceptView;
+	/*
+	 * Member
+	 */
+	
+	// Model Member
+	private MindMapModel							mindMapModel;
+	
+	// View Member
+	private RelativeLayout							mapView;
+	private TreeMap<ConceptModel, ConceptView>		conceptIndex;
+	private ConceptView								rootConceptView;
+	
+	// Property Change Listener
+	private PropertyChangeListener					onConceptCreated;
 	
 	// Test Member
-	private ConceptModel			root;
-	
+	private ConceptModel							root;
+
+	/*
+	 * Constructor
+	 */
 	@SuppressLint("NewApi")
 	public MindMapView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		
-		// Init Map
+		// Init View Member
 		this.mapView = new RelativeLayout(context);
 		this.addView(this.mapView, 4000,4000);
+		
+		this.conceptIndex = new TreeMap<ConceptModel, ConceptView>();
 		
 		float coef = 1f;
 		
 		// Creation Test ConceptModel
 		this.mindMapModel = new MindMapModel();
 		
+		// Listeners
+		initPropertyChangeListeners(this.mindMapModel);
+		
  		// Root
  		root = this.mindMapModel.createNewConcept(new PointF(500f*coef+600f, 250f*coef+300f));
  		root.setName("Music");
- 		root.setShape(MindSpaceShape.roundedRectangle);
  		root.setSize(ConceptModel.DEFAULT_SIZE*coef);
  		
  		// Sociability
@@ -75,7 +93,7 @@ public class MindMapView extends ScrollView  {
  		creativity.setName("Creativity");
  		creativity.setColor(Color.rgb(50, 200, 50));
  		
- 		this.rootConceptView = new ConceptView(this, root, null);
+ 		//this.rootConceptView = new ConceptView(this, root, null);
  		
  		// OnTouchTest
  		this.setOnTouchListener(new OnTouchListener() {
@@ -87,7 +105,7 @@ public class MindMapView extends ScrollView  {
 					//setScrollX(getScrollX()+50);
 					//setScrollY(getScrollY()+50);
 					
-					root.getChildren().getFirst().getChildren().getFirst().moveTo(root.getChildren().getLast());
+					//root.getChildren().getFirst().moveTo(root.getChildren().getLast());
 					//mindMapModel.deleteConcept(root.getChildren().getFirst());
 				}
 				return false;
@@ -95,8 +113,33 @@ public class MindMapView extends ScrollView  {
 		});
 	}
 	
+	/*
+	 * Listeners
+	 */
+	private void initPropertyChangeListeners(MindMapModel model){
+		// OnConceptCreated
+		this.onConceptCreated = new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent event) {
+				// Create Concept View
+				ConceptModel model = (ConceptModel)event.getNewValue();
+				ConceptModel parent = model.getParent();
+				ConceptView parentView = null;
+				
+				if( parent != null )
+					parentView = conceptIndex.get(model.getParent());
+				
+				ConceptView view = new ConceptView(MindMapView.this, model, parentView);
+				
+				// Index Concept View
+				conceptIndex.put(model, view);
+			}
+		};
+		model.addPropertyChangeListener(MindMapModel.NP_CONCEPT_CREATED, this.onConceptCreated);
+	}
+	
 	public ConceptView searchViewOfModel(ConceptModel model){
-		return rootConceptView.searchViewOfModel(model);
+		return conceptIndex.get(model);
 	}
 	
 	
