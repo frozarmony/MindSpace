@@ -34,6 +34,7 @@ public class MindMapView extends ScrollView  {
 	
 	// Property Change Listener
 	private PropertyChangeListener					onConceptCreated;
+	private PropertyChangeListener					onConceptDeleted;
 	
 	// Test Member
 	private ConceptModel							root;
@@ -107,6 +108,8 @@ public class MindMapView extends ScrollView  {
 					
 					//root.getChildren().getFirst().moveTo(root.getChildren().getLast());
 					//mindMapModel.deleteConcept(root.getChildren().getFirst());
+					
+					mindMapModel.deleteConcept(root);
 				}
 				return false;
 			}
@@ -136,6 +139,22 @@ public class MindMapView extends ScrollView  {
 			}
 		};
 		model.addPropertyChangeListener(MindMapModel.NP_CONCEPT_CREATED, this.onConceptCreated);
+		
+		// OnConceptDeleted
+		this.onConceptDeleted = new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent event) {
+				// Create Concept View
+				ConceptModel model = (ConceptModel)event.getNewValue();
+				ConceptView view = conceptIndex.get(model);
+				
+				if( view != null ){
+					view.removeSubViews();
+					conceptIndex.remove(model);
+				}
+			}
+		};
+		model.addPropertyChangeListener(MindMapModel.NP_CONCEPT_DELETED, this.onConceptDeleted);
 	}
 	
 	public ConceptView searchViewOfModel(ConceptModel model){
@@ -143,15 +162,15 @@ public class MindMapView extends ScrollView  {
 	}
 	
 	
-	public void addViewToMap(View v){
+	protected void addViewToMap(View v){
 		this.mapView.addView(v);
 	}
 	
-	public void addViewToMap(View v, int index, LayoutParams params){
+	protected void addViewToMap(View v, int index, LayoutParams params){
 		this.mapView.addView(v, index, params);
 	}
 	
-	public void removeViewFromMap(View v){
+	protected void removeViewFromMap(View v){
 		this.mapView.removeView(v);
 	}
 

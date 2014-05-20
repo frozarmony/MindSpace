@@ -213,13 +213,9 @@ public class ConceptModel implements Comparable<ConceptModel> {
 		}
 	}
 	
-	public void delete(){
+	protected void detachFromOtherConcepts(){
 		if( this.parent != null ){
 			this.parent.children.remove(this);
-			this.propertyChangeSupport.firePropertyChange(NP_DELETE, null, this);
-		}
-		else{
-			this.mindMap.remove(this);
 		}
 	}
 	

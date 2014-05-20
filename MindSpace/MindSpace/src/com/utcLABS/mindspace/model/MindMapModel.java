@@ -12,6 +12,7 @@ public class MindMapModel {
 	 * Constant
 	 */
 	public final static String					NP_CONCEPT_CREATED			= "concept created";
+	public final static String					NP_CONCEPT_DELETED			= "concept deleted";
 
 	/*
 	 * Member
@@ -74,17 +75,19 @@ public class MindMapModel {
 	public void deleteConcept(ConceptModel concept){
 		// TO DO check if concept exist
 		if( concept != null ){
-			concept.delete();
+			// Delete Children First
+			while(concept.getChildrenCount()>0)
+				deleteConcept(concept.getChildAt(0));
+			
+			// Delete this Concept
+			concept.detachFromOtherConcepts();
+			this.mainConceptNodes.remove(concept);	// Remove if exist
+			this.propertyChangeSupport.firePropertyChange(NP_CONCEPT_DELETED, null, concept);
 		}
 	}
 	
 	public void save(){
 		// TO DO save
-	}
-	
-	// Tool Method
-	public void remove(ConceptModel model){
-		this.mainConceptNodes.remove(model);
 	}
 	
 	// For General PropertyChangeListener

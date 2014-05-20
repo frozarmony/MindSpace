@@ -47,7 +47,6 @@ public class ConceptView {
 	//private PropertyChangeListener		onShapeChanged;
 	
 	private PropertyChangeListener		onMoved;
-	private PropertyChangeListener		onDeleted;
 	
 
 	/*
@@ -257,7 +256,7 @@ public class ConceptView {
 	    return angle;
 	}
 	
-	private void removeView(){
+	protected void removeSubViews(){
 		mainView.removeViewFromMap(this.branchView);
 		mainView.removeViewFromMap(this.nodeView);
 	}
