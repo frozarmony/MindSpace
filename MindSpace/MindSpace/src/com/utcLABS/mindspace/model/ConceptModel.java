@@ -7,7 +7,6 @@ import java.util.LinkedList;
 import android.graphics.Color;
 import android.graphics.PointF;
 
-@SuppressWarnings("serial")
 public class ConceptModel {
 	
 	/*
@@ -18,13 +17,16 @@ public class ConceptModel {
 	public final static String			NP_SIZE						= "size";
 	public final static String			NP_COLOR					= "color";
 	public final static String			NP_SHAPE					= "shape";
+	public final static String			NP_ADD						= "add";
+	public final static String			NP_MOVE						= "move";
+	public final static String			NP_DELETE					= "delete";
 	
 	public final static float			DEFAULT_SIZE				= 100f;
 	public final static float			DEFAULT_SIZE_RATIO			= 0.7f;
 	public final static int				DEFAULT_COLOR				= Color.WHITE;
 	public final static MindSpaceShape	DEFAULT_SHAPE				= MindSpaceShape.oval;
 	
-	// Available Shape
+	// Available Shapes
 	public enum MindSpaceShape{
 		rectangle,
 		roundedRectangle,
@@ -34,6 +36,7 @@ public class ConceptModel {
 	/*
 	 * Member
 	 */
+	private MindMapModel				mindMap;
 	
 	// Data Members
 	private String						name;
@@ -54,27 +57,29 @@ public class ConceptModel {
 	private PropertyChangeSupport		propertyChangeSupport;
 	
 	// Constructor
-	public ConceptModel(float x, float y, ConceptModel parent) {
+	public ConceptModel(MindMapModel mindMap, float x, float y, ConceptModel parent) {
 		super();
+		// Init
+		this.mindMap	= mindMap;
 		
 		// Data
-		this.name = "Concept";
+		this.name		= "Concept";
 		
 		// Forms
-		this.position = new PointF(x,y);
-		this.size = defaultSize(parent);
-		this.color = defaultColor(parent);
-		this.shape = defaultShape(parent);
+		this.position	= new PointF(x,y);
+		this.size		= defaultSize(parent);
+		this.color		= defaultColor(parent);
+		this.shape		= defaultShape(parent);
 		
 		// Bean
 		this.propertyChangeSupport = new PropertyChangeSupport(this);
 
 		// Link
+		this.children = new LinkedList<ConceptModel>();
 		if( parent != null )
 			parent.addChildNode(this);
 		else
 			this.parent = null;
-		this.children = new LinkedList<ConceptModel>();
 	}
 	
 	// Getters & Setters
@@ -138,9 +143,6 @@ public class ConceptModel {
 	public ConceptModel getParent() {
 		return parent;
 	}
-	public void setParent(ConceptModel parent) {
-		this.parent = parent;
-	}
 	public LinkedList<ConceptModel> getChildren(){
 		return children;
 	}
@@ -172,6 +174,43 @@ public class ConceptModel {
 		if( child != null && !children.contains(child) ){
 			children.add(child);
 			child.parent = this;
+			this.propertyChangeSupport.firePropertyChange(NP_ADD, null, child);
+		}
+	}
+	
+	public void moveTo(ConceptModel newParent){
+		if( newParent != null ){
+			ConceptModel oldParent = this.parent;
+			
+			// Compute Translation
+			PointF translation;
+			
+			// Remove from old parent
+			if( oldParent != null ){
+				translation = new PointF(position.x-oldParent.position.x, position.y-oldParent.position.y);
+				oldParent.children.remove(this);
+			}
+			else{
+				translation = new PointF( 200f, 200f );
+			}
+			
+			// Move to new parent
+			newParent.children.add(this);
+			this.parent = newParent;
+			this.propertyChangeSupport.firePropertyChange(NP_MOVE, oldParent, newParent);
+			
+			// Update Position
+			this.setPosition(newParent.position.x+translation.x, newParent.position.y+translation.y);
+		}
+	}
+	
+	public void delete(){
+		if( this.parent != null ){
+			this.parent.children.remove(this);
+			this.propertyChangeSupport.firePropertyChange(NP_DELETE, null, this);
+		}
+		else{
+			this.mindMap.remove(this);
 		}
 	}
 	

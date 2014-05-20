@@ -30,6 +30,7 @@ public class ConceptView {
 	private ConceptModel				model;
 	
 	// View Member
+	private MindMapView					mainView;
 	private ConceptView					parentView;
 	private LinkedList<ConceptView>		childrenViews;
 	
@@ -47,6 +48,10 @@ public class ConceptView {
 	private PropertyChangeListener		onColorChanged;
 	private PropertyChangeListener		onShapeChanged;
 	
+	private PropertyChangeListener		onChildAdded;
+	private PropertyChangeListener		onMoved;
+	private PropertyChangeListener		onDeleted;
+	
 
 	/*
 	 * Inititialisation
@@ -61,6 +66,7 @@ public class ConceptView {
 		this.model = model;
 		
 		// Init View Member
+		this.mainView = mainView;
 		this.parentView = parentView;
 		
 		// Init NodeView
@@ -167,6 +173,57 @@ public class ConceptView {
 		model.addPropertyChangeListener(ConceptModel.NP_COLOR, this.onColorChanged);
 		
 		// TO DO Shape
+		
+		// OnChildAdded
+		this.onChildAdded = new PropertyChangeListener() {
+			@SuppressLint("NewApi")
+			@Override
+			public void propertyChange(PropertyChangeEvent event) {
+				ConceptModel m = (ConceptModel)event.getNewValue();
+				ConceptView childView = new ConceptView(mainView, m, ConceptView.this);
+	    		childrenViews.add(childView);
+			}
+		};
+		model.addPropertyChangeListener(ConceptModel.NP_ADD, this.onChildAdded);
+		
+		// OnMoved
+		this.onMoved = new PropertyChangeListener() {
+			@SuppressLint("NewApi")
+			@Override
+			public void propertyChange(PropertyChangeEvent event) {
+				ConceptModel newParent = (ConceptModel)event.getNewValue();
+				
+				// Remove from old parent view
+				if( parentView != null )
+					parentView.childrenViews.remove(ConceptView.this);
+				
+				// Add to new parent view
+				ConceptView newParentView = mainView.searchViewOfModel(newParent);
+				if( newParentView != null ){
+					parentView = newParentView;
+					newParentView.childrenViews.add(ConceptView.this);
+				}
+			}
+		};
+		model.addPropertyChangeListener(ConceptModel.NP_MOVE, this.onMoved);
+
+		// OnDeleted
+		this.onDeleted = new PropertyChangeListener() {
+			@SuppressLint("NewApi")
+			@Override
+			public void propertyChange(PropertyChangeEvent event) {
+				
+				// Remove this view from MindMapView
+				removeView();
+				if( parentView != null ){
+					parentView.childrenViews.remove(ConceptView.this);
+					parentView = null;
+				}
+				
+				// TO DO remove from mindMapView if no parents
+			}
+		};
+		model.addPropertyChangeListener(ConceptModel.NP_DELETE, this.onDeleted);
 	}
 	
 	/*
@@ -202,10 +259,30 @@ public class ConceptView {
 	/*
 	 * Tool
 	 */
+	public ConceptView searchViewOfModel(ConceptModel model){
+		if( this.model == model )
+			return this;
+		
+		ConceptView res;
+		for(ConceptView v : childrenViews)
+			if( (res = v.searchViewOfModel(model)) != null )
+				return res;
+		
+		return null;
+	}
+	
 	private static float getAngle(PointF vector) {
 		float angle = (float) Math.toDegrees(Math.atan2(vector.y, vector.x));
 		if(angle < 0){angle += 360;}
 	    return angle;
+	}
+	
+	private void removeView(){
+		mainView.removeViewFromMap(this.branchView);
+		mainView.removeViewFromMap(this.nodeView);
+		
+		for(ConceptView v : childrenViews)
+			v.removeView();
 	}
 	
 	/*
