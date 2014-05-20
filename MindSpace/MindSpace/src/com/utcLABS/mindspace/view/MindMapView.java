@@ -106,10 +106,10 @@ public class MindMapView extends ScrollView  {
 					//setScrollX(getScrollX()+50);
 					//setScrollY(getScrollY()+50);
 					
-					//root.getChildren().getFirst().moveTo(root.getChildren().getLast());
+					//root.getChildAt(0).moveTo(root.getChildAt(2));
 					//mindMapModel.deleteConcept(root.getChildren().getFirst());
 					
-					mindMapModel.deleteConcept(root);
+					//mindMapModel.deleteConcept(root);
 				}
 				return false;
 			}

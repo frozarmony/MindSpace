@@ -2,7 +2,6 @@ package com.utcLABS.mindspace.view;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.LinkedList;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -85,32 +84,30 @@ public class ConceptView {
 	
 	@SuppressLint("NewApi")
 	private void initBranchView(MindMapView mainView){
-		if(parentView != null){
-			// Geometry
-			PointF relativeP = new PointF(parentView.model.getPosition().x-model.getPosition().x, parentView.model.getPosition().y-model.getPosition().y);
 			
-			Path branchPath = new Path();
-			branchPath.moveTo(BRANCH_BASE_WIDTH, BRANCH_BASE_HEIGHT/2f);
-			branchPath.lineTo(BRANCH_BASE_WIDTH*2f, BRANCH_BASE_HEIGHT/2f);
-			
-			PathShape pathShape = new PathShape(branchPath, BRANCH_BASE_WIDTH*2f, BRANCH_BASE_HEIGHT);
-			ShapeDrawable branchDrawable = new ShapeDrawable(pathShape);
-			
-			this.branchPaint = branchDrawable.getPaint();
-			this.branchPaint.setColor(model.getColor());
-			this.branchPaint.setStyle(Paint.Style.STROKE);
-			this.branchPaint.setStrokeWidth(BRANCH_BASE_HEIGHT/2f);
-			
-			this.branchView = new View(mainView.getContext());
-			this.branchView.setBackground(branchDrawable);
-			this.branchView.setScaleX(relativeP.length()/BRANCH_BASE_WIDTH);
-			this.branchView.setScaleY(model.getSize()/ConceptModel.DEFAULT_SIZE);
-			this.branchView.setRotation(getAngle(relativeP));
-			this.branchView.setX(model.getPosition().x - BRANCH_BASE_WIDTH);
-			this.branchView.setY(model.getPosition().y - BRANCH_BASE_HEIGHT/2f);
-			
-			mainView.addViewToMap(this.branchView, 0, new android.widget.FrameLayout.LayoutParams((int)(BRANCH_BASE_WIDTH*2f), (int)(BRANCH_BASE_HEIGHT)));
-		}
+		Path branchPath = new Path();
+		branchPath.moveTo(BRANCH_BASE_WIDTH, BRANCH_BASE_HEIGHT/2f);
+		branchPath.lineTo(BRANCH_BASE_WIDTH*2f, BRANCH_BASE_HEIGHT/2f);
+		
+		PathShape pathShape = new PathShape(branchPath, BRANCH_BASE_WIDTH*2f, BRANCH_BASE_HEIGHT);
+		ShapeDrawable branchDrawable = new ShapeDrawable(pathShape);
+		
+		this.branchPaint = branchDrawable.getPaint();
+		this.branchPaint.setColor(model.getColor());
+		this.branchPaint.setStyle(Paint.Style.STROKE);
+		this.branchPaint.setStrokeWidth(BRANCH_BASE_HEIGHT/2f);
+		
+		this.branchView = new View(mainView.getContext());
+		this.branchView.setBackground(branchDrawable);
+		this.branchView.setX(model.getPosition().x - BRANCH_BASE_WIDTH);
+		this.branchView.setY(model.getPosition().y - BRANCH_BASE_HEIGHT/2f);
+				
+		mainView.addViewToMap(this.branchView, 0, new android.widget.FrameLayout.LayoutParams((int)(BRANCH_BASE_WIDTH*2f), (int)(BRANCH_BASE_HEIGHT)));
+		
+		if(parentView == null)
+			this.branchView.setVisibility(View.INVISIBLE);
+		else
+			updateBranch(parentView.model.getPosition());
 	}
 	
 	/*
@@ -166,43 +163,23 @@ public class ConceptView {
 		// TO DO Shape
 		
 		// OnMoved
-		/*this.onMoved = new PropertyChangeListener() {
+		this.onMoved = new PropertyChangeListener() {
 			@SuppressLint("NewApi")
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				ConceptModel newParent = (ConceptModel)event.getNewValue();
 				
-				// Remove from old parent view
-				if( parentView != null )
-					parentView.childrenViews.remove(ConceptView.this);
-				
-				// Add to new parent view
-				ConceptView newParentView = mainView.searchViewOfModel(newParent);
-				if( newParentView != null ){
+				if( newParent != null ){
+					ConceptView newParentView = mainView.searchViewOfModel(newParent);
 					parentView = newParentView;
-					newParentView.childrenViews.add(ConceptView.this);
+					updateBranch(newParent.getPosition());
+				}
+				else{
+					branchView.setVisibility(View.INVISIBLE);
 				}
 			}
 		};
 		model.addPropertyChangeListener(ConceptModel.NP_MOVE, this.onMoved);
-
-		// OnDeleted
-		this.onDeleted = new PropertyChangeListener() {
-			@SuppressLint("NewApi")
-			@Override
-			public void propertyChange(PropertyChangeEvent event) {
-				
-				// Remove this view from MindMapView
-				removeView();
-				if( parentView != null ){
-					parentView.childrenViews.remove(ConceptView.this);
-					parentView = null;
-				}
-				
-				// TO DO remove from mindMapView if no parents
-			}
-		};
-		model.addPropertyChangeListener(ConceptModel.NP_DELETE, this.onDeleted);*/
 	}
 	
 	/*
@@ -232,6 +209,8 @@ public class ConceptView {
 			this.branchView.setRotation(getAngle(relativeP));
 			this.branchView.setX(modelPos.x - BRANCH_BASE_WIDTH);
 			this.branchView.setY(modelPos.y - BRANCH_BASE_HEIGHT/2f);
+			
+			this.branchView.setVisibility(View.VISIBLE);
 		}
 	}
 	

@@ -18,7 +18,6 @@ public class ConceptModel implements Comparable<ConceptModel> {
 	public final static String			NP_COLOR					= "color";
 	public final static String			NP_SHAPE					= "shape";
 	public final static String			NP_MOVE						= "move";
-	public final static String			NP_DELETE					= "delete";
 	
 	public final static float			DEFAULT_SIZE				= 100f;
 	public final static float			DEFAULT_SIZE_RATIO			= 0.7f;
@@ -27,9 +26,9 @@ public class ConceptModel implements Comparable<ConceptModel> {
 	
 	// Available Shapes
 	public enum MindSpaceShape{
-		rectangle,
-		roundedRectangle,
-		oval
+										rectangle,
+										roundedRectangle,
+										oval
 	}
 
 	/*
@@ -180,7 +179,7 @@ public class ConceptModel implements Comparable<ConceptModel> {
 	}
 	
 	// Method
-	public void addChildNode(ConceptModel child){
+	private void addChildNode(ConceptModel child){
 		if( child != null && !children.contains(child) ){
 			children.add(child);
 			child.parent = this;
@@ -188,8 +187,8 @@ public class ConceptModel implements Comparable<ConceptModel> {
 	}
 	
 	public void moveTo(ConceptModel newParent){
+		ConceptModel oldParent = this.parent;
 		if( newParent != null ){
-			ConceptModel oldParent = this.parent;
 			
 			// Compute Translation
 			PointF translation;
@@ -200,7 +199,7 @@ public class ConceptModel implements Comparable<ConceptModel> {
 				oldParent.children.remove(this);
 			}
 			else{
-				translation = new PointF( 200f, 200f );
+				translation = new PointF( 200f, 200f );	// TO DO Default Position
 			}
 			
 			// Move to new parent
@@ -211,6 +210,14 @@ public class ConceptModel implements Comparable<ConceptModel> {
 			// Update Position
 			this.setPosition(newParent.position.x+translation.x, newParent.position.y+translation.y);
 		}
+		else{
+			if( oldParent != null ){
+				oldParent.children.remove(this);
+			}
+			
+			this.parent = null;
+			this.propertyChangeSupport.firePropertyChange(NP_MOVE, oldParent, null);
+		}
 	}
 	
 	protected void detachFromOtherConcepts(){
@@ -218,6 +225,10 @@ public class ConceptModel implements Comparable<ConceptModel> {
 			this.parent.children.remove(this);
 		}
 	}
+
+	/*
+	 * Property Change Support Delegate
+	 */
 	
 	// For General PropertyChangeListener
 	public void addPropertyChangeListener(PropertyChangeListener listener){
@@ -229,6 +240,9 @@ public class ConceptModel implements Comparable<ConceptModel> {
 		this.propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
 	}
 
+	/*
+	 * CompareTo Implementation
+	 */
 	@Override
 	public int compareTo(ConceptModel another) {
 		// Check another

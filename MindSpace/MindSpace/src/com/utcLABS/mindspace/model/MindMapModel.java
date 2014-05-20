@@ -17,7 +17,7 @@ public class MindMapModel {
 	/*
 	 * Member
 	 */
-	private LinkedList<ConceptModel>			mainConceptNodes;
+	private LinkedList<ConceptModel>			conceptIndex;
 
 	// Bean
 	private PropertyChangeSupport				propertyChangeSupport;
@@ -29,7 +29,7 @@ public class MindMapModel {
 		super();
 		
 		//Init
-		this.mainConceptNodes = new LinkedList<ConceptModel>();
+		this.conceptIndex = new LinkedList<ConceptModel>();
 		this.propertyChangeSupport = new PropertyChangeSupport(this);
 	}
 
@@ -39,7 +39,7 @@ public class MindMapModel {
 	public ConceptModel createNewConcept(PointF position){
 		// Create Concept
 		ConceptModel newConcept = new ConceptModel(this, position.x, position.y, null);
-		mainConceptNodes.add(newConcept);
+		conceptIndex.add(newConcept);
 		
 		// Signal Concept Created
 		this.propertyChangeSupport.firePropertyChange(NP_CONCEPT_CREATED, null, newConcept);
@@ -59,6 +59,7 @@ public class MindMapModel {
 					parent.getPosition().x+200f,
 					parent.getPosition().y+200f,
 					parent);
+			conceptIndex.add(newConcept);
 			
 			// Signal Concept Created
 			this.propertyChangeSupport.firePropertyChange(NP_CONCEPT_CREATED, null, newConcept);
@@ -81,7 +82,7 @@ public class MindMapModel {
 			
 			// Delete this Concept
 			concept.detachFromOtherConcepts();
-			this.mainConceptNodes.remove(concept);	// Remove if exist
+			this.conceptIndex.remove(concept);	// Remove from index
 			this.propertyChangeSupport.firePropertyChange(NP_CONCEPT_DELETED, null, concept);
 		}
 	}
