@@ -41,7 +41,7 @@
 		   	android:padding="10dip"
 		    android:layout_width="60dp"
 		    android:layout_height="wrap_content"
-		    android:src="@drawable/rename" />
+		    android:src="@drawable/ic_action_edit_light" />
    		  
    		  <ImageButton
 		    android:id="@+id/edit_shape"
@@ -55,21 +55,21 @@
   			android:padding="10dip"
 		    android:layout_width="60dp"
 		    android:layout_height="wrap_content"
-		    android:src="@drawable/rename" />
+		    android:src="@drawable/ic_action_picture" />
    		  
    		  <ImageButton
 		    android:id="@+id/wikipedia"
 		    android:padding="10dip"
 		    android:layout_width="60dp"
 		    android:layout_height="wrap_content"
-		    android:src="@drawable/rename" />
+		    android:src="@drawable/ic_action_web_site" />
    		  
    		   <ImageButton
 		    android:id="@+id/camera"
 		    android:padding="10dip"
 		    android:layout_width="60dp"
 		    android:layout_height="wrap_content"
-		    android:src="@drawable/rename" />
+		    android:src="@drawable/ic_action_camera" />
          
         </LinearLayout>
        </LinearLayout>

@@ -11,11 +11,10 @@
     <string name="title_activity_visualisation">Visualisation</string>
     
     <string name="edit_concept">Edition du concept</string>
-    <string name="edit_text">Editer le titre du concept</string>
-    <string name="edit_desc">Editer la description du concept</string>
+    <string name="edit_text">Saisir ici le titre du concept</string>
+    <string name="edit_desc">Saisir ici la description du concept</string>
     <string name="edit_picture">Images associées au concept</string>
-    
-    
-    
-
+    <string name="title_concept">Titre</string>
+    <string name="desc_concept">Description</string>
+    <string name="addPicture">Parcourir</string>      
 </resources>

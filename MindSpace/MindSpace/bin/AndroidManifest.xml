@@ -34,6 +34,10 @@
             android:name="com.utcLABS.mindspace.VisualisationActivity"
             android:label="@string/title_activity_visualisation" >
         </activity>
+        <activity
+            android:name="com.utcLABS.mindspace.PictureEditActivity"
+            android:label="@string/title_activity_picture_edit" >
+        </activity>
     </application>
 
 </manifest>

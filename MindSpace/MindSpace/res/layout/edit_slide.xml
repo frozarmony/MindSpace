@@ -23,7 +23,7 @@
        android:layout_height="wrap_content"
        android:layout_marginLeft="10dp"
        android:layout_marginTop="50dp"
-       android:text="Titre"
+       android:text="@string/title_concept"
        android:textColor="#E6E2AF"
        android:textSize="20dip" />
       
@@ -37,12 +37,26 @@
       android:id="@+id/new_title"
       android:layout_width="250dp"
       android:layout_height="wrap_content"
-      android:layout_marginBottom="100dp"
+      android:layout_marginBottom="50dp"
       android:hint="@string/edit_text"
       android:singleLine="true"
       android:textColor="#FFFFFF"
       android:textColorHint="#E6E2AF"
       android:textSize="18dip" />
+  
+   <TextView
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_marginLeft="10dp"
+       android:text="@string/desc_concept"
+       android:textColor="#E6E2AF"
+       android:textSize="20dip" />
+      
+   <View
+       android:layout_width="fill_parent"
+       android:layout_height="1dip"
+       android:layout_marginBottom="10dp"
+       android:background="#E6E2AF" />
   
   <EditText
       android:id="@+id/edtInput"
