@@ -4,21 +4,24 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.TreeMap;
 
-import com.utcLABS.mindspace.model.ConceptModel;
-import com.utcLABS.mindspace.model.MindMapModel;
-import com.utcLABS.mindspace.model.ConceptModel.MindSpaceShape;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PointF;
 import android.util.AttributeSet;
+import android.view.DragEvent;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 
-public class MindMapView extends ScrollView  {
+import com.utcLABS.mindspace.model.ConceptModel;
+import com.utcLABS.mindspace.model.ConceptModel.MindSpaceShape;
+import com.utcLABS.mindspace.model.MindMapModel;
+import com.utcLABS.mindspace.view.ConceptView.NodeView;
+
+@SuppressLint("NewApi") public class MindMapView extends FrameLayout  {
 
 	/*
 	 * Member
@@ -38,11 +41,27 @@ public class MindMapView extends ScrollView  {
 	
 	// Test Member
 	private ConceptModel							root;
+	
+	//controler member
+	private ScaleGestureDetector mScaleDetector;
+	public final ScaleObject scale = new ScaleObject();
+	// pour partager le scaleFactor avec les NodeView
+	public class ScaleObject extends Object {
+		public float scaleFactor = 1f;
+		public float getScale(){
+			return scaleFactor;
+		}
+	};
+	
+	protected float centerX = 0;
+	protected float offsetX = 0;
+	protected float centerY = 0;
+	protected float offsetY = 0;
+	
 
 	/*
 	 * Constructor
 	 */
-	@SuppressLint("NewApi")
 	public MindMapView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		
@@ -52,7 +71,7 @@ public class MindMapView extends ScrollView  {
 		
 		this.conceptIndex = new TreeMap<ConceptModel, ConceptView>();
 		
-		float coef = 1f;
+		float coef = 0.25f;
 		
 		// Creation Test ConceptModel
 		this.mindMapModel = new MindMapModel();
@@ -96,24 +115,76 @@ public class MindMapView extends ScrollView  {
  		
  		//this.rootConceptView = new ConceptView(this, root, null);
  		
+ 		mScaleDetector = new ScaleGestureDetector(this.getContext(), new ScaleListener());
  		// OnTouchTest
  		this.setOnTouchListener(new OnTouchListener() {
 			
 			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				if( event.getAction() == MotionEvent.ACTION_DOWN ){
-					//root.getChildren().getFirst().setPosition(event.getX(),event.getY());
-					//setScrollX(getScrollX()+50);
-					//setScrollY(getScrollY()+50);
-					
-					//root.getChildAt(0).moveTo(root.getChildAt(2));
-					//mindMapModel.deleteConcept(root.getChildren().getFirst());
-					
-					//mindMapModel.deleteConcept(root);
+			public boolean onTouch(View v, MotionEvent ev) {
+				float _x = ev.getX();
+				float _y = ev.getY();
+				
+				if(ev.getPointerCount() == 2)
+					ev.setLocation((ev.getX(0)+ev.getX(1))/2, (ev.getY(0)+ev.getY(1))/2);
+				
+				mScaleDetector.onTouchEvent(ev);
+				switch (ev.getAction()) {
+				case MotionEvent.ACTION_DOWN:
+					offsetX = _x-centerX;
+					offsetY = _y-centerY;
+					break;
+				case MotionEvent.ACTION_MOVE:
+					if(offsetX != 0 && offsetY != 0){
+						centerX = _x - offsetX;
+						centerY = _y - offsetY;
+						//mapView.setPaddingRelative((int)centerX, (int)centerY, (int)centerX, (int)centerY);
+						//mapView.setX(centerX);
+						//mapView.setY(centerY);
+						mapView.scrollTo((int)-centerX, (int)-centerY);
+						/*mapView.setTranslationX(centerX);
+						mapView.setTranslationY(centerY);*/
+					}
+					break;
+				case MotionEvent.ACTION_UP:					
+					offsetX = 0;
+					offsetY = 0;
+					break;
 				}
-				return false;
+				return true;
 			}
 		});
+ 		this.setOnDragListener(new OnDragListener() {
+
+ 			@Override
+ 			public boolean onDrag(View v, DragEvent event) {
+ 				switch (event.getAction()) {
+ 				case DragEvent.ACTION_DROP:
+ 					try{
+	 					ConceptModel movedConcept = ((NodeView) event.getLocalState()).getModel();
+	 					movedConcept.setPosition(event.getX() - centerX, event.getY() - centerY);
+	 					((NodeView) event.getLocalState()).setVisibility(View.VISIBLE);
+ 					}
+ 					catch(Exception e){
+ 						return false;
+ 					}
+ 					break;
+ 				}
+ 				return true;
+ 			}
+ 		});
+	}
+	
+	private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+	    @SuppressLint("NewApi") @Override
+	    public boolean onScale(ScaleGestureDetector detector) {
+	        scale.scaleFactor *= detector.getScaleFactor();
+	        //scaleFactor = Math.max(1f, Math.min(scaleFactor, 5.0f));
+	        //System.out.println(scaleFactor.hashCode());
+	        setScaleX(scale.scaleFactor);
+	        setScaleY(scale.scaleFactor);
+	        invalidate();
+	        return true;
+	    }
 	}
 	
 	/*
@@ -132,7 +203,7 @@ public class MindMapView extends ScrollView  {
 				if( parent != null )
 					parentView = conceptIndex.get(model.getParent());
 				
-				ConceptView view = new ConceptView(MindMapView.this, model, parentView);
+				ConceptView view = new ConceptView(MindMapView.this, model, parentView, scale);
 				
 				// Index Concept View
 				conceptIndex.put(model, view);
@@ -160,7 +231,6 @@ public class MindMapView extends ScrollView  {
 	public ConceptView searchViewOfModel(ConceptModel model){
 		return conceptIndex.get(model);
 	}
-	
 	
 	protected void addViewToMap(View v){
 		this.mapView.addView(v);

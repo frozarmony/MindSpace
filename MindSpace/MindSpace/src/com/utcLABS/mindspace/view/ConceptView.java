@@ -4,12 +4,17 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import android.annotation.SuppressLint;
+import android.content.ClipData;
+import android.content.ClipDescription;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Point;
 import android.graphics.PointF;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.PathShape;
@@ -17,8 +22,10 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.utcLABS.mindspace.model.ConceptModel;
+import com.utcLABS.mindspace.view.MindMapView.ScaleObject;
+import com.utcSABB.mindspace.R;
 
-public class ConceptView {
+@SuppressLint("NewApi") public class ConceptView {
 	
 	// Constants
 	private static final float			BRANCH_BASE_WIDTH = 500f;
@@ -47,6 +54,8 @@ public class ConceptView {
 	
 	private PropertyChangeListener		onMoved;
 	
+	private ScaleObject scaleFactor;
+	
 
 	/*
 	 * Inititialisation
@@ -54,7 +63,7 @@ public class ConceptView {
 	
 	// Constructor
 	@SuppressLint("NewApi")
-	public ConceptView(MindMapView mainView, ConceptModel model, ConceptView parentView) {
+	public ConceptView(MindMapView mainView, ConceptModel model, ConceptView parentView, ScaleObject _scaleFactor) {
 		super();
 		
 		// Init Model
@@ -63,6 +72,7 @@ public class ConceptView {
 		// Init View Member
 		this.mainView = mainView;
 		this.parentView = parentView;
+		this.scaleFactor = _scaleFactor;
 		
 		// Init NodeView
 		initNodeView(mainView);
@@ -139,7 +149,7 @@ public class ConceptView {
 			@SuppressLint("NewApi")
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
-				float newSize = (float)event.getNewValue();
+				float newSize = (Float)event.getNewValue();
 				nodeView.setTextSize(newSize);
 				setNodePosition(new PointF(getX(), getY()));
 				
@@ -153,7 +163,7 @@ public class ConceptView {
 			@SuppressLint("NewApi")
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
-				int color = (int)event.getNewValue();
+				int color = (Integer)event.getNewValue();
 				nodeView.shapeView.setColors(new int[]{color, Color.GRAY, color});
 				branchPaint.setColor(color);
 			}
@@ -247,11 +257,13 @@ public class ConceptView {
 		
 		// Member
 		GradientDrawable	shapeView;
-
+		ConceptModel model;
 		// Constructor
 		@SuppressLint("NewApi")
 		public NodeView(Context context, ConceptModel model) {
 			super(context);
+
+			this.model = model;
 			
 			// Init TextView
 			this.setText(model.getName());
@@ -265,8 +277,70 @@ public class ConceptView {
 			this.configureShape(model.getShape());
 			
 			this.setBackground(this.shapeView);
+			this.setId(model.hashCode());
+			// controler setup
+			this.setOnLongClickListener(new View.OnLongClickListener() {
+				
+				@Override
+				public boolean onLongClick(View v) {
+				    ClipData.Item item = new ClipData.Item( v.getId()+"");
+				    ClipData dragData = new ClipData(v.getId()+"",new String[]{ClipDescription.MIMETYPE_TEXT_PLAIN},item);
+				    View.DragShadowBuilder myShadow = new MyDragShadowBuilder(v);
+				    v.setVisibility(View.INVISIBLE);
+				    postInvalidate();
+		            return v.startDrag(dragData,myShadow,v,0);
+				}
+			});
+		}
+		
+		public ConceptModel getModel(){
+			return model;
 		}
 
+		private class MyDragShadowBuilder extends View.DragShadowBuilder {
+
+		    // The drag shadow image, defined as a drawable thing
+		    private GradientDrawable shadow =  new GradientDrawable();
+		    private Drawable enterShape = getResources().getDrawable(R.drawable.drag_shadow);
+		    private int marginShadow = 10;
+		    private int width, height;
+	        public MyDragShadowBuilder(View v) {
+	            super(v);
+	            this.shadow = new GradientDrawable();
+				this.shadow.setOrientation(GradientDrawable.Orientation.LEFT_RIGHT);
+				this.shadow.setStroke(1, Color.BLACK);
+				this.shadow.setColors(new int[]{ Color.TRANSPARENT, Color.GRAY, Color.TRANSPARENT});
+				//v.setBackground(enterShape);
+	        }
+
+	        @Override
+	        public void onProvideShadowMetrics (Point size, Point touch){
+	            width = getView().getWidth() +2*marginShadow;
+	            height = getView().getHeight() +2*marginShadow;
+	            width*=scaleFactor.scaleFactor;
+	            height*=scaleFactor.scaleFactor;
+	            shadow.setBounds(0, 0, width, height);
+	            size.set(width, height);
+	            touch.set(width / 2, height / 2);
+	        }
+
+	        @Override
+	        public void onDrawShadow(Canvas canvas) { // TODO
+	        	//shadow.draw(canvas);
+	        	
+	        	//enterShape.draw(canvas);
+	        	//System.out.println(enterShape.getIntrinsicHeight());
+	        	canvas.save();
+	        	canvas.translate(marginShadow*scaleFactor.scaleFactor, marginShadow*scaleFactor.scaleFactor);
+	        	canvas.scale(scaleFactor.scaleFactor, scaleFactor.scaleFactor);
+	        	
+	        	draw(canvas);
+	            canvas.restore();
+	            
+	        }
+		}
+		
+		
 		// For First Update
 		@Override
 		protected void onDraw(Canvas canvas) {
