@@ -7,3 +7,6 @@ appcompat_v7/appcompat_v7/bin/android-support-v7-appcompat.jar
 MindSpace/MindSpace/bin/MindSpace.apk
 MindSpace/MindSpace/bin/classes.dex
 MindSpace/MindSpace/bin/resources.ap_
+MindSpace/MindSpace/project.properties
+appcompat_v7/appcompat_v7/bin/jarlist.cache
+appcompat_v7/appcompat_v7/project.properties
