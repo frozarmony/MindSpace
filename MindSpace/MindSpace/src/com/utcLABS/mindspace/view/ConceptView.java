@@ -13,6 +13,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.PointF;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -29,7 +30,7 @@ import com.utcSABB.mindspace.R;
 	
 	// Constants
 	private static final float			BRANCH_BASE_WIDTH = 500f;
-	private static final float			BRANCH_BASE_HEIGHT = 50f;
+	private static final float			BRANCH_BASE_HEIGHT = 25f;
 
 	// Model Member
 	private ConceptModel				model;
@@ -193,6 +194,13 @@ import com.utcSABB.mindspace.R;
 	}
 	
 	/*
+	 * View Method
+	 */
+	public void setFocusMode(boolean focus){
+		this.nodeView.setFocusMode(focus);
+	}
+	
+	/*
 	 * Geometry Method
 	 */
 	
@@ -257,7 +265,8 @@ import com.utcSABB.mindspace.R;
 		
 		// Member
 		GradientDrawable	shapeView;
-		ConceptModel model;
+		ConceptModel		model;
+		
 		// Constructor
 		@SuppressLint("NewApi")
 		public NodeView(Context context, ConceptModel model) {
@@ -273,12 +282,13 @@ import com.utcSABB.mindspace.R;
 			this.shapeView = new GradientDrawable();
 			this.shapeView.setOrientation(GradientDrawable.Orientation.LEFT_RIGHT);
 			this.shapeView.setStroke(1, Color.BLACK);
-			this.shapeView.setColors(new int[]{model.getColor(), Color.GRAY, model.getColor()});
+			this.shapeView.setColors(new int[]{model.getColor(), Color.LTGRAY, model.getColor()});
 			this.configureShape(model.getShape());
 			
 			this.setBackground(this.shapeView);
 			this.setId(model.hashCode());
-			// controler setup
+			
+			// Controler setup
 			this.setOnLongClickListener(new View.OnLongClickListener() {
 				
 				@Override
@@ -291,6 +301,13 @@ import com.utcSABB.mindspace.R;
 		            return v.startDrag(dragData,myShadow,v,0);
 				}
 			});
+		}
+		
+		public void setFocusMode(boolean focus){
+			if(focus)
+				this.shapeView.setColorFilter(0x77ffffff, PorterDuff.Mode.SRC_ATOP);
+			else
+				this.shapeView.clearColorFilter();
 		}
 		
 		public ConceptModel getModel(){
