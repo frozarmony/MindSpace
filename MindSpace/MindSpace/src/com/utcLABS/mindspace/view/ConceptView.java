@@ -5,6 +5,7 @@ import java.beans.PropertyChangeListener;
 
 import android.annotation.SuppressLint;
 import android.content.ClipData;
+import android.content.ClipDescription;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -31,7 +32,7 @@ import com.utcSABB.mindspace.R;
 public class ConceptView {
 	
 	// Constants
-	public static final String			MIMETYPE_CONCEPTVIEW		= "ConceptView";
+	public static final String			MIMETYPE_CONCEPTVIEW		= "application/conceptview";
 	
 	private static final float			BRANCH_BASE_WIDTH			= 500f;
 	private static final float			BRANCH_BASE_HEIGHT			= 50f;
@@ -265,8 +266,8 @@ public class ConceptView {
 					View.DragShadowBuilder myShadow = new MyDragShadowBuilder(v);
 					   
 					// Modify Current View
-					nodeView.setVisibility(View.INVISIBLE);
-					branchView.setVisibility(View.INVISIBLE);
+					//nodeView.setVisibility(View.INVISIBLE);
+					//branchView.setVisibility(View.INVISIBLE);
 					
 					return v.startDrag(dragData, myShadow, ConceptView.this, 0);
 				}
@@ -296,11 +297,11 @@ public class ConceptView {
  					Log.d("ConceptView("+model.getName()+")", "Action Drop");
  					ConceptView conceptView = (ConceptView) event.getLocalState();
  					conceptView.getModel().moveTo(getModel());
- 					conceptView.endDropAction();
  					setSelectMode(false);
  					break;
  				case DragEvent.ACTION_DRAG_ENDED:
  					Log.d("ConceptView("+model.getName()+")", "Action Ended");
+ 					//((ConceptView) event.getLocalState()).endDropAction();
  					break;
  				}
 				
@@ -320,7 +321,17 @@ public class ConceptView {
 	public float			getY(){			return model.getPosition().y;	}
 	public ConceptModel		getModel(){		return model;					}
 	
-	// Setters
+	// Visual Effects
+	protected void setSelectMode(boolean select){
+		this.nodeView.setSelectMode(select);
+	}
+	
+	/*protected void endDropAction(){
+		if( this.nodeView.getVisibility() != View.VISIBLE )
+			this.nodeView.setVisibility(View.VISIBLE);
+	}*/
+	
+	// Move Node
 	@SuppressLint("NewApi")
 	private void setNodePosition(PointF p){
 		nodeView.setX(p.x - nodeView.getWidth()/2);
@@ -344,15 +355,6 @@ public class ConceptView {
 			this.branchView.setVisibility(View.VISIBLE);
 			Log.d("ConceptView("+model.getName()+")", "Updated BranchView");
 		}
-	}
-	
-	// Visual Effects
-	public void setSelectMode(boolean select){
-		this.nodeView.setSelectMode(select);
-	}
-	
-	public void endDropAction(){
-		this.nodeView.setVisibility(View.VISIBLE);
 	}
 	
 	// Remove all ConceptView's subview from MindMapView

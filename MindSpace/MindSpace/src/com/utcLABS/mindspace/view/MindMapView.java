@@ -175,8 +175,6 @@ import com.utcLABS.mindspace.model.MindMapModel;
  					break;
  				case DragEvent.ACTION_DRAG_ENDED:
  					Log.d("MindMapView", "Action Ended");
- 					conceptView = (ConceptView) event.getLocalState();
- 					conceptView.endDropAction();
  					break;
  				}
  				return true;

@@ -177,8 +177,10 @@ public class ConceptModel {
 		else
 			return DEFAULT_SHAPE;
 	}
-	
-	// Method
+
+	/*
+	 * Method
+	 */
 	private void addChildNode(ConceptModel child){
 		if( child != null && !children.contains(child) ){
 			children.add(child);
@@ -188,7 +190,7 @@ public class ConceptModel {
 	
 	public void moveTo(ConceptModel newParent){
 		ConceptModel oldParent = this.parent;
-		if( newParent != null ){
+		if( newParent != null && !this.isThisOrAscendantOf(newParent) ){
 			
 			// Compute Translation
 			PointF translation;
@@ -210,7 +212,7 @@ public class ConceptModel {
 			// Update Position
 			this.setPosition(newParent.position.x+translation.x, newParent.position.y+translation.y);
 		}
-		else{
+		else if( parent == null ){
 			if( oldParent != null ){
 				oldParent.children.remove(this);
 			}
@@ -224,6 +226,18 @@ public class ConceptModel {
 		if( this.parent != null ){
 			this.parent.children.remove(this);
 		}
+	}
+
+	/*
+	 * Tools
+	 */
+	private boolean isThisOrAscendantOf(ConceptModel concept){
+		if( this == concept )
+			return true;
+		for( ConceptModel c : this.children )
+			if( c.isThisOrAscendantOf(concept) )
+				return true;
+		return false;
 	}
 
 	/*
