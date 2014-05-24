@@ -5,7 +5,6 @@ import java.beans.PropertyChangeListener;
 
 import android.annotation.SuppressLint;
 import android.content.ClipData;
-import android.content.ClipDescription;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -14,11 +13,12 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.PathShape;
+import android.util.Log;
+import android.view.DragEvent;
 import android.view.View;
 import android.widget.TextView;
 
@@ -26,11 +26,12 @@ import com.utcLABS.mindspace.model.ConceptModel;
 import com.utcLABS.mindspace.view.MindMapView.ScaleObject;
 import com.utcSABB.mindspace.R;
 
-@SuppressLint("NewApi") public class ConceptView {
+@SuppressLint("NewApi")
+public class ConceptView {
 	
 	// Constants
 	private static final float			BRANCH_BASE_WIDTH = 500f;
-	private static final float			BRANCH_BASE_HEIGHT = 25f;
+	private static final float			BRANCH_BASE_HEIGHT = 50f;
 
 	// Model Member
 	private ConceptModel				model;
@@ -38,6 +39,7 @@ import com.utcSABB.mindspace.R;
 	// View Member
 	private MindMapView					mainView;
 	private ConceptView					parentView;
+	private ScaleObject					scaleFactor;
 	
 	// Node
 	private NodeView					nodeView;
@@ -52,10 +54,11 @@ import com.utcSABB.mindspace.R;
 	private PropertyChangeListener		onSizeChanged;
 	private PropertyChangeListener		onColorChanged;
 	//private PropertyChangeListener		onShapeChanged;
-	
 	private PropertyChangeListener		onMoved;
 	
-	private ScaleObject scaleFactor;
+	// Controller
+	View.OnLongClickListener			onLongClick;
+	View.OnDragListener					onDrag;
 	
 
 	/*
@@ -81,8 +84,11 @@ import com.utcSABB.mindspace.R;
 		// Init BranchView
 		initBranchView(mainView);
 		
-		// Init Listeners
+		// Init View's Listeners
 		initPropertyChangeListeners(model);
+		
+		// Init Controller's Listener's
+		initControllerListener();
 	}
 
 	@SuppressLint("NewApi")
@@ -122,7 +128,7 @@ import com.utcSABB.mindspace.R;
 	}
 	
 	/*
-	 * Listeners
+	 * View's Listeners
 	 */
 	private void initPropertyChangeListeners(ConceptModel model){
 		// OnNameChanged
@@ -165,7 +171,7 @@ import com.utcSABB.mindspace.R;
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				int color = (Integer)event.getNewValue();
-				nodeView.shapeView.setColors(new int[]{color, Color.GRAY, color});
+				nodeView.shapeView.setColors(new int[]{color, Color.LTGRAY, color});
 				branchPaint.setColor(color);
 			}
 		};
@@ -181,32 +187,88 @@ import com.utcSABB.mindspace.R;
 				ConceptModel newParent = (ConceptModel)event.getNewValue();
 				
 				if( newParent != null ){
+ 					Log.d("ConceptView("+ ConceptView.this.model.getName()+")", "Moved to " + newParent.getName());
 					ConceptView newParentView = mainView.searchViewOfModel(newParent);
 					parentView = newParentView;
 					updateBranch(newParent.getPosition());
 				}
 				else{
+					parentView = null;
 					branchView.setVisibility(View.INVISIBLE);
 				}
 			}
 		};
 		model.addPropertyChangeListener(ConceptModel.NP_MOVE, this.onMoved);
 	}
+
+	
+	/*
+	 *	Controller's Listeners
+	 */
+	private void initControllerListener(){
+		
+		// OnLongClickListener
+		this.onLongClick = new View.OnLongClickListener() {
+			
+			@Override
+			public boolean onLongClick(View v) {
+				// Create ClipData
+			    ClipData.Item item =  new ClipData.Item( model.getName() );
+			    ClipData dragData = new ClipData(model.getName(), new String[]{"ConceptView"},item);
+			    
+			    // Create DragShadow
+			    View.DragShadowBuilder myShadow = new MyDragShadowBuilder(v);
+			   
+			    // Modify Current View
+			    nodeView.setVisibility(View.INVISIBLE);
+			    branchView.setVisibility(View.INVISIBLE);
+			    
+	            return v.startDrag(dragData, myShadow, ConceptView.this, 0);
+			}
+		};
+		this.nodeView.setOnLongClickListener(this.onLongClick);
+		
+		// OnDragListener
+		this.onDrag = new View.OnDragListener() {
+			
+			@Override
+			public boolean onDrag(View v, DragEvent event) {
+				// Init
+				ConceptView conceptView;
+				
+				if( event.getLocalState()!=null && event.getLocalState().getClass().equals(ConceptView.class) ){
+					switch (event.getAction()) {
+	 				case DragEvent.ACTION_DRAG_ENTERED:
+	 					setSelectMode(true);
+	 					break;
+	 				case DragEvent.ACTION_DRAG_EXITED:
+	 					setSelectMode(false);
+	 					break;
+	 				case DragEvent.ACTION_DROP:
+	 					Log.d("ConceptView("+model.getName()+")", "Action Drop");
+	 					conceptView = (ConceptView) event.getLocalState();
+	 					conceptView.getModel().moveTo(getModel());
+	 					conceptView.restoreDefaultAppearance();
+	 					setSelectMode(false);
+	 					break;
+	 				}
+	 				return true;
+				}
+				return false;
+			}
+		};
+		this.nodeView.setOnDragListener(this.onDrag);
+		
+	}
 	
 	/*
 	 * View Method
 	 */
-	public void setFocusMode(boolean focus){
-		this.nodeView.setFocusMode(focus);
-	}
-	
-	/*
-	 * Geometry Method
-	 */
 	
 	// Getters
-	public float getX(){	return model.getPosition().x;	}
-	public float getY(){	return model.getPosition().y;	}
+	public float			getX(){			return model.getPosition().x;	}
+	public float			getY(){			return model.getPosition().y;	}
+	public ConceptModel		getModel(){		return model;					}
 	
 	// Setters
 	@SuppressLint("NewApi")
@@ -228,31 +290,22 @@ import com.utcSABB.mindspace.R;
 			this.branchView.setX(modelPos.x - BRANCH_BASE_WIDTH);
 			this.branchView.setY(modelPos.y - BRANCH_BASE_HEIGHT/2f);
 			
+			// Show BranchView
 			this.branchView.setVisibility(View.VISIBLE);
+			Log.d("ConceptView("+model.getName()+")", "Updated BranchView");
 		}
 	}
 	
-	/*
-	 * Tool
-	 */
-	/*public ConceptView searchViewOfModel(ConceptModel model){
-		if( this.model == model )
-			return this;
-		
-		ConceptView res;
-		for(ConceptView v : childrenViews)
-			if( (res = v.searchViewOfModel(model)) != null )
-				return res;
-		
-		return null;
-	}*/
-	
-	private static float getAngle(PointF vector) {
-		float angle = (float) Math.toDegrees(Math.atan2(vector.y, vector.x));
-		if(angle < 0){angle += 360;}
-	    return angle;
+	// Visual Effects
+	public void setSelectMode(boolean select){
+		this.nodeView.setSelectMode(select);
 	}
 	
+	public void restoreDefaultAppearance(){
+		this.nodeView.setVisibility(View.VISIBLE);
+	}
+	
+	// Remove all ConceptView's subview from MindMapView
 	protected void removeSubViews(){
 		mainView.removeViewFromMap(this.branchView);
 		mainView.removeViewFromMap(this.nodeView);
@@ -261,18 +314,19 @@ import com.utcSABB.mindspace.R;
 	/*
 	 *  Node View
 	 */
-	public class NodeView extends TextView {
+	private class NodeView extends TextView {
 		
-		// Member
-		GradientDrawable	shapeView;
-		ConceptModel		model;
+		/*
+		 *  Member
+		 */
+		private GradientDrawable			shapeView;
 		
-		// Constructor
+		/*
+		 *	Constructor
+		 */
 		@SuppressLint("NewApi")
 		public NodeView(Context context, ConceptModel model) {
 			super(context);
-
-			this.model = model;
 			
 			// Init TextView
 			this.setText(model.getName());
@@ -286,77 +340,14 @@ import com.utcSABB.mindspace.R;
 			this.configureShape(model.getShape());
 			
 			this.setBackground(this.shapeView);
-			this.setId(model.hashCode());
-			
-			// Controler setup
-			this.setOnLongClickListener(new View.OnLongClickListener() {
-				
-				@Override
-				public boolean onLongClick(View v) {
-				    ClipData.Item item = new ClipData.Item( v.getId()+"");
-				    ClipData dragData = new ClipData(v.getId()+"",new String[]{ClipDescription.MIMETYPE_TEXT_PLAIN},item);
-				    View.DragShadowBuilder myShadow = new MyDragShadowBuilder(v);
-				    v.setVisibility(View.INVISIBLE);
-				    postInvalidate();
-		            return v.startDrag(dragData,myShadow,v,0);
-				}
-			});
 		}
 		
-		public void setFocusMode(boolean focus){
-			if(focus)
+		public void setSelectMode(boolean select){
+			if(select)
 				this.shapeView.setColorFilter(0x77ffffff, PorterDuff.Mode.SRC_ATOP);
 			else
 				this.shapeView.clearColorFilter();
 		}
-		
-		public ConceptModel getModel(){
-			return model;
-		}
-
-		private class MyDragShadowBuilder extends View.DragShadowBuilder {
-
-		    // The drag shadow image, defined as a drawable thing
-		    private GradientDrawable shadow =  new GradientDrawable();
-		    private Drawable enterShape = getResources().getDrawable(R.drawable.drag_shadow);
-		    private int marginShadow = 10;
-		    private int width, height;
-	        public MyDragShadowBuilder(View v) {
-	            super(v);
-	            this.shadow = new GradientDrawable();
-				this.shadow.setOrientation(GradientDrawable.Orientation.LEFT_RIGHT);
-				this.shadow.setStroke(1, Color.BLACK);
-				this.shadow.setColors(new int[]{ Color.TRANSPARENT, Color.GRAY, Color.TRANSPARENT});
-				//v.setBackground(enterShape);
-	        }
-
-	        @Override
-	        public void onProvideShadowMetrics (Point size, Point touch){
-	            width = getView().getWidth() +2*marginShadow;
-	            height = getView().getHeight() +2*marginShadow;
-	            width*=scaleFactor.scaleFactor;
-	            height*=scaleFactor.scaleFactor;
-	            shadow.setBounds(0, 0, width, height);
-	            size.set(width, height);
-	            touch.set(width / 2, height / 2);
-	        }
-
-	        @Override
-	        public void onDrawShadow(Canvas canvas) { // TODO
-	        	//shadow.draw(canvas);
-	        	
-	        	//enterShape.draw(canvas);
-	        	//System.out.println(enterShape.getIntrinsicHeight());
-	        	canvas.save();
-	        	canvas.translate(marginShadow*scaleFactor.scaleFactor, marginShadow*scaleFactor.scaleFactor);
-	        	canvas.scale(scaleFactor.scaleFactor, scaleFactor.scaleFactor);
-	        	
-	        	draw(canvas);
-	            canvas.restore();
-	            
-	        }
-		}
-		
 		
 		// For First Update
 		@Override
@@ -365,7 +356,7 @@ import com.utcSABB.mindspace.R;
 			setNodePosition(model.getPosition());
 		}
 		
-		// Shape
+		// Shape Configuration
 		private void configureShape(ConceptModel.MindSpaceShape mindspaceShape){
 			int padding;
 			
@@ -390,6 +381,64 @@ import com.utcSABB.mindspace.R;
 			}
 		}
 
+	}
+	
+	/*
+	 *  Drag Shadow Builder
+	 */
+	private class MyDragShadowBuilder extends View.DragShadowBuilder {
+
+	    // The drag shadow image, defined as a drawable thing
+	    private GradientDrawable shadow =  new GradientDrawable();
+	    private Drawable enterShape = nodeView.getResources().getDrawable(R.drawable.drag_shadow);
+	    private int marginShadow = 10;
+	    private int width, height;
+	    
+        public MyDragShadowBuilder(View v) {
+            super(v);
+            this.shadow = new GradientDrawable();
+			this.shadow.setOrientation(GradientDrawable.Orientation.LEFT_RIGHT);
+			this.shadow.setStroke(1, Color.BLACK);
+			this.shadow.setColors(new int[]{ Color.TRANSPARENT, Color.GRAY, Color.TRANSPARENT});
+			//v.setBackground(enterShape);
+        }
+
+        @Override
+        public void onProvideShadowMetrics (Point size, Point touch){
+            width = getView().getWidth() +2*marginShadow;
+            height = getView().getHeight() +2*marginShadow;
+            width*=scaleFactor.scaleFactor;
+            height*=scaleFactor.scaleFactor;
+            shadow.setBounds(0, 0, width, height);
+            size.set(width, height);
+            touch.set(width / 2, height / 2);
+        }
+
+        @Override
+        public void onDrawShadow(Canvas canvas) { // TODO
+        	//shadow.draw(canvas);
+        	
+        	//enterShape.draw(canvas);
+        	//System.out.println(enterShape.getIntrinsicHeight());
+        	canvas.save();
+        	canvas.translate(marginShadow*scaleFactor.scaleFactor, marginShadow*scaleFactor.scaleFactor);
+        	canvas.scale(scaleFactor.scaleFactor, scaleFactor.scaleFactor);
+        	
+        	nodeView.draw(canvas);
+            canvas.restore();
+            
+        }
+	}
+	
+	
+	/*
+	 *  Tools
+	 */
+	
+	private static float getAngle(PointF vector) {
+		float angle = (float) Math.toDegrees(Math.atan2(vector.y, vector.x));
+		if(angle < 0){angle += 360;}
+	    return angle;
 	}
 	
 }

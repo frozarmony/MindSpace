@@ -7,7 +7,7 @@ import java.util.LinkedList;
 import android.graphics.Color;
 import android.graphics.PointF;
 
-public class ConceptModel implements Comparable<ConceptModel> {
+public class ConceptModel {
 	
 	/*
 	 * Constant
@@ -238,22 +238,6 @@ public class ConceptModel implements Comparable<ConceptModel> {
 	// For Specific PropertyChangeListener
 	public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener){
 		this.propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
-	}
-
-	/*
-	 * CompareTo Implementation
-	 */
-	@Override
-	public int compareTo(ConceptModel another) {
-		// Check another
-		if( another == null )
-			return -1;
-		
-		// Compare
-		int sizeC = Float.compare(this.size, another.size);
-		if( sizeC != 0 )
-			return sizeC;
-		return this.name.compareTo(another.name);
 	}
 	
 }

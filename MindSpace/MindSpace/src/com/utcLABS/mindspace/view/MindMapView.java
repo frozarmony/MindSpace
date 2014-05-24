@@ -2,13 +2,14 @@ package com.utcLABS.mindspace.view;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.TreeMap;
+import java.util.HashMap;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PointF;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -19,7 +20,6 @@ import android.widget.RelativeLayout;
 import com.utcLABS.mindspace.model.ConceptModel;
 import com.utcLABS.mindspace.model.ConceptModel.MindSpaceShape;
 import com.utcLABS.mindspace.model.MindMapModel;
-import com.utcLABS.mindspace.view.ConceptView.NodeView;
 
 @SuppressLint("NewApi") public class MindMapView extends FrameLayout  {
 
@@ -31,9 +31,8 @@ import com.utcLABS.mindspace.view.ConceptView.NodeView;
 	private MindMapModel							mindMapModel;
 	
 	// View Member
+	private HashMap<ConceptModel, ConceptView>		conceptIndex;
 	private RelativeLayout							mapView;
-	private TreeMap<ConceptModel, ConceptView>		conceptIndex;
-	private ConceptView								rootConceptView;
 	
 	// Property Change Listener
 	private PropertyChangeListener					onConceptCreated;
@@ -66,12 +65,14 @@ import com.utcLABS.mindspace.view.ConceptView.NodeView;
 		super(context, attrs);
 		
 		// Init View Member
+		this.conceptIndex = new HashMap<ConceptModel, ConceptView>();
+		
 		this.mapView = new RelativeLayout(context);
 		this.addView(this.mapView, 4000,4000);
+		this.mapView.setBackgroundColor(0xffeeeeee);
 		
-		this.conceptIndex = new TreeMap<ConceptModel, ConceptView>();
 		
-		float coef = 0.25f;
+		float coef = 1f;
 		
 		// Creation Test ConceptModel
 		this.mindMapModel = new MindMapModel();
@@ -160,9 +161,11 @@ import com.utcLABS.mindspace.view.ConceptView.NodeView;
  				switch (event.getAction()) {
  				case DragEvent.ACTION_DROP:
  					try{
-	 					ConceptModel movedConcept = ((NodeView) event.getLocalState()).getModel();
-	 					movedConcept.setPosition(event.getX() - centerX, event.getY() - centerY);
-	 					((NodeView) event.getLocalState()).setVisibility(View.VISIBLE);
+	 					Log.d("MindMapView", "Action Drop");
+	 					ConceptView conceptView = (ConceptView) event.getLocalState();
+	 					conceptView.getModel().moveTo(null);
+	 					conceptView.getModel().setPosition(event.getX(), event.getY());
+	 					conceptView.restoreDefaultAppearance();
  					}
  					catch(Exception e){
  						return false;
