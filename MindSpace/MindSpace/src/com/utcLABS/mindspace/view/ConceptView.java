@@ -19,6 +19,7 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.PathShape;
 import android.util.Log;
 import android.view.DragEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 
@@ -53,12 +54,16 @@ public class ConceptView {
 	private PropertyChangeListener		onPositionChanged;
 	private PropertyChangeListener		onSizeChanged;
 	private PropertyChangeListener		onColorChanged;
-	//private PropertyChangeListener		onShapeChanged;
+	//private PropertyChangeListener		onShapeChanged; TODO
 	private PropertyChangeListener		onMoved;
 	
-	// Controller
-	View.OnLongClickListener			onLongClick;
-	View.OnDragListener					onDrag;
+	// Controller Member
+	private boolean						isMoving;
+	
+	// Controller Listener
+	private View.OnTouchListener		onTouch;
+	private View.OnLongClickListener	onLongClick;
+	private View.OnDragListener			onDrag;
 	
 
 	/*
@@ -84,7 +89,7 @@ public class ConceptView {
 		// Init BranchView
 		initBranchView(mainView);
 		
-		// Init View's Listeners
+		// Init Model's Listeners
 		initPropertyChangeListeners(model);
 		
 		// Init Controller's Listener's
@@ -128,7 +133,7 @@ public class ConceptView {
 	}
 	
 	/*
-	 * View's Listeners
+	 * Model's Listeners
 	 */
 	private void initPropertyChangeListeners(ConceptModel model){
 		// OnNameChanged
@@ -207,23 +212,61 @@ public class ConceptView {
 	 */
 	private void initControllerListener(){
 		
+		// OnClickListener
+		this.onTouch = new View.OnTouchListener() {
+			
+			// Member
+			private PointF startPos;
+			
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				
+				switch(event.getAction()){
+				case MotionEvent.ACTION_DOWN :
+					startPos = new PointF(event.getX(),event.getY());
+					break;
+				case MotionEvent.ACTION_MOVE :
+					// Compute Offset
+					PointF offset = new PointF(event.getX()-startPos.x, event.getY()-startPos.y);
+					
+					if(offset.length()>10f){	// TODO Enhance this
+						isMoving = true;
+						PointF currPosition = model.getPosition();
+						model.setPosition(currPosition.x+event.getX()-startPos.x, currPosition.y+event.getY()-startPos.y);
+						return true;
+					}
+					break;
+				case MotionEvent.ACTION_UP :
+					startPos = null;
+					isMoving = false;
+					break;
+				}
+				
+				return false;
+			}
+		};
+		this.nodeView.setOnTouchListener(this.onTouch);
+				
 		// OnLongClickListener
 		this.onLongClick = new View.OnLongClickListener() {
 			
 			@Override
 			public boolean onLongClick(View v) {
-				// Create ClipData
-			    ClipData.Item item =  new ClipData.Item( model.getName() );
-			    ClipData dragData = new ClipData(model.getName(), new String[]{"ConceptView"},item);
-			    
-			    // Create DragShadow
-			    View.DragShadowBuilder myShadow = new MyDragShadowBuilder(v);
-			   
-			    // Modify Current View
-			    nodeView.setVisibility(View.INVISIBLE);
-			    branchView.setVisibility(View.INVISIBLE);
-			    
-	            return v.startDrag(dragData, myShadow, ConceptView.this, 0);
+				if( !isMoving ){
+					// Create ClipData
+					ClipData.Item item =  new ClipData.Item( model.getName() );
+					ClipData dragData = new ClipData(model.getName(), new String[]{"ConceptView"},item);
+					
+					// Create DragShadow
+					    View.DragShadowBuilder myShadow = new MyDragShadowBuilder(v);
+					   
+					    // Modify Current View
+					nodeView.setVisibility(View.INVISIBLE);
+					branchView.setVisibility(View.INVISIBLE);
+					
+					return v.startDrag(dragData, myShadow, ConceptView.this, 0);
+				}
+				return false;
 			}
 		};
 		this.nodeView.setOnLongClickListener(this.onLongClick);
@@ -233,9 +276,6 @@ public class ConceptView {
 			
 			@Override
 			public boolean onDrag(View v, DragEvent event) {
-				// Init
-				ConceptView conceptView;
-				
 				if( event.getLocalState()!=null && event.getLocalState().getClass().equals(ConceptView.class) ){
 					switch (event.getAction()) {
 	 				case DragEvent.ACTION_DRAG_ENTERED:
@@ -246,9 +286,9 @@ public class ConceptView {
 	 					break;
 	 				case DragEvent.ACTION_DROP:
 	 					Log.d("ConceptView("+model.getName()+")", "Action Drop");
-	 					conceptView = (ConceptView) event.getLocalState();
+	 					ConceptView conceptView = (ConceptView) event.getLocalState();
 	 					conceptView.getModel().moveTo(getModel());
-	 					conceptView.restoreDefaultAppearance();
+	 					conceptView.endDropAction();
 	 					setSelectMode(false);
 	 					break;
 	 				}
@@ -301,7 +341,7 @@ public class ConceptView {
 		this.nodeView.setSelectMode(select);
 	}
 	
-	public void restoreDefaultAppearance(){
+	public void endDropAction(){
 		this.nodeView.setVisibility(View.VISIBLE);
 	}
 	

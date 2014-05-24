@@ -154,6 +154,7 @@ import com.utcLABS.mindspace.model.MindMapModel;
 				return true;
 			}
 		});
+ 		
  		this.setOnDragListener(new OnDragListener() {
 
  			@Override
@@ -164,8 +165,8 @@ import com.utcLABS.mindspace.model.MindMapModel;
 	 					Log.d("MindMapView", "Action Drop");
 	 					ConceptView conceptView = (ConceptView) event.getLocalState();
 	 					conceptView.getModel().moveTo(null);
-	 					conceptView.getModel().setPosition(event.getX(), event.getY());
-	 					conceptView.restoreDefaultAppearance();
+	 					conceptView.getModel().setPosition(event.getX(), event.getY());	// TODO get Relative X Y
+	 					conceptView.endDropAction();
  					}
  					catch(Exception e){
  						return false;
@@ -230,8 +231,11 @@ import com.utcLABS.mindspace.model.MindMapModel;
 		};
 		model.addPropertyChangeListener(MindMapModel.NP_CONCEPT_DELETED, this.onConceptDeleted);
 	}
-	
-	public ConceptView searchViewOfModel(ConceptModel model){
+		
+	/*
+	 * View Method
+	 */
+	protected ConceptView searchViewOfModel(ConceptModel model){
 		return conceptIndex.get(model);
 	}
 	
