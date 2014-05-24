@@ -159,18 +159,24 @@ import com.utcLABS.mindspace.model.MindMapModel;
 
  			@Override
  			public boolean onDrag(View v, DragEvent event) {
+ 				// Init
+ 				ConceptView conceptView;
+ 				
  				switch (event.getAction()) {
+ 				case DragEvent.ACTION_DRAG_STARTED:
+				if( !event.getClipDescription().hasMimeType(ConceptView.MIMETYPE_CONCEPTVIEW) )
+					return false;
+				break;
  				case DragEvent.ACTION_DROP:
- 					try{
-	 					Log.d("MindMapView", "Action Drop");
-	 					ConceptView conceptView = (ConceptView) event.getLocalState();
-	 					conceptView.getModel().moveTo(null);
-	 					conceptView.getModel().setPosition(event.getX(), event.getY());	// TODO get Relative X Y
-	 					conceptView.endDropAction();
- 					}
- 					catch(Exception e){
- 						return false;
- 					}
+ 					Log.d("MindMapView", "Action Drop");
+ 					conceptView = (ConceptView) event.getLocalState();
+ 					conceptView.getModel().moveTo(null);
+ 					conceptView.getModel().setPosition(event.getX(), event.getY());	// TODO get Relative X Y
+ 					break;
+ 				case DragEvent.ACTION_DRAG_ENDED:
+ 					Log.d("MindMapView", "Action Ended");
+ 					conceptView = (ConceptView) event.getLocalState();
+ 					conceptView.endDropAction();
  					break;
  				}
  				return true;

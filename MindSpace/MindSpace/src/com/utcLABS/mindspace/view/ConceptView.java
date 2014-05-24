@@ -31,8 +31,11 @@ import com.utcSABB.mindspace.R;
 public class ConceptView {
 	
 	// Constants
-	private static final float			BRANCH_BASE_WIDTH = 500f;
-	private static final float			BRANCH_BASE_HEIGHT = 50f;
+	public static final String			MIMETYPE_CONCEPTVIEW		= "ConceptView";
+	
+	private static final float			BRANCH_BASE_WIDTH			= 500f;
+	private static final float			BRANCH_BASE_HEIGHT			= 50f;
+	
 
 	// Model Member
 	private ConceptModel				model;
@@ -94,6 +97,7 @@ public class ConceptView {
 		
 		// Init Controller's Listener's
 		initControllerListener();
+		
 	}
 
 	@SuppressLint("NewApi")
@@ -255,12 +259,12 @@ public class ConceptView {
 				if( !isMoving ){
 					// Create ClipData
 					ClipData.Item item =  new ClipData.Item( model.getName() );
-					ClipData dragData = new ClipData(model.getName(), new String[]{"ConceptView"},item);
+					ClipData dragData = new ClipData(model.getName(), new String[]{ConceptView.MIMETYPE_CONCEPTVIEW},item);
 					
 					// Create DragShadow
-					    View.DragShadowBuilder myShadow = new MyDragShadowBuilder(v);
+					View.DragShadowBuilder myShadow = new MyDragShadowBuilder(v);
 					   
-					    // Modify Current View
+					// Modify Current View
 					nodeView.setVisibility(View.INVISIBLE);
 					branchView.setVisibility(View.INVISIBLE);
 					
@@ -276,25 +280,31 @@ public class ConceptView {
 			
 			@Override
 			public boolean onDrag(View v, DragEvent event) {
-				if( event.getLocalState()!=null && event.getLocalState().getClass().equals(ConceptView.class) ){
-					switch (event.getAction()) {
-	 				case DragEvent.ACTION_DRAG_ENTERED:
-	 					setSelectMode(true);
-	 					break;
-	 				case DragEvent.ACTION_DRAG_EXITED:
-	 					setSelectMode(false);
-	 					break;
-	 				case DragEvent.ACTION_DROP:
-	 					Log.d("ConceptView("+model.getName()+")", "Action Drop");
-	 					ConceptView conceptView = (ConceptView) event.getLocalState();
-	 					conceptView.getModel().moveTo(getModel());
-	 					conceptView.endDropAction();
-	 					setSelectMode(false);
-	 					break;
-	 				}
-	 				return true;
-				}
-				return false;
+				
+				switch (event.getAction()) {
+				case DragEvent.ACTION_DRAG_STARTED:
+					if( !event.getClipDescription().hasMimeType(MIMETYPE_CONCEPTVIEW) )
+						return false;
+					break;
+ 				case DragEvent.ACTION_DRAG_ENTERED:
+ 					setSelectMode(true);
+ 					break;
+ 				case DragEvent.ACTION_DRAG_EXITED:
+ 					setSelectMode(false);
+ 					break;
+ 				case DragEvent.ACTION_DROP:
+ 					Log.d("ConceptView("+model.getName()+")", "Action Drop");
+ 					ConceptView conceptView = (ConceptView) event.getLocalState();
+ 					conceptView.getModel().moveTo(getModel());
+ 					conceptView.endDropAction();
+ 					setSelectMode(false);
+ 					break;
+ 				case DragEvent.ACTION_DRAG_ENDED:
+ 					Log.d("ConceptView("+model.getName()+")", "Action Ended");
+ 					break;
+ 				}
+				
+	 			return true;
 			}
 		};
 		this.nodeView.setOnDragListener(this.onDrag);
@@ -441,6 +451,7 @@ public class ConceptView {
 			this.shadow.setStroke(1, Color.BLACK);
 			this.shadow.setColors(new int[]{ Color.TRANSPARENT, Color.GRAY, Color.TRANSPARENT});
 			//v.setBackground(enterShape);
+			
         }
 
         @Override
