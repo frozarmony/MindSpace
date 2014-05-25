@@ -201,7 +201,7 @@ public class ConceptModel {
 				oldParent.children.remove(this);
 			}
 			else{
-				translation = new PointF( 200f, 200f );	// TO DO Default Position
+				translation = new PointF( 200f, 200f );	// TODO Default Position
 			}
 			
 			// Move to new parent
@@ -248,10 +248,18 @@ public class ConceptModel {
 	public void addPropertyChangeListener(PropertyChangeListener listener){
 		this.propertyChangeSupport.addPropertyChangeListener(listener);
 	}
+	
+	public void removePropertyChangeListener(PropertyChangeListener listener){
+		this.propertyChangeSupport.removePropertyChangeListener(listener);
+	}
 
 	// For Specific PropertyChangeListener
 	public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener){
 		this.propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
+	}
+
+	public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener){
+		this.propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
 	}
 	
 }

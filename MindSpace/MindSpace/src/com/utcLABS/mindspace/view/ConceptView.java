@@ -383,9 +383,17 @@ public class ConceptView {
 	}
 	
 	// Remove all ConceptView's subview from MindMapView
-	protected void removeSubViews(){
+	protected void detachView(){
+		// Detach from mainView
 		mainView.removeViewFromMap(this.branchView);
 		mainView.removeViewFromMap(this.nodeView);
+		
+		// Detach from model
+		model.removePropertyChangeListener(ConceptModel.NP_NAME, this.onNameChanged);
+		model.removePropertyChangeListener(ConceptModel.NP_POSITION, this.onPositionChanged);
+		model.removePropertyChangeListener(ConceptModel.NP_SIZE, this.onSizeChanged);
+		model.removePropertyChangeListener(ConceptModel.NP_COLOR, this.onColorChanged);
+		model.removePropertyChangeListener(ConceptModel.NP_MOVE, this.onMoved);
 	}
 	
 	/*

@@ -3,6 +3,8 @@ package com.utcLABS.mindspace.view;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -65,58 +67,66 @@ import com.utcLABS.mindspace.model.MindMapModel;
 	public MindMapView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		
+		// Init Model Member
+		this.mindMapModel = null;
+		
 		// Init View Member
 		this.conceptIndex = new HashMap<ConceptModel, ConceptView>();
 		
 		this.mapView = new RelativeLayout(context);
-		this.addView(this.mapView, 4000,4000);
 		this.mapView.setBackgroundColor(0xffeeeeee);
+		this.addView(this.mapView, 4000,4000);	// TODO compute proper mapView Size
+		
 		this.density = 0.5f;
 		
-		float coef = 0.5f;
-		
-		// Creation Test ConceptModel
-		this.mindMapModel = new MindMapModel();
+		/*
+		 * Model Test
+		 */
+		MindMapModel myTestModel = new MindMapModel();
+		float coef = 1f;
 		
 		// Listeners
-		initPropertyChangeListeners(this.mindMapModel);
+		//initPropertyChangeListeners(this.mindMapModel);
 		
  		// Root
- 		root = this.mindMapModel.createNewConcept(new PointF(500f*coef+600f, 250f*coef+300f));
+ 		root = myTestModel.createNewConcept(new PointF(500f*coef+600f, 250f*coef+300f));
  		root.setName("Music");
  		root.setSize(coef);
  		
  		// Sociability
- 		ConceptModel sociability = this.mindMapModel.createNewConcept(root);
+ 		ConceptModel sociability = myTestModel.createNewConcept(root);
  		sociability.setPosition(200f*coef+600f, 400f*coef+300f);
  		sociability.setName("Sociability");
  		sociability.setColor(Color.rgb(50, 50, 200));
  		
  		// Titi
- 		ConceptModel titi = this.mindMapModel.createNewConcept(sociability);
+ 		ConceptModel titi = myTestModel.createNewConcept(sociability);
  		titi.setPosition(100f*coef+600f, 475f*coef+300f);
  		titi.setName("People");
  		
  		// Rigour
- 		ConceptModel rigour = this.mindMapModel.createNewConcept(root);
+ 		ConceptModel rigour = myTestModel.createNewConcept(root);
  		rigour.setPosition(750f*coef+600f, 125f*coef+300f);
  		rigour.setName("Rigour");
  		rigour.setColor(Color.rgb(200, 50, 50));
  		rigour.setShape(MindSpaceShape.oval);
  		
  		// Theory
- 		ConceptModel theory = this.mindMapModel.createNewConcept(rigour);
+ 		ConceptModel theory = myTestModel.createNewConcept(rigour);
  		theory.setPosition(950f*coef+600f, 25f*coef+300f);
  		theory.setName("Theory");
  		
  		// Creativity
- 		ConceptModel creativity = this.mindMapModel.createNewConcept(root);
+ 		ConceptModel creativity = myTestModel.createNewConcept(root);
  		creativity.setPosition(250f*coef+600f, 125f*coef+300f);
  		creativity.setName("Creativity");
  		creativity.setColor(Color.rgb(50, 200, 50));
  		
- 		//this.rootConceptView = new ConceptView(this, root, null);
+ 		this.setModel(myTestModel);
  		
+ 		/*
+ 		 * Controller Test
+ 		 */
  		mScaleDetector = new ScaleGestureDetector(this.getContext(), new ScaleListener());
  		// OnTouchTest
  		this.setOnTouchListener(new OnTouchListener() {
@@ -204,6 +214,7 @@ import com.utcLABS.mindspace.model.MindMapModel;
 	 * Listeners
 	 */
 	private void initPropertyChangeListeners(MindMapModel model){
+		
 		// OnConceptCreated
 		this.onConceptCreated = new PropertyChangeListener() {
 			@Override
@@ -228,12 +239,12 @@ import com.utcLABS.mindspace.model.MindMapModel;
 		this.onConceptDeleted = new PropertyChangeListener() {
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
-				// Create Concept View
+				// Delete Concept View if exist
 				ConceptModel model = (ConceptModel)event.getNewValue();
 				ConceptView view = conceptIndex.get(model);
 				
 				if( view != null ){
-					view.removeSubViews();
+					view.detachView();
 					conceptIndex.remove(model);
 				}
 			}
@@ -249,6 +260,58 @@ import com.utcLABS.mindspace.model.MindMapModel;
 	public float getDensity(){		return density;		}
 	
 	// Setter
+	public void setModel(MindMapModel model){
+		// Clear Old Model if exist
+		if( this.mindMapModel != null ){
+			// Detach all ConceptViews and Clear Index
+			for( ConceptView v : this.conceptIndex.values() )
+				v.detachView();
+			this.conceptIndex.clear();
+			
+			// Detach from Model
+			model.removePropertyChangeListener(MindMapModel.NP_CONCEPT_CREATED, this.onConceptCreated);
+			model.removePropertyChangeListener(MindMapModel.NP_CONCEPT_DELETED, this.onConceptDeleted);
+			
+			// Remove Old Model Ref
+			this.mindMapModel = null;
+		}
+		
+		// Load New Model if exist
+		if( model != null ){
+			this.mindMapModel = model;
+			
+			// Init New Model Listeners
+			this.initPropertyChangeListeners(model);
+			
+			// Init Concepts List
+			List<ConceptModel> list = model.copyOfConceptsList();
+
+			while( !list.isEmpty() ){
+				// Init Iterator
+				Iterator<ConceptModel> it = list.iterator();
+				
+				while( it.hasNext() ){
+					ConceptModel concept = it.next();
+					ConceptModel parent = concept.getParent();
+					ConceptView parentView = null;
+					
+					if( parent != null )
+						parentView = this.conceptIndex.get(parent);
+					
+					if( parent == null || parentView != null ){
+						ConceptView view = new ConceptView(this, concept, parentView, this.scale);
+						
+						// Index Concept View
+						this.conceptIndex.put(concept, view);
+						
+						it.remove();
+					}
+					// Else do nothing
+				}
+			}
+		}
+	}
+	
 	public void setDensity(float newDensity){
 		if( this.density != newDensity ){
 			this.density = newDensity;

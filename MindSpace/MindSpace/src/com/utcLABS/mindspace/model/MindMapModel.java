@@ -3,6 +3,7 @@ package com.utcLABS.mindspace.model;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.LinkedList;
+import java.util.List;
 
 import android.graphics.PointF;
 
@@ -49,8 +50,8 @@ public class MindMapModel {
 	}
 	
 	public ConceptModel createNewConcept(ConceptModel parent){
-		// TO DO check if parent exist in this mindMap
-		if( parent == null )
+		// Check if parent exists and is in this mindMap
+		if( parent == null && conceptIndex.contains(parent) )
 			return null; // Do nothing
 		else{
 			// Create Concept
@@ -67,10 +68,6 @@ public class MindMapModel {
 			// Return Concept
 			return newConcept;
 		}
-	}
-	
-	public void detachConcept(ConceptModel concept){
-		// TO DO
 	}
 	
 	public void deleteConcept(ConceptModel concept){
@@ -91,14 +88,29 @@ public class MindMapModel {
 		// TO DO save
 	}
 	
+	public List<ConceptModel> copyOfConceptsList(){
+		return new LinkedList<ConceptModel>(this.conceptIndex);
+	}
+
+	/*
+	 * Property Change Support Delegate
+	 */
+	
 	// For General PropertyChangeListener
 	public void addPropertyChangeListener(PropertyChangeListener listener){
 		this.propertyChangeSupport.addPropertyChangeListener(listener);
+	}
+	
+	public void removePropertyChangeListener(PropertyChangeListener listener){
+		this.propertyChangeSupport.removePropertyChangeListener(listener);
 	}
 
 	// For Specific PropertyChangeListener
 	public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener){
 		this.propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
 	}
-	
+
+	public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener){
+		this.propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
+	}
 }
