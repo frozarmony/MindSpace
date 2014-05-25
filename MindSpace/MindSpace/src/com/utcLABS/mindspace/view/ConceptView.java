@@ -37,6 +37,7 @@ public class ConceptView {
 	private static final float			BRANCH_BASE_WIDTH			= 500f;
 	private static final float			BRANCH_BASE_HEIGHT			= 50f;
 	private static final int			CLOUD_BASE_SIZE				= 1000;
+	private static final float			CLOUD_RATIO_HEIGHT			= 0.7f;
 	
 
 	// Model Member
@@ -165,7 +166,7 @@ public class ConceptView {
 		this.cloudView = new View(this.mainView.getContext());
 		this.cloudView.setBackground(this.cloudGrad);
 		this.cloudView.setScaleX(model.getSize());
-		this.cloudView.setScaleY(model.getSize());
+		this.cloudView.setScaleY(model.getSize()*CLOUD_RATIO_HEIGHT);
 
 		// Add to mainView
 		mainView.addViewToMap(this.cloudView, mainView.getConceptsCount(), new android.widget.FrameLayout.LayoutParams(CLOUD_BASE_SIZE,CLOUD_BASE_SIZE));
@@ -209,6 +210,9 @@ public class ConceptView {
 				setNodePosition(new PointF(getX(), getY()));
 				
 				branchView.setScaleY(newSize);
+				
+				cloudView.setScaleX(newSize);
+				cloudView.setScaleY(newSize*CLOUD_RATIO_HEIGHT);
 			}
 		};
 		model.addPropertyChangeListener(ConceptModel.NP_SIZE, this.onSizeChanged);
@@ -424,6 +428,7 @@ public class ConceptView {
 		// Detach from mainView
 		mainView.removeViewFromMap(this.branchView);
 		mainView.removeViewFromMap(this.nodeView);
+		mainView.removeViewFromMap(this.cloudView);
 		
 		// Detach from model
 		model.removePropertyChangeListener(ConceptModel.NP_NAME, this.onNameChanged);
