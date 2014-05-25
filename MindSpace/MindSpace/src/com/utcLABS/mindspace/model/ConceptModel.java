@@ -19,7 +19,7 @@ public class ConceptModel {
 	public final static String			NP_SHAPE					= "shape";
 	public final static String			NP_MOVE						= "move";
 	
-	public final static float			DEFAULT_SIZE				= 100f;
+	public final static float			DEFAULT_SIZE				= 1f;
 	public final static float			DEFAULT_SIZE_RATIO			= 0.7f;
 	public final static int				DEFAULT_COLOR				= Color.WHITE;
 	public final static MindSpaceShape	DEFAULT_SHAPE				= MindSpaceShape.oval;
@@ -212,7 +212,7 @@ public class ConceptModel {
 			// Update Position
 			this.setPosition(newParent.position.x+translation.x, newParent.position.y+translation.y);
 		}
-		else if( parent == null ){
+		else if( newParent == null ){
 			if( oldParent != null ){
 				oldParent.children.remove(this);
 			}

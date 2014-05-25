@@ -34,6 +34,7 @@ public class ConceptView {
 	// Constants
 	public static final String			MIMETYPE_CONCEPTVIEW		= "application/conceptview";
 	
+	private static final float			TEXT_BASE_SIZE				= 70f;
 	private static final float			BRANCH_BASE_WIDTH			= 500f;
 	private static final float			BRANCH_BASE_HEIGHT			= 50f;
 	
@@ -42,6 +43,7 @@ public class ConceptView {
 	private ConceptModel				model;
 	
 	// View Member
+	private boolean						isVisible;
 	private MindMapView					mainView;
 	private ConceptView					parentView;
 	private ScaleObject					scaleFactor;
@@ -76,16 +78,17 @@ public class ConceptView {
 	
 	// Constructor
 	@SuppressLint("NewApi")
-	public ConceptView(MindMapView mainView, ConceptModel model, ConceptView parentView, ScaleObject _scaleFactor) {
+	public ConceptView(MindMapView mainView, ConceptModel model, ConceptView parentView, ScaleObject scaleFactor) {
 		super();
 		
 		// Init Model
 		this.model = model;
 		
 		// Init View Member
+		this.isVisible = true;
 		this.mainView = mainView;
 		this.parentView = parentView;
-		this.scaleFactor = _scaleFactor;
+		this.scaleFactor = scaleFactor;
 		
 		// Init NodeView
 		initNodeView(mainView);
@@ -99,6 +102,8 @@ public class ConceptView {
 		// Init Controller's Listener's
 		initControllerListener();
 		
+		// Update Visibility
+		updateVisibility();
 	}
 
 	@SuppressLint("NewApi")
@@ -128,13 +133,14 @@ public class ConceptView {
 		this.branchView.setBackground(branchDrawable);
 		this.branchView.setX(model.getPosition().x - BRANCH_BASE_WIDTH);
 		this.branchView.setY(model.getPosition().y - BRANCH_BASE_HEIGHT/2f);
+		this.branchView.setScaleY(model.getSize());
 				
 		mainView.addViewToMap(this.branchView, 0, new android.widget.FrameLayout.LayoutParams((int)(BRANCH_BASE_WIDTH*2f), (int)(BRANCH_BASE_HEIGHT)));
 		
 		if(parentView == null)
 			this.branchView.setVisibility(View.INVISIBLE);
 		else
-			updateBranch(parentView.model.getPosition());
+			updateBranch(this.model.getPosition());
 	}
 	
 	/*
@@ -167,10 +173,10 @@ public class ConceptView {
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				float newSize = (Float)event.getNewValue();
-				nodeView.setTextSize(newSize);
+				nodeView.setTextSize(newSize*TEXT_BASE_SIZE);
 				setNodePosition(new PointF(getX(), getY()));
 				
-				branchView.setScaleY(newSize/ConceptModel.DEFAULT_SIZE);
+				branchView.setScaleY(newSize);
 			}
 		};
 		model.addPropertyChangeListener(ConceptModel.NP_SIZE, this.onSizeChanged);
@@ -200,7 +206,7 @@ public class ConceptView {
  					Log.d("ConceptView("+ ConceptView.this.model.getName()+")", "Moved to " + newParent.getName());
 					ConceptView newParentView = mainView.searchViewOfModel(newParent);
 					parentView = newParentView;
-					updateBranch(newParent.getPosition());
+					updateBranch(ConceptView.this.model.getPosition());
 				}
 				else{
 					parentView = null;
@@ -325,11 +331,29 @@ public class ConceptView {
 	protected void setSelectMode(boolean select){
 		this.nodeView.setSelectMode(select);
 	}
-	
-	/*protected void endDropAction(){
-		if( this.nodeView.getVisibility() != View.VISIBLE )
-			this.nodeView.setVisibility(View.VISIBLE);
-	}*/
+
+	protected void updateVisibility(){
+		// Init
+		float relativeSize		= model.getSize() * scaleFactor.getScale();
+		float minRelativeSize	= 1f - mainView.getDensity();
+		
+		Log.d("ConceptView("+ model.getName()+")", "Check Visibility " + relativeSize + " < " + minRelativeSize);
+		
+		if( relativeSize < minRelativeSize ){
+			if( this.isVisible ){
+				this.isVisible = false;
+				this.nodeView.setVisibility(View.INVISIBLE);
+				this.branchView.setVisibility(View.INVISIBLE);
+			}
+		}
+		else{
+			if( !this.isVisible ){
+				this.isVisible = true;
+				this.nodeView.setVisibility(View.VISIBLE);
+				this.updateBranch(this.model.getPosition());
+			}
+		}
+	}
 	
 	// Move Node
 	@SuppressLint("NewApi")
@@ -352,7 +376,8 @@ public class ConceptView {
 			this.branchView.setY(modelPos.y - BRANCH_BASE_HEIGHT/2f);
 			
 			// Show BranchView
-			this.branchView.setVisibility(View.VISIBLE);
+			if( isVisible )
+				this.branchView.setVisibility(View.VISIBLE);
 			Log.d("ConceptView("+model.getName()+")", "Updated BranchView");
 		}
 	}
@@ -382,7 +407,7 @@ public class ConceptView {
 			
 			// Init TextView
 			this.setText(model.getName());
-			this.setTextSize(model.getSize());
+			this.setTextSize(model.getSize()*TEXT_BASE_SIZE);
 			
 			// Init Background
 			this.shapeView = new GradientDrawable();
@@ -415,19 +440,19 @@ public class ConceptView {
 			// Specific Config according to shape
 			switch(mindspaceShape){
 			case oval:
-				padding = (int)(20f*model.getSize()/ConceptModel.DEFAULT_SIZE);
+				padding = (int)(20f*model.getSize());
 				this.shapeView.setShape(GradientDrawable.OVAL);
 				this.setPadding(padding*2, padding/3, padding*2, padding/2);
 				break;
 			case rectangle:
 				this.shapeView.setShape(GradientDrawable.RECTANGLE);
-				padding = (int)(10f*model.getSize()/ConceptModel.DEFAULT_SIZE);
+				padding = (int)(10f*model.getSize());
 				this.setPadding(padding, padding, padding, padding);
 				break;
 			case roundedRectangle:
 				this.shapeView.setShape(GradientDrawable.RECTANGLE);
 				this.shapeView.setCornerRadius(20);
-				padding = (int)(10f*model.getSize()/ConceptModel.DEFAULT_SIZE);
+				padding = (int)(10f*model.getSize());
 				this.setPadding(padding, padding, padding, padding);
 				break;
 			}

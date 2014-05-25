@@ -33,6 +33,7 @@ import com.utcLABS.mindspace.model.MindMapModel;
 	// View Member
 	private HashMap<ConceptModel, ConceptView>		conceptIndex;
 	private RelativeLayout							mapView;
+	private float									density;
 	
 	// Property Change Listener
 	private PropertyChangeListener					onConceptCreated;
@@ -45,7 +46,7 @@ import com.utcLABS.mindspace.model.MindMapModel;
 	private ScaleGestureDetector mScaleDetector;
 	public final ScaleObject scale = new ScaleObject();
 	// pour partager le scaleFactor avec les NodeView
-	public class ScaleObject extends Object {
+	public class ScaleObject {
 		public float scaleFactor = 1f;
 		public float getScale(){
 			return scaleFactor;
@@ -70,9 +71,9 @@ import com.utcLABS.mindspace.model.MindMapModel;
 		this.mapView = new RelativeLayout(context);
 		this.addView(this.mapView, 4000,4000);
 		this.mapView.setBackgroundColor(0xffeeeeee);
+		this.density = 0.5f;
 		
-		
-		float coef = 1f;
+		float coef = 0.5f;
 		
 		// Creation Test ConceptModel
 		this.mindMapModel = new MindMapModel();
@@ -83,7 +84,7 @@ import com.utcLABS.mindspace.model.MindMapModel;
  		// Root
  		root = this.mindMapModel.createNewConcept(new PointF(500f*coef+600f, 250f*coef+300f));
  		root.setName("Music");
- 		root.setSize(ConceptModel.DEFAULT_SIZE*coef);
+ 		root.setSize(coef);
  		
  		// Sociability
  		ConceptModel sociability = this.mindMapModel.createNewConcept(root);
@@ -180,6 +181,9 @@ import com.utcLABS.mindspace.model.MindMapModel;
  				return true;
  			}
  		});
+ 		
+ 		// Update Concepts Visibility
+ 		updateConceptsVisibility();
 	}
 	
 	private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
@@ -190,6 +194,7 @@ import com.utcLABS.mindspace.model.MindMapModel;
 	        //System.out.println(scaleFactor.hashCode());
 	        setScaleX(scale.scaleFactor);
 	        setScaleY(scale.scaleFactor);
+	        updateConceptsVisibility();
 	        invalidate();
 	        return true;
 	    }
@@ -239,6 +244,18 @@ import com.utcLABS.mindspace.model.MindMapModel;
 	/*
 	 * View Method
 	 */
+	
+	// Getter
+	public float getDensity(){		return density;		}
+	
+	// Setter
+	public void setDensity(float newDensity){
+		if( this.density != newDensity ){
+			this.density = newDensity;
+			updateConceptsVisibility();
+		}
+	}
+	
 	protected ConceptView searchViewOfModel(ConceptModel model){
 		return conceptIndex.get(model);
 	}
@@ -253,6 +270,11 @@ import com.utcLABS.mindspace.model.MindMapModel;
 	
 	protected void removeViewFromMap(View v){
 		this.mapView.removeView(v);
+	}
+	
+	private void updateConceptsVisibility(){
+		for( ConceptView v : conceptIndex.values() )
+			v.updateVisibility();
 	}
 
 }
