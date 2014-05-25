@@ -5,7 +5,6 @@ import java.beans.PropertyChangeListener;
 
 import android.annotation.SuppressLint;
 import android.content.ClipData;
-import android.content.ClipDescription;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -37,6 +36,7 @@ public class ConceptView {
 	private static final float			TEXT_BASE_SIZE				= 70f;
 	private static final float			BRANCH_BASE_WIDTH			= 500f;
 	private static final float			BRANCH_BASE_HEIGHT			= 50f;
+	private static final int			CLOUD_BASE_SIZE				= 1000;
 	
 
 	// Model Member
@@ -54,6 +54,10 @@ public class ConceptView {
 	// Branch
 	private View						branchView;
 	private Paint						branchPaint;
+	
+	// Cloud
+	private View						cloudView;
+	private GradientDrawable			cloudGrad;
 	
 	// Property Change Listener
 	private PropertyChangeListener		onNameChanged;
@@ -96,6 +100,9 @@ public class ConceptView {
 		// Init BranchView
 		initBranchView(mainView);
 		
+		// Init CloudView
+		initCloudView(mainView);
+		
 		// Init Model's Listeners
 		initPropertyChangeListeners(model);
 		
@@ -135,12 +142,37 @@ public class ConceptView {
 		this.branchView.setY(model.getPosition().y - BRANCH_BASE_HEIGHT/2f);
 		this.branchView.setScaleY(model.getSize());
 				
-		mainView.addViewToMap(this.branchView, 0, new android.widget.FrameLayout.LayoutParams((int)(BRANCH_BASE_WIDTH*2f), (int)(BRANCH_BASE_HEIGHT)));
+		mainView.addViewToMap(this.branchView, mainView.getConceptsCount(), new android.widget.FrameLayout.LayoutParams((int)(BRANCH_BASE_WIDTH*2f), (int)(BRANCH_BASE_HEIGHT)));
 		
 		if(parentView == null)
 			this.branchView.setVisibility(View.INVISIBLE);
 		else
 			updateBranch(this.model.getPosition());
+	}
+	
+	@SuppressLint("NewApi")
+	private void initCloudView(MindMapView mainView){
+		
+		// Init Gradient
+		this.cloudGrad = new GradientDrawable(GradientDrawable.Orientation.TL_BR, new int[]{model.getColor() & 0x88ffffff, model.getColor() & 0x00ffffff});
+		this.cloudGrad.setShape(GradientDrawable.OVAL);
+		this.cloudGrad.setSize(CLOUD_BASE_SIZE, CLOUD_BASE_SIZE);
+		this.cloudGrad.setGradientType(GradientDrawable.RADIAL_GRADIENT);
+		this.cloudGrad.setGradientRadius(CLOUD_BASE_SIZE/2f);
+		this.cloudGrad.setGradientCenter(0.5f, 0.5f);
+		
+		// Init Cloud View
+		this.cloudView = new View(this.mainView.getContext());
+		this.cloudView.setBackground(this.cloudGrad);
+		this.cloudView.setScaleX(model.getSize());
+		this.cloudView.setScaleY(model.getSize());
+
+		// Add to mainView
+		mainView.addViewToMap(this.cloudView, mainView.getConceptsCount(), new android.widget.FrameLayout.LayoutParams(CLOUD_BASE_SIZE,CLOUD_BASE_SIZE));
+		
+		// Set Position
+		this.cloudView.setX(this.model.getPosition().x - CLOUD_BASE_SIZE/2f);
+		this.cloudView.setY(this.model.getPosition().y - CLOUD_BASE_SIZE/2f);
 	}
 	
 	/*
@@ -189,6 +221,7 @@ public class ConceptView {
 				int color = (Integer)event.getNewValue();
 				nodeView.shapeView.setColors(new int[]{color, Color.LTGRAY, color});
 				branchPaint.setColor(color);
+				cloudGrad.setColors(new int[]{color & 0x88ffffff, color & 0x00ffffff});
 			}
 		};
 		model.addPropertyChangeListener(ConceptModel.NP_COLOR, this.onColorChanged);
@@ -344,6 +377,7 @@ public class ConceptView {
 				this.isVisible = false;
 				this.nodeView.setVisibility(View.INVISIBLE);
 				this.branchView.setVisibility(View.INVISIBLE);
+				this.cloudView.setVisibility(View.INVISIBLE);
 			}
 		}
 		else{
@@ -351,6 +385,7 @@ public class ConceptView {
 				this.isVisible = true;
 				this.nodeView.setVisibility(View.VISIBLE);
 				this.updateBranch(this.model.getPosition());
+				this.cloudView.setVisibility(View.VISIBLE);
 			}
 		}
 	}
@@ -358,8 +393,10 @@ public class ConceptView {
 	// Move Node
 	@SuppressLint("NewApi")
 	private void setNodePosition(PointF p){
-		nodeView.setX(p.x - nodeView.getWidth()/2);
-		nodeView.setY(p.y - nodeView.getHeight()/2);
+		this.nodeView.setX(p.x - nodeView.getWidth()/2);
+		this.nodeView.setY(p.y - nodeView.getHeight()/2);
+		this.cloudView.setX(p.x - CLOUD_BASE_SIZE/2f);
+		this.cloudView.setY(p.y - CLOUD_BASE_SIZE/2f);
 	}
 	
 	// Update Branch

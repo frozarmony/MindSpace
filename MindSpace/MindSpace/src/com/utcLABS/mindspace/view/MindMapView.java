@@ -323,6 +323,10 @@ import com.utcLABS.mindspace.model.MindMapModel;
 		return conceptIndex.get(model);
 	}
 	
+	protected int getConceptsCount(){
+		return this.conceptIndex.size();
+	}
+	
 	protected void addViewToMap(View v){
 		this.mapView.addView(v);
 	}
