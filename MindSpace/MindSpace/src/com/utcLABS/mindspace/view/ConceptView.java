@@ -65,7 +65,7 @@ public class ConceptView {
 	private PropertyChangeListener		onPositionChanged;
 	private PropertyChangeListener		onSizeChanged;
 	private PropertyChangeListener		onColorChanged;
-	//private PropertyChangeListener		onShapeChanged; TODO
+	private PropertyChangeListener		onShapeChanged;
 	private PropertyChangeListener		onMoved;
 	
 	// Controller Member
@@ -230,7 +230,16 @@ public class ConceptView {
 		};
 		model.addPropertyChangeListener(ConceptModel.NP_COLOR, this.onColorChanged);
 		
-		// TO DO Shape
+		// OnShapeChanged
+		this.onShapeChanged = new PropertyChangeListener() {
+			@SuppressLint("NewApi")
+			@Override
+			public void propertyChange(PropertyChangeEvent event) {
+				ConceptModel.MindSpaceShape newShape = (ConceptModel.MindSpaceShape)event.getNewValue();
+				ConceptView.this.nodeView.configureShape(newShape);
+			}
+		};
+		model.addPropertyChangeListener(ConceptModel.NP_SHAPE, this.onShapeChanged);
 		
 		// OnMoved
 		this.onMoved = new PropertyChangeListener() {
@@ -344,7 +353,6 @@ public class ConceptView {
  					break;
  				case DragEvent.ACTION_DRAG_ENDED:
  					Log.d("ConceptView("+model.getName()+")", "Action Ended");
- 					//((ConceptView) event.getLocalState()).endDropAction();
  					break;
  				}
 				
