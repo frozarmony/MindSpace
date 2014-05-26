@@ -1,12 +1,10 @@
 package com.utcLABS.mindspace;
 
 
+import com.utcLABS.mindspace.model.ConceptModel;
+
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,21 +45,11 @@ public class PictureEditFragment extends Fragment {
 	     super.onActivityResult(requestCode, resultCode, data);
 
 		if (requestCode == RESULT_LOAD_IMAGE && null != data) {
-//	         Uri selectedImage = data.getData();
-//	         String[] filePathColumn = { MediaStore.Images.Media.DATA };
-//	 
-//	         Cursor cursor = getActivity().getContentResolver().query(selectedImage,
-//	                 filePathColumn, null, null, null);
-//	         cursor.moveToFirst();
-//	 
-//	         int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-//	         String picturePath = cursor.getString(columnIndex);
 	         ImageView imgcover = (ImageView) rootView.findViewById(R.id.imgView);
 	         imgcover.setImageURI(data.getData());
-//	         cursor.close();
-	         
-         
-	         // String picturePath contains the path of selected Image
 	     }
+		
+		//ConceptModel conceptToEdit = ((MainActivity)getActivity()).getCurrentConcept();
+		
 	}
 }
