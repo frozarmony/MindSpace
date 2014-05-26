@@ -10,3 +10,4 @@ MindSpace/MindSpace/bin/resources.ap_
 MindSpace/MindSpace/project.properties
 appcompat_v7/appcompat_v7/bin/jarlist.cache
 appcompat_v7/appcompat_v7/project.properties
+appcompat_v7/appcompat_v7/gen/android/support/v7/appcompat/BuildConfig.java
