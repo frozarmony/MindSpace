@@ -117,8 +117,9 @@ public class ConceptView {
 	@SuppressLint("NewApi")
 	private void initNodeView(MindMapView mainView){
 		nodeView = new NodeView(mainView.getContext(), model);
-		nodeView.setX(this.getX() - nodeView.getWidth()/2);
-		nodeView.setY(this.getY() - nodeView.getHeight()/2);
+		PointF pos = this.model.getPosition();
+		nodeView.setX(pos.x - nodeView.getWidth()/2);
+		nodeView.setY(pos.y - nodeView.getHeight()/2);
 		mainView.addViewToMap(nodeView);
 	}
 	
@@ -127,15 +128,17 @@ public class ConceptView {
 			
 		Path branchPath = new Path();
 		branchPath.moveTo(BRANCH_BASE_WIDTH, BRANCH_BASE_HEIGHT/2f);
-		branchPath.lineTo(BRANCH_BASE_WIDTH*2f, BRANCH_BASE_HEIGHT/2f);
+		branchPath.lineTo(BRANCH_BASE_WIDTH*2f, 0);
+		branchPath.lineTo(BRANCH_BASE_WIDTH*2f, BRANCH_BASE_HEIGHT);
+		branchPath.lineTo(BRANCH_BASE_WIDTH, BRANCH_BASE_HEIGHT/2f);
 		
 		PathShape pathShape = new PathShape(branchPath, BRANCH_BASE_WIDTH*2f, BRANCH_BASE_HEIGHT);
 		ShapeDrawable branchDrawable = new ShapeDrawable(pathShape);
 		
 		this.branchPaint = branchDrawable.getPaint();
 		this.branchPaint.setColor(model.getColor());
-		this.branchPaint.setStyle(Paint.Style.STROKE);
-		this.branchPaint.setStrokeWidth(BRANCH_BASE_HEIGHT/2f);
+		this.branchPaint.setStyle(Paint.Style.FILL);
+		//this.branchPaint.setStrokeWidth(BRANCH_BASE_HEIGHT/2f);
 		
 		this.branchView = new View(mainView.getContext());
 		this.branchView.setBackground(branchDrawable);
@@ -185,7 +188,7 @@ public class ConceptView {
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				nodeView.setText((String)event.getNewValue());
-				setNodePosition(new PointF(getX(), getY()));
+				setNodePosition(ConceptView.this.model.getPosition());
 			}
 		};
 		model.addPropertyChangeListener(ConceptModel.NP_NAME, this.onNameChanged);
@@ -207,7 +210,7 @@ public class ConceptView {
 			public void propertyChange(PropertyChangeEvent event) {
 				float newSize = (Float)event.getNewValue();
 				nodeView.setTextSize(newSize*TEXT_BASE_SIZE);
-				setNodePosition(new PointF(getX(), getY()));
+				setNodePosition(ConceptView.this.model.getPosition());
 				
 				branchView.setScaleY(newSize);
 				
@@ -368,8 +371,6 @@ public class ConceptView {
 	 */
 	
 	// Getters
-	public float			getX(){			return model.getPosition().x;	}
-	public float			getY(){			return model.getPosition().y;	}
 	public ConceptModel		getModel(){		return model;					}
 	
 	// Visual Effects
@@ -384,11 +385,12 @@ public class ConceptView {
 		
 		Log.d("ConceptView("+ model.getName()+")", "Check Visibility " + relativeSize + " < " + minRelativeSize);
 		
-		if( relativeSize < minRelativeSize ){
+		if( model.getParent() != null && relativeSize < minRelativeSize ){
 			if( this.isVisible ){
 				this.isVisible = false;
 				this.nodeView.setVisibility(View.INVISIBLE);
-				this.branchView.setVisibility(View.INVISIBLE);
+				if( model.getParent().getSize() * scaleFactor.getScale() < minRelativeSize )
+					this.branchView.setVisibility(View.INVISIBLE);
 				this.cloudView.setVisibility(View.INVISIBLE);
 			}
 		}
