@@ -220,7 +220,7 @@ public class ConceptModel {
 			this.setPosition(newParent.position.x+translation.x, newParent.position.y+translation.y);
 
 			// Reset to Default Properties
-			setDefaultProperties();
+			//setDefaultProperties();
 		}
 		else if( newParent == null ){
 			if( oldParent != null ){
@@ -232,7 +232,7 @@ public class ConceptModel {
 			this.propertyChangeSupport.firePropertyChange(NP_MOVE, oldParent, null);
 			
 			// Reset to Default Properties
-			setDefaultProperties();
+			//setDefaultProperties();
 		}
 	}
 	

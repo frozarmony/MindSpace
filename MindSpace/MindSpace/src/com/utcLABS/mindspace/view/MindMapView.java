@@ -60,6 +60,7 @@ import com.utcLABS.mindspace.model.MindMapModel;
 	protected float centerY = 0;
 	protected float offsetY = 0;
 	
+	private MyTouchListener touchListener;
 
 	/*
 	 * Constructor
@@ -127,44 +128,11 @@ import com.utcLABS.mindspace.model.MindMapModel;
  		/*
  		 * Controller Test
  		 */
+ 		
  		mScaleDetector = new ScaleGestureDetector(this.getContext(), new ScaleListener());
  		// OnTouchTest
- 		this.setOnTouchListener(new OnTouchListener() {
-			
-			@Override
-			public boolean onTouch(View v, MotionEvent ev) {
-				float _x = ev.getX();
-				float _y = ev.getY();
-				
-				if(ev.getPointerCount() == 2)
-					ev.setLocation((ev.getX(0)+ev.getX(1))/2, (ev.getY(0)+ev.getY(1))/2);
-				
-				mScaleDetector.onTouchEvent(ev);
-				switch (ev.getAction()) {
-				case MotionEvent.ACTION_DOWN:
-					offsetX = _x-centerX;
-					offsetY = _y-centerY;
-					break;
-				case MotionEvent.ACTION_MOVE:
-					if(offsetX != 0 && offsetY != 0){
-						centerX = _x - offsetX;
-						centerY = _y - offsetY;
-						//mapView.setPaddingRelative((int)centerX, (int)centerY, (int)centerX, (int)centerY);
-						//mapView.setX(centerX);
-						//mapView.setY(centerY);
-						mapView.scrollTo((int)-centerX, (int)-centerY);
-						/*mapView.setTranslationX(centerX);
-						mapView.setTranslationY(centerY);*/
-					}
-					break;
-				case MotionEvent.ACTION_UP:					
-					offsetX = 0;
-					offsetY = 0;
-					break;
-				}
-				return true;
-			}
-		});
+ 		this.touchListener = new MyTouchListener();
+ 		this.setOnTouchListener(this.touchListener);
  		
  		this.setOnDragListener(new OnDragListener() {
 
@@ -196,14 +164,49 @@ import com.utcLABS.mindspace.model.MindMapModel;
  		updateConceptsVisibility();
 	}
 	
+	class MyTouchListener implements OnTouchListener{
+
+			@Override
+			public boolean onTouch(View v, MotionEvent ev) {
+				float _x = ev.getX();
+				float _y = ev.getY();
+				
+				/*if(ev.getPointerCount() == 2)
+					ev.setLocation((ev.getX(0)+ev.getX(1))/2, (ev.getY(0)+ev.getY(1))/2);*/
+				
+
+				mScaleDetector.onTouchEvent(ev);
+				//mDoubleTapDetector.onDoubleTap(ev);
+				switch (ev.getAction()) {
+				case MotionEvent.ACTION_DOWN:
+					offsetX = _x+centerX;
+					offsetY = _y+centerY;
+					break;
+				case MotionEvent.ACTION_MOVE:
+					if(offsetX != 0 && offsetY != 0){
+						centerX = offsetX-_x;
+						centerY = offsetY-_y;
+						mapView.scrollTo((int)(centerX/scale.scaleFactor), (int)(centerY/scale.scaleFactor));
+					}
+					break;
+				case MotionEvent.ACTION_UP:					
+					offsetX = 0;
+					offsetY = 0;
+					break;
+				}
+				return true;
+			}
+		}
+	
 	private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
 	    @SuppressLint("NewApi") @Override
 	    public boolean onScale(ScaleGestureDetector detector) {
 	        scale.scaleFactor *= detector.getScaleFactor();
-	        //scaleFactor = Math.max(1f, Math.min(scaleFactor, 5.0f));
-	        //System.out.println(scaleFactor.hashCode());
-	        setScaleX(scale.scaleFactor);
-	        setScaleY(scale.scaleFactor);
+	        scale.scaleFactor = Math.max(1f, Math.min(scale.scaleFactor, 5.0f));
+	        mapView.setPivotX(detector.getFocusX()*scale.scaleFactor);
+	        mapView.setPivotY(detector.getFocusY()*scale.scaleFactor);
+	        mapView.setScaleX(scale.scaleFactor);
+	        mapView.setScaleY(scale.scaleFactor);
 	        updateConceptsVisibility();
 	        invalidate();
 	        return true;
