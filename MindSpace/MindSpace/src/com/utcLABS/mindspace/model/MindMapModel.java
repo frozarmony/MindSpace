@@ -113,4 +113,5 @@ public class MindMapModel {
 	public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener){
 		this.propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
 	}
+	
 }
