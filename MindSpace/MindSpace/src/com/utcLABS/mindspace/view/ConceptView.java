@@ -212,10 +212,14 @@ public class ConceptView {
 				nodeView.setTextSize(newSize*TEXT_BASE_SIZE);
 				setNodePosition(ConceptView.this.model.getPosition());
 				
+				Log.d("ConceptView("+ ConceptView.this.model.getName()+")", "OnSizeChanged : " + newSize);
+				
 				branchView.setScaleY(newSize);
 				
 				cloudView.setScaleX(newSize);
 				cloudView.setScaleY(newSize*CLOUD_RATIO_HEIGHT);
+				
+				updateVisibility();
 			}
 		};
 		model.addPropertyChangeListener(ConceptModel.NP_SIZE, this.onSizeChanged);
@@ -227,7 +231,10 @@ public class ConceptView {
 			public void propertyChange(PropertyChangeEvent event) {
 				int color = (Integer)event.getNewValue();
 				nodeView.shapeView.setColors(new int[]{color, Color.LTGRAY, color});
+				
 				branchPaint.setColor(color);
+				branchView.invalidate();
+				
 				cloudGrad.setColors(new int[]{color & 0x88ffffff, color & 0x00ffffff});
 			}
 		};
@@ -389,10 +396,10 @@ public class ConceptView {
 			if( this.isVisible ){
 				this.isVisible = false;
 				this.nodeView.setVisibility(View.INVISIBLE);
-				if( model.getParent().getSize() * scaleFactor.getScale() < minRelativeSize )
-					this.branchView.setVisibility(View.INVISIBLE);
 				this.cloudView.setVisibility(View.INVISIBLE);
 			}
+			if( model.getParent().getSize() * scaleFactor.getScale() < minRelativeSize )
+				this.branchView.setVisibility(View.INVISIBLE);
 		}
 		else{
 			if( !this.isVisible ){
@@ -435,6 +442,8 @@ public class ConceptView {
 	
 	// Remove all ConceptView's subview from MindMapView
 	protected void detachView(){
+		Log.d("ConceptView("+ model.getName()+")", "Detach View");
+		
 		// Detach from mainView
 		mainView.removeViewFromMap(this.branchView);
 		mainView.removeViewFromMap(this.nodeView);

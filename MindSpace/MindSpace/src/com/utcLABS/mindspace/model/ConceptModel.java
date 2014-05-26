@@ -6,6 +6,7 @@ import java.util.LinkedList;
 
 import android.graphics.Color;
 import android.graphics.PointF;
+import android.util.Log;
 
 public class ConceptModel {
 	
@@ -106,21 +107,23 @@ public class ConceptModel {
 	/*
 	 * Setters
 	 */
-	public void setName(String name) {
-		if(!this.name.equals(name)){
-			this.propertyChangeSupport.firePropertyChange(NP_NAME, this.name, name);
-			this.name = name;
+	public void setName(String newName) {
+		if(!this.name.equals(newName)){
+			String oldName = this.name;
+			this.name = newName;
+			this.propertyChangeSupport.firePropertyChange(NP_NAME, oldName, newName);
 		}
 	}
 	
-	public void setPosition(PointF position) {
-		if(!this.position.equals(position)){
+	public void setPosition(PointF newPosition) {
+		if(!this.position.equals(newPosition)){
 			// Compute Translation
-			PointF translation = new PointF(position.x-this.position.x, position.y-this.position.y);
+			PointF translation = new PointF(newPosition.x-this.position.x, newPosition.y-this.position.y);
 			
 			// Update this concept Position
-			this.propertyChangeSupport.firePropertyChange(NP_POSITION, this.position, position);
-			this.position = position;
+			PointF oldPosition = this.position;
+			this.position = newPosition;
+			this.propertyChangeSupport.firePropertyChange(NP_POSITION, oldPosition, newPosition);
 			
 			// Update Children Positions
 			for(ConceptModel child : children){
@@ -133,24 +136,28 @@ public class ConceptModel {
 		setPosition(new PointF(x,y));
 	}
 	
-	public void setSize(float size) {
-		if(this.size!=size){
-			this.propertyChangeSupport.firePropertyChange(NP_SIZE, this.size, size);
-			this.size = size;
+	public void setSize(float newSize) {
+		if(this.size!=newSize){
+			Log.d("ConceptModel("+this.name+")", "New Size " + newSize);
+			float oldSize = newSize;
+			this.size = newSize;
+			this.propertyChangeSupport.firePropertyChange(NP_SIZE, oldSize, newSize);
 		}
 	}
 	
-	public void setColor(int color) {
-		if(this.color!=color){
-			this.propertyChangeSupport.firePropertyChange(NP_COLOR, this.color, color);
-			this.color = color;
+	public void setColor(int newColor) {
+		if(this.color!=newColor){
+			int oldColor = this.color;
+			this.color = newColor;
+			this.propertyChangeSupport.firePropertyChange(NP_COLOR, oldColor, newColor);
 		}
 	}
 	
-	public void setShape(MindSpaceShape shape) {
-		if(this.shape!=shape){
-			this.propertyChangeSupport.firePropertyChange(NP_SHAPE, this.shape, shape);
-			this.shape = shape;
+	public void setShape(MindSpaceShape newShape) {
+		if(this.shape!=newShape){
+			MindSpaceShape oldShape = this.shape;
+			this.shape = newShape;
+			this.propertyChangeSupport.firePropertyChange(NP_SHAPE, oldShape, newShape);
 		}
 	}
 
@@ -211,14 +218,21 @@ public class ConceptModel {
 			
 			// Update Position
 			this.setPosition(newParent.position.x+translation.x, newParent.position.y+translation.y);
+
+			// Reset to Default Properties
+			setDefaultProperties();
 		}
 		else if( newParent == null ){
 			if( oldParent != null ){
 				oldParent.children.remove(this);
 			}
 			
+			// Set as Root Concept
 			this.parent = null;
 			this.propertyChangeSupport.firePropertyChange(NP_MOVE, oldParent, null);
+			
+			// Reset to Default Properties
+			setDefaultProperties();
 		}
 	}
 	
@@ -239,6 +253,16 @@ public class ConceptModel {
 				return true;
 		return false;
 	}
+	
+	private void setDefaultProperties(){
+		// Default Change
+		this.setSize( defaultSize(this.parent) );
+		this.setColor( defaultColor(this.parent) );
+		
+		// Repeat For Childs
+		for( ConceptModel c : this.children )
+			c.setDefaultProperties();
+	}
 
 	/*
 	 * Property Change Support Delegate
@@ -255,10 +279,12 @@ public class ConceptModel {
 
 	// For Specific PropertyChangeListener
 	public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener){
+		Log.d("ConceptView("+ this.name+")", "Add PropertyChangeListener " + propertyName);
 		this.propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
 	}
 
 	public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener){
+		Log.d("ConceptView("+ this.name+")", "Remove PropertyChangeListener " + propertyName);
 		this.propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
 	}
 	
