@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   	<string name="logo">MindSpace</string>
+    <string name="nouveau_mindmap">Nouveau Mindmap</string>
+    <string name="tutoriel">Suivre le tutoriel</string>
+    <string name="mes_mindmaps">Mes Mindmaps</string>
+    <string name="delete_icon">Delete</string>
+    <string name="new_mindmap_message">Veuillez entrer le titre du mindmap.</string>
+    <string name="new_mindmap_hint">Titre du mindmap</string>
+</resources>
