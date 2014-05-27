@@ -13,11 +13,11 @@
     android:layout_height="match_parent"
     android:background="@android:color/white">
         
-<!--       <com.utcLABS.mindspace.ExampleSurfaceView -->
-<!--  	     android:id="@+id/exampleSurfaceView1" -->
-<!--   	     android:layout_width="match_parent" -->
-<!--  	     android:layout_height="match_parent"  -->
-<!--       />  -->
+      <com.utcLABS.mindspace.view.MindMapView
+ 	     android:id="@+id/surfaceView"
+  	     android:layout_width="match_parent"
+ 	     android:layout_height="match_parent" 
+      /> 
   	 
      <LinearLayout 
          android:id="@+id/layout_fragment"
