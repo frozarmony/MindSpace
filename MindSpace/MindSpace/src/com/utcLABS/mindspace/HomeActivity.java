@@ -8,9 +8,11 @@ import java.util.List;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -59,6 +61,16 @@ public class HomeActivity extends ActionBarActivity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
+	
+	public boolean onKeyDown(int keyCode, KeyEvent event) 
+    {
+               
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+        	this.finish();
+        }
+		return true;
+           
+     }
 
 	/**
 	 * A placeholder fragment containing a simple view.

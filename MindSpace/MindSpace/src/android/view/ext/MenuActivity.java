@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,6 +18,7 @@ import android.widget.ImageButton;
 
 import com.utcLABS.mindspace.ColorFragment;
 import com.utcLABS.mindspace.GoogleFragment;
+import com.utcLABS.mindspace.HomeActivity;
 import com.utcLABS.mindspace.PictureEditFragment;
 import com.utcLABS.mindspace.TextEditFragment;
 import com.utcLABS.mindspace.VisualisationActivity;
@@ -35,7 +37,8 @@ public class MenuActivity extends ActionBarActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-				
+		
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 		if (savedInstanceState == null) {
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
@@ -72,11 +75,27 @@ public class MenuActivity extends ActionBarActivity {
 			itemEdit.setEnabled(true);
 			Intent i0 = new Intent(this, VisualisationActivity.class);
 			startActivity(i0);
-			this.onPause();
+			this.finish();
 			return true;
+		}else if(id == android.R.id.home){
+			Intent i0 = new Intent(this, HomeActivity.class);
+			startActivity(i0);
+			this.finish();
 		}
 		return super.onOptionsItemSelected(item);
 	}
+	
+	public boolean onKeyDown(int keyCode, KeyEvent event) 
+    {
+               
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+        	Intent i0 = new Intent(this, HomeActivity.class);
+			startActivity(i0);
+			this.finish();
+        }
+		return true;
+           
+     }
 
 
 	public ConceptModel getCurrentConcept() {

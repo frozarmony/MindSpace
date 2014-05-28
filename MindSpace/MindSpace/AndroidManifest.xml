@@ -20,6 +20,7 @@
         <activity
             android:name="com.utcLABS.mindspace.HomeActivity"
             android:label="@string/title_activity_home" >
+            <category android:name="android.intent.category.HOME" />          
         </activity>
         <activity
             android:name="android.view.ext.MenuActivity"

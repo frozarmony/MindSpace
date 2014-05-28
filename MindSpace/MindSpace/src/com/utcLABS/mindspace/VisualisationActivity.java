@@ -3,6 +3,8 @@ package com.utcLABS.mindspace;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBarActivity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -10,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ext.MenuActivity;
 import android.view.ext.R;
-import android.support.v7.app.ActionBarActivity;
 
 
 public class VisualisationActivity extends ActionBarActivity {
@@ -23,6 +24,7 @@ public class VisualisationActivity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_visualisation);
 
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 		if (savedInstanceState == null) {
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
@@ -53,10 +55,26 @@ public class VisualisationActivity extends ActionBarActivity {
 			itemSee.setEnabled(true);
 			Intent i0 = new Intent(this, MenuActivity.class);
 			startActivity(i0);
-			this.onPause();
+			this.finish();
+		}else if(id == android.R.id.home){
+			Intent i0 = new Intent(this, HomeActivity.class);
+			startActivity(i0);
+			this.finish();
 		}
 		return super.onOptionsItemSelected(item);
 	}
+	
+	public boolean onKeyDown(int keyCode, KeyEvent event) 
+    {
+               
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+        	Intent i0 = new Intent(this, HomeActivity.class);
+			startActivity(i0);
+			this.finish();
+        }
+		return true;
+           
+     }
 
 	/**
 	 * A placeholder fragment containing a simple view.
