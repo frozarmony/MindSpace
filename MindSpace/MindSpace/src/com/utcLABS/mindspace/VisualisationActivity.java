@@ -1,5 +1,6 @@
 package com.utcLABS.mindspace;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,10 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ext.MenuActivity;
 import android.view.ext.R;
+import android.support.v7.app.ActionBarActivity;
 
 
-public class VisualisationActivity extends MenuActivity {
+public class VisualisationActivity extends ActionBarActivity {
 
+	protected MenuItem itemEdit;
+	protected MenuItem itemSee;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -46,6 +51,9 @@ public class VisualisationActivity extends MenuActivity {
 			item.setIcon(R.drawable.ic_action_edit_selected);
 			itemSee.setIcon(R.drawable.ic_action_see);
 			itemSee.setEnabled(true);
+			Intent i0 = new Intent(this, MenuActivity.class);
+			startActivity(i0);
+			this.onPause();
 		}
 		return super.onOptionsItemSelected(item);
 	}

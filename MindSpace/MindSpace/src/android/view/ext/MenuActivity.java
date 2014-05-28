@@ -22,12 +22,14 @@ import com.utcLABS.mindspace.TextEditFragment;
 import com.utcLABS.mindspace.VisualisationActivity;
 import com.utcLABS.mindspace.WikipediaFragment;
 import com.utcLABS.mindspace.model.ConceptModel;
+import com.utcLABS.mindspace.model.MindMapModel;
 
 public class MenuActivity extends ActionBarActivity {
 
 	protected MenuItem itemEdit;
 	protected MenuItem itemSee;
 	private ConceptModel currentConcept;
+	private MindMapModel model;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +72,7 @@ public class MenuActivity extends ActionBarActivity {
 			itemEdit.setEnabled(true);
 			Intent i0 = new Intent(this, VisualisationActivity.class);
 			startActivity(i0);
+			this.onPause();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
