@@ -1,5 +1,9 @@
 package com.utcLABS.mindspace;
 
+import com.devadvance.circularseekbar.CircularSeekBar;
+import com.utcLABS.mindspace.model.MindMapModel;
+import com.utcLABS.mindspace.view.MindMapView;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -81,6 +85,9 @@ public class VisualisationActivity extends ActionBarActivity {
 	 */
 	public static class PlaceholderFragment extends Fragment {
 
+		private MindMapView viewMindMap;
+		private MindMapModel model;
+		
 		public PlaceholderFragment() {
 		}
 
@@ -89,6 +96,12 @@ public class VisualisationActivity extends ActionBarActivity {
 				Bundle savedInstanceState) {
 			View rootView = inflater.inflate(R.layout.fragment_visualisation,
 					container, false);
+			viewMindMap = (MindMapView)rootView.findViewById(R.id.surfaceView);
+	        model = viewMindMap.getModel();
+	        viewMindMap.setDensity(1f);
+			
+			CircularSeekBar slider = (CircularSeekBar) rootView.findViewById(R.id.circularSeekBar1);
+			
 			return rootView;
 		}
 	}

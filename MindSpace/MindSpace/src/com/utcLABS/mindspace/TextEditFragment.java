@@ -1,15 +1,16 @@
 package com.utcLABS.mindspace;
 
+import com.larswerkman.holocolorpicker.ColorPicker;
+
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ext.R;
 import android.widget.EditText;
-import android.widget.TextView;
 
 
 
@@ -27,7 +28,13 @@ public class TextEditFragment extends Fragment {
 		View rootView = inflater.inflate(R.layout.edit_slide, container,
 				false);
 		
-//		EditText title = (EditText) rootView.findViewById(R.id.title);
+		EditText title = (EditText) rootView.findViewById(R.id.new_title);
+		title.setText("Relaxation");
+		
+		EditText desc = (EditText) rootView.findViewById(R.id.editInput);
+		desc.setText("khfldkhgsldfhglsdfkhglsdkfhglskdfhglfdkhgdlfkhgsdlgh");
+		
+		
 //		title.addTextChangedListener(new TextWatcher() {
 //		 
 //		   public void afterTextChanged(Editable s) {

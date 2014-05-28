@@ -4,9 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.PointF;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -14,6 +17,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ext.SatelliteMenu.SateliteClickedListener;
+import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.utcLABS.mindspace.ColorFragment;
@@ -25,13 +30,13 @@ import com.utcLABS.mindspace.VisualisationActivity;
 import com.utcLABS.mindspace.WikipediaFragment;
 import com.utcLABS.mindspace.model.ConceptModel;
 import com.utcLABS.mindspace.model.MindMapModel;
+import com.utcLABS.mindspace.view.MindMapView;
 
 public class MenuActivity extends ActionBarActivity {
 
 	protected MenuItem itemEdit;
 	protected MenuItem itemSee;
 	private ConceptModel currentConcept;
-	private MindMapModel model;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +102,6 @@ public class MenuActivity extends ActionBarActivity {
            
      }
 
-
 	public ConceptModel getCurrentConcept() {
 		return currentConcept;
 	}
@@ -107,27 +111,47 @@ public class MenuActivity extends ActionBarActivity {
 	}
 
 
+
 	/**
 	 * A placeholder fragment containing a simple view.
 	 */
 	public static class PlaceholderFragment extends Fragment {
 
+		private MindMapView viewMindMap;
+		private MindMapModel model;
+		View rootView = null;
+		
 		public PlaceholderFragment() {
 		}
 
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_menu, container,
-					false);
+			rootView = inflater.inflate(R.layout.fragment_menu, container,false);
 			
-			SatelliteMenu menu = (SatelliteMenu) rootView.findViewById(R.id.menu);
+			 viewMindMap = (MindMapView)rootView.findViewById(R.id.surfaceView);
+	         model = viewMindMap.getModel();
+			
+			final SatelliteMenu menu = (SatelliteMenu) rootView.findViewById(R.id.menu);
             List<SatelliteMenuItem> items = new ArrayList<SatelliteMenuItem>();
             items.add(new SatelliteMenuItem(4, R.drawable.ic_action_undo));
             items.add(new SatelliteMenuItem(4, R.drawable.ic_action_undo));
             items.add(new SatelliteMenuItem(4, R.drawable.ic_action_new));
-            items.add(new SatelliteMenuItem(3, R.drawable.ic_action_new));;
+            items.add(new SatelliteMenuItem(1, R.drawable.ic_action_new));;
             menu.addItems(items);
+           
+            
+            
+            menu.setOnItemClickedListener(new SateliteClickedListener() {
+            	  public void eventOccured(int id) {
+            		  if(id == 1){
+            			  model.createNewConcept(new PointF(300,300));
+                		  viewMindMap.setModel(model);
+                		  DrawerLayout drawerLayout = (DrawerLayout)rootView.findViewById(R.id.drawer_layout);
+                		  drawerLayout.openDrawer(rootView.findViewById(R.id.layout_fragment));
+            		  }	  
+            	  }
+            	});
 			
 			Fragment fg = new TextEditFragment();
 	        getFragmentManager().beginTransaction().add(R.id.container_fragment, fg).commit();
@@ -194,7 +218,6 @@ public class MenuActivity extends ActionBarActivity {
 			});
 	   		return rootView;
 		}
-
 	}
 
 }
