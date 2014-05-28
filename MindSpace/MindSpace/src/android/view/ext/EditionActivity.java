@@ -24,7 +24,7 @@ import com.utcLABS.mindspace.WikipediaFragment;
 import com.utcLABS.mindspace.model.ConceptModel;
 import com.utcLABS.mindspace.model.MindMapModel;
 
-public class MenuActivity extends ActionBarActivity {
+public class EditionActivity extends ActionBarActivity {
 
 	protected MenuItem itemEdit;
 	protected MenuItem itemSee;
@@ -34,7 +34,7 @@ public class MenuActivity extends ActionBarActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.activity_edition);
 				
 		if (savedInstanceState == null) {
 			getSupportFragmentManager().beginTransaction()
@@ -99,7 +99,7 @@ public class MenuActivity extends ActionBarActivity {
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_menu, container,
+			View rootView = inflater.inflate(R.layout.fragment_edition, container,
 					false);
 			
 			SatelliteMenu menu = (SatelliteMenu) rootView.findViewById(R.id.menu);

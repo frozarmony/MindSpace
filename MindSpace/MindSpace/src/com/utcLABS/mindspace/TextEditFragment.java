@@ -7,9 +7,9 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ext.R;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.view.ext.R;
 
 
 

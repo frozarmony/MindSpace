@@ -8,7 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ext.MenuActivity;
+import android.view.ext.EditionActivity;
 import android.view.ext.R;
 import android.support.v7.app.ActionBarActivity;
 
@@ -51,7 +51,7 @@ public class VisualisationActivity extends ActionBarActivity {
 			item.setIcon(R.drawable.ic_action_edit_selected);
 			itemSee.setIcon(R.drawable.ic_action_see);
 			itemSee.setEnabled(true);
-			Intent i0 = new Intent(this, MenuActivity.class);
+			Intent i0 = new Intent(this, EditionActivity.class);
 			startActivity(i0);
 			this.onPause();
 		}
