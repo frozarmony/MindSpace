@@ -31,14 +31,16 @@ import com.utcLABS.mindspace.view.MindMapView.ScaleObject;
 @SuppressLint("NewApi")
 public class ConceptView {
 	
-	// Constants
-	public static final String			MIMETYPE_CONCEPTVIEW		= "application/conceptview";
-	
+	// Constants View
 	private static final float			TEXT_BASE_SIZE				= 70f;
 	private static final float			BRANCH_BASE_WIDTH			= 500f;
 	private static final float			BRANCH_BASE_HEIGHT			= 50f;
 	private static final int			CLOUD_BASE_SIZE				= 1000;
 	private static final float			CLOUD_RATIO_HEIGHT			= 0.7f;
+	
+	// Constants 
+	public static final String			MIMETYPE_CONCEPTVIEW		= "application/conceptview";
+	private static final float			ON_TOUCH_MIN_MOOVE			= 10f;
 	
 
 	// Model Member
@@ -287,26 +289,45 @@ public class ConceptView {
 			
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
+				PointF offset;
 				
 				switch(event.getAction()){
 				case MotionEvent.ACTION_DOWN :
+					isMoving = false;
 					startPos = new PointF(event.getX(),event.getY());
+					Log.d("ConceptView("+model.getName()+")", "Action Down");
 					break;
 				case MotionEvent.ACTION_MOVE :
-					// Compute Offset
-					PointF offset = new PointF(event.getX()-startPos.x, event.getY()-startPos.y);
-					
-					if(offset.length()>10f){	// TODO Enhance this
-						isMoving = true;
+					// If already Moving
+					if( isMoving ){
 						PointF currPosition = model.getPosition();
 						model.setPosition(currPosition.x+event.getX()-startPos.x, currPosition.y+event.getY()-startPos.y);
 						return true;
 					}
+					
+					// Compute Offset
+					offset = new PointF(event.getX()-startPos.x, event.getY()-startPos.y);
+					
+					if(offset.length()>ON_TOUCH_MIN_MOOVE){
+						isMoving = true;
+						PointF currPosition = model.getPosition();
+						model.setPosition(currPosition.x+offset.x, currPosition.y+offset.y);
+						return true;
+					}
 					break;
 				case MotionEvent.ACTION_UP :
+					Log.d("ConceptView("+model.getName()+")", "Action Up");
+					// Compute Offset
+					offset = new PointF(event.getX()-startPos.x, event.getY()-startPos.y);
+					
+					if(!isMoving){
+						model.setSize(0.8f*model.getSize());
+					}
+					
 					startPos = null;
 					isMoving = false;
-					break;
+					
+					return true;
 				}
 				
 				return false;
@@ -436,7 +457,7 @@ public class ConceptView {
 			// Show BranchView
 			if( isVisible )
 				this.branchView.setVisibility(View.VISIBLE);
-			Log.d("ConceptView("+model.getName()+")", "Updated BranchView");
+			//Log.d("ConceptView("+model.getName()+")", "Updated BranchView");
 		}
 	}
 	

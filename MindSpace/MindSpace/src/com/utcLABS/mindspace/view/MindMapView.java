@@ -260,7 +260,8 @@ import com.utcLABS.mindspace.model.MindMapModel;
 	 */
 	
 	// Getter
-	public float getDensity(){		return density;		}
+	public float		getDensity(){		return density;			}
+	public MindMapModel	getModel(){			return mindMapModel;	}
 	
 	// Setter
 	public void setModel(MindMapModel model){
