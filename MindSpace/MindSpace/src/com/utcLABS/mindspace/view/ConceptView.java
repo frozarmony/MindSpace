@@ -25,6 +25,7 @@ import android.view.ext.R;
 import android.widget.TextView;
 
 import com.utcLABS.mindspace.model.ConceptModel;
+import com.utcLABS.mindspace.model.ConceptModel.MindSpaceShape;
 import com.utcLABS.mindspace.view.MindMapView.ScaleObject;
 
 
@@ -210,11 +211,11 @@ public class ConceptView {
 			@SuppressLint("NewApi")
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
-				float newSize = (Float)event.getNewValue();
+				Log.d("ConceptView("+ ConceptView.this.model.getName()+")", "OnSizeChanged : " );
+				
+				float newSize = ConceptView.this.model.getSize();
 				nodeView.setTextSize(newSize*TEXT_BASE_SIZE);
 				setNodePosition(ConceptView.this.model.getPosition());
-				
-				Log.d("ConceptView("+ ConceptView.this.model.getName()+")", "OnSizeChanged : " + newSize);
 				
 				branchView.setScaleY(newSize);
 				
@@ -293,9 +294,9 @@ public class ConceptView {
 				
 				switch(event.getAction()){
 				case MotionEvent.ACTION_DOWN :
+					// Init Action
 					isMoving = false;
 					startPos = new PointF(event.getX(),event.getY());
-					Log.d("ConceptView("+model.getName()+")", "Action Down");
 					break;
 				case MotionEvent.ACTION_MOVE :
 					// If already Moving
@@ -316,12 +317,9 @@ public class ConceptView {
 					}
 					break;
 				case MotionEvent.ACTION_UP :
-					Log.d("ConceptView("+model.getName()+")", "Action Up");
-					// Compute Offset
-					offset = new PointF(event.getX()-startPos.x, event.getY()-startPos.y);
-					
+					// Click Action
 					if(!isMoving){
-						model.setSize(0.8f*model.getSize());
+						// TODO
 					}
 					
 					startPos = null;

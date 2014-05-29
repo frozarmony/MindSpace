@@ -139,7 +139,7 @@ public class ConceptModel {
 	public void setSize(float newSize) {
 		if(this.size!=newSize){
 			Log.d("ConceptModel("+this.name+")", "New Size " + newSize);
-			float oldSize = newSize;
+			float oldSize = this.size;
 			this.size = newSize;
 			this.propertyChangeSupport.firePropertyChange(NP_SIZE, oldSize, newSize);
 		}
