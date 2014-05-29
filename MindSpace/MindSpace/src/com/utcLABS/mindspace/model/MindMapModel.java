@@ -71,8 +71,8 @@ public class MindMapModel {
 	}
 	
 	public void deleteConcept(ConceptModel concept){
-		// TO DO check if concept exist
-		if( concept != null ){
+		// Check if concept is not null and is in this mindMap
+		if( concept != null && conceptIndex.contains(concept) ){
 			// Delete Children First
 			while(concept.getChildrenCount()>0)
 				deleteConcept(concept.getChildAt(0));
@@ -84,12 +84,16 @@ public class MindMapModel {
 		}
 	}
 	
-	public void save(){
-		// TO DO save
-	}
-	
 	public List<ConceptModel> copyOfConceptsList(){
 		return new LinkedList<ConceptModel>(this.conceptIndex);
+	}
+	
+	public String toXml(){
+		return null;	// TODO
+	}
+	
+	public boolean loadXml(String xml){
+		return false;	// TODO
 	}
 
 	/*

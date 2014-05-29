@@ -48,9 +48,7 @@ public class ConceptModel {
 	
 	// Link Members
 	private ConceptModel				parent;
-	//private boolean						linked;
 	private LinkedList<ConceptModel>	children;
-	//private LinkedList<ConceptModel>	externalLink;
 	
 	// Bean
 	private PropertyChangeSupport		propertyChangeSupport;
@@ -254,7 +252,7 @@ public class ConceptModel {
 		return false;
 	}
 	
-	private void setDefaultProperties(){
+	/*private void setDefaultProperties(){
 		// Default Change
 		this.setSize( defaultSize(this.parent) );
 		this.setColor( defaultColor(this.parent) );
@@ -262,7 +260,7 @@ public class ConceptModel {
 		// Repeat For Childs
 		for( ConceptModel c : this.children )
 			c.setDefaultProperties();
-	}
+	}*/
 
 	/*
 	 * Property Change Support Delegate
@@ -279,12 +277,10 @@ public class ConceptModel {
 
 	// For Specific PropertyChangeListener
 	public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener){
-		Log.d("ConceptView("+ this.name+")", "Add PropertyChangeListener " + propertyName);
 		this.propertyChangeSupport.addPropertyChangeListener(propertyName, listener);
 	}
 
 	public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener){
-		Log.d("ConceptView("+ this.name+")", "Remove PropertyChangeListener " + propertyName);
 		this.propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
 	}
 	
