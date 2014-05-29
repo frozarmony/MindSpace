@@ -21,8 +21,8 @@ import android.util.Log;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ext.R;
 import android.widget.TextView;
+import android.view.ext.R;
 
 import com.utcLABS.mindspace.model.ConceptModel;
 import com.utcLABS.mindspace.model.ConceptModel.MindSpaceShape;

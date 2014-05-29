@@ -1,6 +1,6 @@
 package com.utcLABS.mindspace.model;
-
 import android.view.ext.R;
+
 
 public class Mindmap {
 	String title;

@@ -32,7 +32,7 @@ import com.utcLABS.mindspace.model.ConceptModel;
 import com.utcLABS.mindspace.model.MindMapModel;
 import com.utcLABS.mindspace.view.MindMapView;
 
-public class MenuActivity extends ActionBarActivity {
+public class EditionActivity extends ActionBarActivity {
 
 	protected MenuItem itemEdit;
 	protected MenuItem itemSee;
@@ -41,9 +41,8 @@ public class MenuActivity extends ActionBarActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
-		
-		getActionBar().setDisplayHomeAsUpEnabled(true);
+		setContentView(R.layout.activity_edition);
+				
 		if (savedInstanceState == null) {
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
@@ -127,7 +126,8 @@ public class MenuActivity extends ActionBarActivity {
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
-			rootView = inflater.inflate(R.layout.fragment_menu, container,false);
+			View rootView = inflater.inflate(R.layout.fragment_edition, container,
+					false);
 			
 			 viewMindMap = (MindMapView)rootView.findViewById(R.id.surfaceView);
 	         model = viewMindMap.getModel();
@@ -147,8 +147,8 @@ public class MenuActivity extends ActionBarActivity {
             		  if(id == 1){
             			  model.createNewConcept(new PointF(300,300));
                 		  viewMindMap.setModel(model);
-                		  DrawerLayout drawerLayout = (DrawerLayout)rootView.findViewById(R.id.drawer_layout);
-                		  drawerLayout.openDrawer(rootView.findViewById(R.id.layout_fragment));
+                		  DrawerLayout drawerLayout = (DrawerLayout)PlaceholderFragment.this.rootView.findViewById(R.id.drawer_layout);
+                		  drawerLayout.openDrawer(PlaceholderFragment.this.rootView.findViewById(R.id.layout_fragment));
             		  }	  
             	  }
             	});

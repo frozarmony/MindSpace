@@ -6,7 +6,7 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_home">HomeActivity</string>
     <string name="newFile">Nouveau</string>
-    <string name="title_activity_menu">MenuActivity</string>
+    <string name="title_activity_edition">EditionActivity</string>
     <string name="title_activity_visualisation">VisualisationActivity</string>
     <string name="title_activity_picture_edit">PictureEditActivity</string>
 
