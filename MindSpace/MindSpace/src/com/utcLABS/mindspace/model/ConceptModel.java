@@ -6,7 +6,6 @@ import java.util.LinkedList;
 
 import android.graphics.Color;
 import android.graphics.PointF;
-import android.util.Log;
 
 public class ConceptModel {
 	
@@ -19,6 +18,8 @@ public class ConceptModel {
 	public final static String			NP_COLOR					= "color";
 	public final static String			NP_SHAPE					= "shape";
 	public final static String			NP_MOVE						= "move";
+	
+	public final static float			MAX_SIZE_RATIO				= 0.9f;
 	
 	public final static float			DEFAULT_SIZE				= 1f;
 	public final static float			DEFAULT_SIZE_RATIO			= 0.7f;
@@ -135,11 +136,19 @@ public class ConceptModel {
 	}
 	
 	public void setSize(float newSize) {
+		// Compute Size Ceil
+		if(this.parent!=null)
+			newSize = Math.min(newSize, this.parent.size*MAX_SIZE_RATIO);
+		
+		// Update Size if necessary
 		if(this.size!=newSize){
-			Log.d("ConceptModel("+this.name+")", "New Size " + newSize);
 			float oldSize = this.size;
 			this.size = newSize;
 			this.propertyChangeSupport.firePropertyChange(NP_SIZE, oldSize, newSize);
+			
+			// Update Children's Size Ceil
+			for( ConceptModel c : this.children )
+				c.setSize(c.size*(newSize/oldSize));
 		}
 	}
 	
@@ -216,6 +225,9 @@ public class ConceptModel {
 			
 			// Update Position
 			this.setPosition(newParent.position.x+translation.x, newParent.position.y+translation.y);
+			
+			// Update Size Ceil
+			this.setSize(this.size);
 
 			// Reset to Default Properties
 			//setDefaultProperties();

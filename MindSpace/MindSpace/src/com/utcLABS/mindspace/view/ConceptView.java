@@ -419,6 +419,8 @@ public class ConceptView {
 			}
 			if( model.getParent().getSize() * scaleFactor.getScale() < minRelativeSize )
 				this.branchView.setVisibility(View.INVISIBLE);
+			else
+				this.branchView.setVisibility(View.VISIBLE);
 		}
 		else{
 			if( !this.isVisible ){
