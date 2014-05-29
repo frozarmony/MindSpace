@@ -22,4 +22,11 @@
         <attr name="end_angle" format="float"></attr>
         <attr name="circle_fill" format="string"></attr>
     </declare-styleable>
+     <declare-styleable name="circleview">
+        <attr name="cRadius" format="integer" />
+        <attr name="cFillColor" format="color" />
+        <attr name="cStrokeColor" format="color" />
+        <attr name="cAngleStart" format="integer" />
+        <attr name="cAngleEnd" format="integer" />
+    </declare-styleable>
 </resources>
