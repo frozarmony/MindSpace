@@ -291,6 +291,48 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
 or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
          */
         public static final int buttonBarStyle=0x7f010017;
+        /** <p>Must be an integer value, such as "<code>100</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int cAngleEnd=0x7f010096;
+        /** <p>Must be an integer value, such as "<code>100</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int cAngleStart=0x7f010095;
+        /** <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int cFillColor=0x7f010093;
+        /** <p>Must be an integer value, such as "<code>100</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int cRadius=0x7f010092;
+        /** <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int cStrokeColor=0x7f010094;
         /** <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
 <p>This may also be a reference to a resource (in the form
 "<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
@@ -1408,29 +1450,30 @@ containing a value of this type.
         public static final int bin=0x7f020057;
         public static final int bin_focused=0x7f020058;
         public static final int bin_selected=0x7f020059;
-        public static final int delete_mindmap=0x7f02005a;
-        public static final int drag_shadow=0x7f02005b;
-        public static final int ic_action_camera=0x7f02005c;
-        public static final int ic_action_edit=0x7f02005d;
-        public static final int ic_action_edit_light=0x7f02005e;
-        public static final int ic_action_edit_selected=0x7f02005f;
-        public static final int ic_action_new=0x7f020060;
-        public static final int ic_action_picture=0x7f020061;
-        public static final int ic_action_search=0x7f020062;
-        public static final int ic_action_see=0x7f020063;
-        public static final int ic_action_see_selected=0x7f020064;
-        public static final int ic_action_undo=0x7f020065;
-        public static final int ic_action_web_site=0x7f020066;
-        public static final int ic_launcher=0x7f020067;
-        public static final int ic_menu_color_palette_holo_light=0x7f020068;
-        public static final int linearborder=0x7f020069;
-        public static final int logo=0x7f02006a;
-        public static final int nodeshape=0x7f02006b;
-        public static final int rename=0x7f02006c;
-        public static final int rename_mindmap=0x7f02006d;
-        public static final int rename_selected=0x7f02006e;
-        public static final int sat_item=0x7f02006f;
-        public static final int sat_main=0x7f020070;
+        public static final int bin_small=0x7f02005a;
+        public static final int delete_mindmap=0x7f02005b;
+        public static final int drag_shadow=0x7f02005c;
+        public static final int ic_action_camera=0x7f02005d;
+        public static final int ic_action_edit=0x7f02005e;
+        public static final int ic_action_edit_light=0x7f02005f;
+        public static final int ic_action_edit_selected=0x7f020060;
+        public static final int ic_action_new=0x7f020061;
+        public static final int ic_action_picture=0x7f020062;
+        public static final int ic_action_search=0x7f020063;
+        public static final int ic_action_see=0x7f020064;
+        public static final int ic_action_see_selected=0x7f020065;
+        public static final int ic_action_undo=0x7f020066;
+        public static final int ic_action_web_site=0x7f020067;
+        public static final int ic_launcher=0x7f020068;
+        public static final int ic_menu_color_palette_holo_light=0x7f020069;
+        public static final int linearborder=0x7f02006a;
+        public static final int logo=0x7f02006b;
+        public static final int nodeshape=0x7f02006c;
+        public static final int rename=0x7f02006d;
+        public static final int rename_mindmap=0x7f02006e;
+        public static final int rename_selected=0x7f02006f;
+        public static final int sat_item=0x7f020070;
+        public static final int sat_main=0x7f020071;
     }
     public static final class id {
         public static final int action_bar=0x7f05001c;
@@ -1444,68 +1487,69 @@ containing a value of this type.
         public static final int action_menu_divider=0x7f050016;
         public static final int action_menu_presenter=0x7f050017;
         public static final int action_mode_close_button=0x7f050024;
-        public static final int action_settings=0x7f05005f;
+        public static final int action_settings=0x7f050060;
         public static final int activity_chooser_view_content=0x7f050025;
         public static final int always=0x7f05000b;
         public static final int beginning=0x7f050011;
         public static final int buttonLoadPicture=0x7f05003d;
         public static final int checkbox=0x7f05002d;
-        public static final int circularSeekBar1=0x7f050055;
+        public static final int circularSeekBar1=0x7f050056;
         public static final int collapseActionView=0x7f05000d;
         public static final int container=0x7f05003c;
-        public static final int container_fragment=0x7f05004d;
+        public static final int container_fragment=0x7f050047;
         public static final int default_activity_button=0x7f050028;
-        public static final int delete_mindmap=0x7f05005a;
+        public static final int delete_mindmap=0x7f05005b;
         public static final int dialog=0x7f05000e;
         public static final int disableHome=0x7f050008;
-        public static final int drawer_layout=0x7f05004a;
+        public static final int drawer_layout=0x7f050043;
         public static final int dropdown=0x7f05000f;
         public static final int editInput=0x7f050041;
         public static final int editLayout=0x7f05003f;
-        public static final int edit_concept=0x7f05004f;
-        public static final int edit_picture=0x7f050051;
+        public static final int edit_concept=0x7f050049;
+        public static final int edit_picture=0x7f05004b;
         public static final int edit_query=0x7f050030;
-        public static final int edit_shape=0x7f050050;
+        public static final int edit_shape=0x7f05004a;
         public static final int end=0x7f050013;
         public static final int expand_activities_button=0x7f050026;
         public static final int expanded_menu=0x7f05002c;
-        public static final int google=0x7f050053;
+        public static final int google=0x7f05004d;
         public static final int home=0x7f050014;
         public static final int homeAsUp=0x7f050005;
         public static final int icon=0x7f05002a;
         public static final int ifRoom=0x7f05000a;
         public static final int image=0x7f050027;
         public static final int imgView=0x7f05003e;
-        public static final int item_list=0x7f050057;
-        public static final int layout_bouton=0x7f05004e;
-        public static final int layout_fragment=0x7f05004c;
-        public static final int layout_left=0x7f050043;
-        public static final int layout_right=0x7f050047;
+        public static final int item_list=0x7f050058;
+        public static final int layout_bouton=0x7f050048;
+        public static final int layout_fragment=0x7f050046;
+        public static final int layout_left=0x7f05004f;
+        public static final int layout_right=0x7f050053;
         public static final int listMode=0x7f050001;
         public static final int list_item=0x7f050029;
-        public static final int list_mindmaps=0x7f050049;
-        public static final int logo=0x7f050044;
-        public static final int menu=0x7f050054;
-        public static final int menu_edit=0x7f050060;
-        public static final int menu_see=0x7f050061;
-        public static final int menu_settings=0x7f050062;
-        public static final int mes_mindmaps=0x7f050048;
+        public static final int list_mindmaps=0x7f050055;
+        public static final int logo=0x7f050050;
+        public static final int menu=0x7f05004e;
+        public static final int menu_edit=0x7f050061;
+        public static final int menu_see=0x7f050062;
+        public static final int menu_settings=0x7f050063;
+        public static final int mes_mindmaps=0x7f050054;
         public static final int middle=0x7f050012;
-        public static final int modification_date=0x7f050058;
+        public static final int modification_date=0x7f050059;
         public static final int never=0x7f050009;
-        public static final int new_mindmap_message=0x7f05005b;
-        public static final int new_mindmap_title=0x7f05005c;
+        public static final int new_mindmap_message=0x7f05005c;
+        public static final int new_mindmap_title=0x7f05005d;
         public static final int new_title=0x7f050040;
         public static final int none=0x7f050010;
         public static final int normal=0x7f050000;
-        public static final int nouveau_mindmap=0x7f050045;
+        public static final int nouveau_mindmap=0x7f050051;
         public static final int picker=0x7f050042;
+        public static final int pieCircle=0x7f050045;
         public static final int progress_circular=0x7f050018;
         public static final int progress_horizontal=0x7f050019;
         public static final int radio=0x7f05002f;
-        public static final int rename_mindmap=0x7f050059;
-        public static final int sat_item=0x7f05005d;
-        public static final int sat_main=0x7f05005e;
+        public static final int rename_mindmap=0x7f05005a;
+        public static final int sat_item=0x7f05005e;
+        public static final int sat_main=0x7f05005f;
         public static final int search_badge=0x7f050032;
         public static final int search_bar=0x7f050031;
         public static final int search_button=0x7f050033;
@@ -1522,15 +1566,15 @@ containing a value of this type.
         public static final int showTitle=0x7f050006;
         public static final int split_action_bar=0x7f05001e;
         public static final int submit_area=0x7f050039;
-        public static final int surfaceView=0x7f05004b;
+        public static final int surfaceView=0x7f050044;
         public static final int tabMode=0x7f050002;
         public static final int title=0x7f05002b;
         public static final int top_action_bar=0x7f050020;
-        public static final int tutoriel=0x7f050046;
+        public static final int tutoriel=0x7f050052;
         public static final int up=0x7f050021;
         public static final int useLogo=0x7f050003;
-        public static final int wikipedia=0x7f050052;
-        public static final int wikipediaView=0x7f050056;
+        public static final int wikipedia=0x7f05004c;
+        public static final int wikipediaView=0x7f050057;
         public static final int withText=0x7f05000c;
     }
     public static final class integer {
@@ -1583,23 +1627,22 @@ containing a value of this type.
         public static final int abc_search_dropdown_item_icons_2line=0x7f030015;
         public static final int abc_search_view=0x7f030016;
         public static final int abc_simple_decor=0x7f030017;
-        public static final int activity_home=0x7f030018;
-        public static final int activity_main=0x7f030019;
-        public static final int activity_menu=0x7f03001a;
-        public static final int activity_picture_edit=0x7f03001b;
-        public static final int activity_visualisation=0x7f03001c;
-        public static final int edit_picture=0x7f03001d;
-        public static final int edit_slide=0x7f03001e;
-        public static final int fragment_color=0x7f03001f;
+        public static final int activity_edition=0x7f030018;
+        public static final int activity_home=0x7f030019;
+        public static final int activity_picture_edit=0x7f03001a;
+        public static final int activity_visualisation=0x7f03001b;
+        public static final int edit_picture=0x7f03001c;
+        public static final int edit_slide=0x7f03001d;
+        public static final int fragment_color=0x7f03001e;
+        public static final int fragment_edition=0x7f03001f;
         public static final int fragment_home=0x7f030020;
-        public static final int fragment_menu=0x7f030021;
-        public static final int fragment_visualisation=0x7f030022;
-        public static final int fragment_web=0x7f030023;
-        public static final int layout_list_mindmap=0x7f030024;
-        public static final int new_mindmap_dialog=0x7f030025;
-        public static final int sat_item_cr=0x7f030026;
-        public static final int sat_main=0x7f030027;
-        public static final int support_simple_spinner_dropdown_item=0x7f030028;
+        public static final int fragment_visualisation=0x7f030021;
+        public static final int fragment_web=0x7f030022;
+        public static final int layout_list_mindmap=0x7f030023;
+        public static final int new_mindmap_dialog=0x7f030024;
+        public static final int sat_item_cr=0x7f030025;
+        public static final int sat_main=0x7f030026;
+        public static final int support_simple_spinner_dropdown_item=0x7f030027;
     }
     public static final class menu {
         public static final int home=0x7f0c0000;
@@ -1670,8 +1713,8 @@ containing a value of this type.
         public static final int new_mindmap_hint=0x7f0a0022;
         public static final int new_mindmap_message=0x7f0a0021;
         public static final int nouveau_mindmap=0x7f0a001d;
+        public static final int title_activity_edition=0x7f0a0026;
         public static final int title_activity_home=0x7f0a0024;
-        public static final int title_activity_menu=0x7f0a0026;
         public static final int title_activity_picture_edit=0x7f0a0027;
         public static final int title_activity_visualisation=0x7f0a0013;
         public static final int title_concept=0x7f0a0019;
@@ -4185,5 +4228,99 @@ containing a value of this type.
           @attr name android.view.ext:paddingStart
         */
         public static final int View_paddingStart = 1;
+        /** Attributes that can be used with a circleview.
+           <p>Includes the following attributes:</p>
+           <table>
+           <colgroup align="left" />
+           <colgroup align="left" />
+           <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #circleview_cAngleEnd android.view.ext:cAngleEnd}</code></td><td></td></tr>
+           <tr><td><code>{@link #circleview_cAngleStart android.view.ext:cAngleStart}</code></td><td></td></tr>
+           <tr><td><code>{@link #circleview_cFillColor android.view.ext:cFillColor}</code></td><td></td></tr>
+           <tr><td><code>{@link #circleview_cRadius android.view.ext:cRadius}</code></td><td></td></tr>
+           <tr><td><code>{@link #circleview_cStrokeColor android.view.ext:cStrokeColor}</code></td><td></td></tr>
+           </table>
+           @see #circleview_cAngleEnd
+           @see #circleview_cAngleStart
+           @see #circleview_cFillColor
+           @see #circleview_cRadius
+           @see #circleview_cStrokeColor
+         */
+        public static final int[] circleview = {
+            0x7f010092, 0x7f010093, 0x7f010094, 0x7f010095,
+            0x7f010096
+        };
+        /**
+          <p>This symbol is the offset where the {@link android.view.ext.R.attr#cAngleEnd}
+          attribute's value can be found in the {@link #circleview} array.
+
+
+          <p>Must be an integer value, such as "<code>100</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name android.view.ext:cAngleEnd
+        */
+        public static final int circleview_cAngleEnd = 4;
+        /**
+          <p>This symbol is the offset where the {@link android.view.ext.R.attr#cAngleStart}
+          attribute's value can be found in the {@link #circleview} array.
+
+
+          <p>Must be an integer value, such as "<code>100</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name android.view.ext:cAngleStart
+        */
+        public static final int circleview_cAngleStart = 3;
+        /**
+          <p>This symbol is the offset where the {@link android.view.ext.R.attr#cFillColor}
+          attribute's value can be found in the {@link #circleview} array.
+
+
+          <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name android.view.ext:cFillColor
+        */
+        public static final int circleview_cFillColor = 1;
+        /**
+          <p>This symbol is the offset where the {@link android.view.ext.R.attr#cRadius}
+          attribute's value can be found in the {@link #circleview} array.
+
+
+          <p>Must be an integer value, such as "<code>100</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name android.view.ext:cRadius
+        */
+        public static final int circleview_cRadius = 0;
+        /**
+          <p>This symbol is the offset where the {@link android.view.ext.R.attr#cStrokeColor}
+          attribute's value can be found in the {@link #circleview} array.
+
+
+          <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name android.view.ext:cStrokeColor
+        */
+        public static final int circleview_cStrokeColor = 2;
     };
 }

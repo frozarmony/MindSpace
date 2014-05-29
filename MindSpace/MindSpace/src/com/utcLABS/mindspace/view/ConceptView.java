@@ -13,7 +13,6 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.PathShape;
@@ -22,10 +21,8 @@ import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
-import android.view.ext.R;
 
 import com.utcLABS.mindspace.model.ConceptModel;
-import com.utcLABS.mindspace.model.ConceptModel.MindSpaceShape;
 import com.utcLABS.mindspace.view.MindMapView.ScaleObject;
 
 
@@ -44,10 +41,10 @@ public class ConceptView {
 	private static final float			ON_TOUCH_MIN_MOOVE			= 10f;
 	
 
-	// Model Member
+	// Model Reference
 	private ConceptModel				model;
 	
-	// View Member
+	// View Members
 	private boolean						isVisible;
 	private MindMapView					mainView;
 	private ConceptView					parentView;
@@ -64,7 +61,7 @@ public class ConceptView {
 	private View						cloudView;
 	private GradientDrawable			cloudGrad;
 	
-	// Property Change Listener
+	// Property Change Listeners
 	private PropertyChangeListener		onNameChanged;
 	private PropertyChangeListener		onPositionChanged;
 	private PropertyChangeListener		onSizeChanged;
@@ -75,7 +72,7 @@ public class ConceptView {
 	// Controller Member
 	private boolean						isMoving;
 	
-	// Controller Listener
+	// Controller Listeners
 	private View.OnTouchListener		onTouch;
 	private View.OnLongClickListener	onLongClick;
 	private View.OnDragListener			onDrag;
@@ -110,8 +107,8 @@ public class ConceptView {
 		// Init Model's Listeners
 		initPropertyChangeListeners(model);
 		
-		// Init Controller's Listener's
-		initControllerListener();
+		// Init Controller's Listeners
+		initControllerListeners();
 		
 		// Update Visibility
 		updateVisibility();
@@ -280,7 +277,7 @@ public class ConceptView {
 	/*
 	 *	Controller's Listeners
 	 */
-	private void initControllerListener(){
+	private void initControllerListeners(){
 		
 		// OnClickListener
 		this.onTouch = new View.OnTouchListener() {
@@ -301,9 +298,14 @@ public class ConceptView {
 				case MotionEvent.ACTION_MOVE :
 					// If already Moving
 					if( isMoving ){
-						PointF currPosition = model.getPosition();
-						model.setPosition(currPosition.x+event.getX()-startPos.x, currPosition.y+event.getY()-startPos.y);
-						return true;
+						if( mainView.isEditMode() ){
+							PointF currPosition = model.getPosition();
+							model.setPosition(currPosition.x+event.getX()-startPos.x, currPosition.y+event.getY()-startPos.y);
+							return true;
+						}
+						else{
+							return false;
+						}
 					}
 					
 					// Compute Offset
@@ -311,9 +313,15 @@ public class ConceptView {
 					
 					if(offset.length()>ON_TOUCH_MIN_MOOVE){
 						isMoving = true;
-						PointF currPosition = model.getPosition();
-						model.setPosition(currPosition.x+offset.x, currPosition.y+offset.y);
-						return true;
+						
+						if(mainView.isEditMode()){
+							PointF currPosition = model.getPosition();
+							model.setPosition(currPosition.x+offset.x, currPosition.y+offset.y);
+							return true;
+						}
+						else{
+							return false;
+						}
 					}
 					break;
 				case MotionEvent.ACTION_UP :
@@ -338,18 +346,15 @@ public class ConceptView {
 			
 			@Override
 			public boolean onLongClick(View v) {
-				if( !isMoving ){
+				if( !isMoving && mainView.isEditMode() ){
 					// Create ClipData
 					ClipData.Item item =  new ClipData.Item( model.getName() );
 					ClipData dragData = new ClipData(model.getName(), new String[]{ConceptView.MIMETYPE_CONCEPTVIEW},item);
 					
 					// Create DragShadow
 					View.DragShadowBuilder myShadow = new MyDragShadowBuilder(v);
-					   
-					// Modify Current View
-					//nodeView.setVisibility(View.INVISIBLE);
-					//branchView.setVisibility(View.INVISIBLE);
 					
+					// Start Drag
 					return v.startDrag(dragData, myShadow, ConceptView.this, 0);
 				}
 				return false;
@@ -363,29 +368,31 @@ public class ConceptView {
 			@Override
 			public boolean onDrag(View v, DragEvent event) {
 				
-				switch (event.getAction()) {
-				case DragEvent.ACTION_DRAG_STARTED:
-					if( !event.getClipDescription().hasMimeType(MIMETYPE_CONCEPTVIEW) )
-						return false;
-					break;
- 				case DragEvent.ACTION_DRAG_ENTERED:
- 					setSelectMode(true);
- 					break;
- 				case DragEvent.ACTION_DRAG_EXITED:
- 					setSelectMode(false);
- 					break;
- 				case DragEvent.ACTION_DROP:
- 					Log.d("ConceptView("+model.getName()+")", "Action Drop");
- 					ConceptView conceptView = (ConceptView) event.getLocalState();
- 					conceptView.getModel().moveTo(getModel());
- 					setSelectMode(false);
- 					break;
- 				case DragEvent.ACTION_DRAG_ENDED:
- 					Log.d("ConceptView("+model.getName()+")", "Action Ended");
- 					break;
- 				}
-				
-	 			return true;
+				if(mainView.isEditMode()){
+					switch (event.getAction()) {
+					case DragEvent.ACTION_DRAG_STARTED:
+						if( !event.getClipDescription().hasMimeType(MIMETYPE_CONCEPTVIEW) )
+							return false;
+						break;
+	 				case DragEvent.ACTION_DRAG_ENTERED:
+	 					setSelectMode(true);
+	 					break;
+	 				case DragEvent.ACTION_DRAG_EXITED:
+	 					setSelectMode(false);
+	 					break;
+	 				case DragEvent.ACTION_DROP:
+	 					Log.d("ConceptView("+model.getName()+")", "Action Drop");
+	 					ConceptView conceptView = (ConceptView) event.getLocalState();
+	 					conceptView.getModel().moveTo(getModel());
+	 					setSelectMode(false);
+	 					break;
+	 				case DragEvent.ACTION_DRAG_ENDED:
+	 					Log.d("ConceptView("+model.getName()+")", "Action Ended");
+	 					break;
+	 				}
+		 			return true;
+				}
+				return false;
 			}
 		};
 		this.nodeView.setOnDragListener(this.onDrag);
@@ -557,7 +564,7 @@ public class ConceptView {
 
 	    // The drag shadow image, defined as a drawable thing
 	    private GradientDrawable shadow =  new GradientDrawable();
-	    private Drawable enterShape = nodeView.getResources().getDrawable(R.drawable.drag_shadow);
+	    //private Drawable enterShape = nodeView.getResources().getDrawable(R.drawable.drag_shadow);
 	    private int marginShadow = 10;
 	    private int width, height;
 	    
