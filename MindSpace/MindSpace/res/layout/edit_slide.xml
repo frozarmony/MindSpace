@@ -59,7 +59,7 @@
        android:background="#E6E2AF" />
   
   <EditText
-      android:id="@+id/edtInput"
+      android:id="@+id/editInput"
       android:layout_width="300dp"
       android:layout_height="wrap_content"
       android:hint="@string/edit_desc"

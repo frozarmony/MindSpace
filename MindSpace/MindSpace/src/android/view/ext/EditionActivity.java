@@ -3,48 +3,45 @@ package android.view.ext;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.PointF;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
-import android.view.DragEvent;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnDragListener;
+import android.view.ext.SatelliteMenu.SateliteClickedListener;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 
 import com.utcLABS.mindspace.ColorFragment;
 import com.utcLABS.mindspace.GoogleFragment;
+import com.utcLABS.mindspace.HomeActivity;
 import com.utcLABS.mindspace.PictureEditFragment;
 import com.utcLABS.mindspace.TextEditFragment;
 import com.utcLABS.mindspace.VisualisationActivity;
 import com.utcLABS.mindspace.WikipediaFragment;
 import com.utcLABS.mindspace.model.ConceptModel;
 import com.utcLABS.mindspace.model.MindMapModel;
-import com.utcLABS.mindspace.utilities.MindmapAdapter;
-import com.utcLABS.mindspace.view.CircleView;
-import com.utcLABS.mindspace.view.ConceptView;
+import com.utcLABS.mindspace.view.MindMapView;
 
 public class EditionActivity extends ActionBarActivity {
 
 	protected MenuItem itemEdit;
 	protected MenuItem itemSee;
 	private ConceptModel currentConcept;
-	private MindMapModel model;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_edition);
-				
+		
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 		if (savedInstanceState == null) {
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
@@ -81,12 +78,27 @@ public class EditionActivity extends ActionBarActivity {
 			itemEdit.setEnabled(true);
 			Intent i0 = new Intent(this, VisualisationActivity.class);
 			startActivity(i0);
-			this.onPause();
+			this.finish();
 			return true;
+		}else if(id == android.R.id.home){
+			Intent i0 = new Intent(this, HomeActivity.class);
+			startActivity(i0);
+			this.finish();
 		}
 		return super.onOptionsItemSelected(item);
 	}
-
+	
+	public boolean onKeyDown(int keyCode, KeyEvent event) 
+    {
+               
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+        	Intent i0 = new Intent(this, HomeActivity.class);
+			startActivity(i0);
+			this.finish();
+        }
+		return true;
+           
+     }
 
 	public ConceptModel getCurrentConcept() {
 		return currentConcept;
@@ -97,27 +109,47 @@ public class EditionActivity extends ActionBarActivity {
 	}
 
 
+
 	/**
 	 * A placeholder fragment containing a simple view.
 	 */
 	public static class PlaceholderFragment extends Fragment {
 
+		private MindMapView viewMindMap;
+		private MindMapModel model;
+		View rootView = null;
+		
 		public PlaceholderFragment() {
 		}
 
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
-			final View rootView = inflater.inflate(R.layout.fragment_edition, container,
-					false);
+			rootView = inflater.inflate(R.layout.fragment_edition, container,false);
 			
-			SatelliteMenu menu = (SatelliteMenu) rootView.findViewById(R.id.menu);
+			 viewMindMap = (MindMapView)rootView.findViewById(R.id.surfaceView);
+	         model = viewMindMap.getModel();
+			
+			final SatelliteMenu menu = (SatelliteMenu) rootView.findViewById(R.id.menu);
             List<SatelliteMenuItem> items = new ArrayList<SatelliteMenuItem>();
             items.add(new SatelliteMenuItem(4, R.drawable.duplicate_button));
             items.add(new SatelliteMenuItem(4, R.drawable.redo_button));
             items.add(new SatelliteMenuItem(4, R.drawable.undo_button));
-            items.add(new SatelliteMenuItem(3, R.drawable.add_button));;
+            items.add(new SatelliteMenuItem(1, R.drawable.add_button));;
             menu.addItems(items);
+           
+            
+            
+            menu.setOnItemClickedListener(new SateliteClickedListener() {
+            	  public void eventOccured(int id) {
+            		  if(id == 1){
+            			  model.createNewConcept(new PointF(300,300));
+                		  viewMindMap.setModel(model);
+                		  DrawerLayout drawerLayout = (DrawerLayout)rootView.findViewById(R.id.drawer_layout);
+                		  drawerLayout.openDrawer(rootView.findViewById(R.id.layout_fragment));
+            		  }	  
+            	  }
+            	});
 			
 			Fragment fg = new TextEditFragment();
 	        getFragmentManager().beginTransaction().add(R.id.container_fragment, fg).commit();
@@ -182,70 +214,8 @@ public class EditionActivity extends ActionBarActivity {
 			        transaction.addToBackStack(null).commit();
 				}
 			});
-	        
-	        
-	        /* Definition of the bin events */
-	        final View binDrag = (View)rootView.findViewById(R.id.binDrag);
-	        binDrag.setOnDragListener(new OnDragListener() {
-
-	     			@Override
-	     			public boolean onDrag(View v, final DragEvent event) {
-	     				// Init
-	     				final ConceptView conceptView;
-	     				
-	     				switch (event.getAction()) {
-	     				case DragEvent.ACTION_DRAG_STARTED:
-		    				if( !event.getClipDescription().hasMimeType(ConceptView.MIMETYPE_CONCEPTVIEW) )
-		    					return false;
-		    				binDrag.setBackgroundResource(R.drawable.bin_drag);
-	     					Log.d("Bin", "Action Drag Start");
-		    				break;
-	     				case DragEvent.ACTION_DROP:
-	     					Log.d("Bin", "Action Drop");
-	     					conceptView = (ConceptView) event.getLocalState();
-	     					/*Dialog Window to confirm the concept deletion */
-	     					AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(rootView.getContext())
-							.setTitle("Supprimer le concept")
-							.setMessage("Voulez-vous supprimer le concept \""+ conceptView.getModel().getName()+ "\" ?");
-				
-							dialogBuilder.setPositiveButton("Supprimer",new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,int id) {	
-			     					conceptView.getModel().delete();
-								}
-							});
-							
-							dialogBuilder.setNegativeButton("Annuler",new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,int id) {
-									dialog.cancel();
-								}
-							});	
-							
-							AlertDialog dialog = dialogBuilder.create();
-							dialog.show();   
-
-	     					break;
-	     				case DragEvent.ACTION_DRAG_ENDED:
-		    				binDrag.setBackground(null);
-	     					Log.d("Bin", "Action Drag Ended");
-	     					break;
-	     				case DragEvent.ACTION_DRAG_ENTERED:
-	     					Log.d("Bin", "Action Drag Entered");
-		    				binDrag.setBackgroundResource(R.drawable.bin_drag_hover);
-		    				break;
-	     				case DragEvent.ACTION_DRAG_EXITED:
-	     					binDrag.setBackgroundResource(R.drawable.bin_drag);
-	     					break;
-	     				}
-	     				return true;
-	     			}
-	     		});
-	        
-	        
-	        
 	   		return rootView;
 		}
-		
-
 	}
 
 }

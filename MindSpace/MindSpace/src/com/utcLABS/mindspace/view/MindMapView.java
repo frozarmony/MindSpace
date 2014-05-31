@@ -348,4 +348,9 @@ import com.utcLABS.mindspace.model.MindMapModel;
 			v.updateVisibility();
 	}
 
+	public MindMapModel getModel() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
