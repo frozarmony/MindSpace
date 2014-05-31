@@ -17,7 +17,8 @@ public class PictureEditFragment extends Fragment {
 
 	private int RESULT_LOAD_IMAGE = 1;
 	View rootView;
-	
+	ConceptModel conceptModel;
+
 	public PictureEditFragment(){
 		
 	}
@@ -37,7 +38,16 @@ public class PictureEditFragment extends Fragment {
 				startActivityForResult(i, RESULT_LOAD_IMAGE);	
 			}
 		});
+		
 		return rootView;
+	}
+	
+	public ConceptModel getConceptModel() {
+		return conceptModel;
+	}
+
+	public void setConceptModel(ConceptModel conceptModel) {
+		this.conceptModel = conceptModel;
 	}
 	
 	@Override

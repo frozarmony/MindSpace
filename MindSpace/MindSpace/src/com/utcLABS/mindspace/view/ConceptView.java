@@ -17,13 +17,17 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.PathShape;
+import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ext.MenuActivity;
 import android.view.ext.R;
 import android.widget.TextView;
 
+import com.utcLABS.mindspace.VisualisationActivity;
 import com.utcLABS.mindspace.model.ConceptModel;
 import com.utcLABS.mindspace.view.MindMapView.ScaleObject;
 
@@ -112,6 +116,7 @@ public class ConceptView {
 		
 		// Update Visibility
 		updateVisibility();
+		
 	}
 
 	@SuppressLint("NewApi")
@@ -313,6 +318,20 @@ public class ConceptView {
 			}
 		};
 		this.nodeView.setOnTouchListener(this.onTouch);
+		
+		this.nodeView.setOnClickListener(new View.OnClickListener() {
+		
+			@Override
+			public void onClick(View v) {
+				Boolean mode = mainView.getMode();
+				if(mode){
+					((MenuActivity.PlaceholderFragment)mainView.getCurrentFragment()).editConcept(model);
+				}else {
+					((VisualisationActivity.PlaceholderFragment)mainView.getCurrentFragment()).editConcept(model);
+				}
+				
+			}
+		});
 				
 		// OnLongClickListener
 		this.onLongClick = new View.OnLongClickListener() {

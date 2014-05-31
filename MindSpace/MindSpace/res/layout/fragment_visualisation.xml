@@ -3,15 +3,30 @@
     xmlns:app1="http://schemas.android.com/apk/res/android.view.ext"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="android.view.ext.VisualisationActivity$PlaceholderFragment" >
 
-    <com.utcLABS.mindspace.view.MindMapView
- 	     android:id="@+id/surfaceView"
-  	     android:layout_width="match_parent"
- 	     android:layout_height="match_parent" 
-      /> 
+     <android.support.v4.widget.DrawerLayout
+	    android:id="@+id/drawer_layout_visualisation"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:background="@android:color/white">
+	    
+	    <com.utcLABS.mindspace.view.MindMapView
+	 	     android:id="@+id/surfaceView"
+	  	     android:layout_width="match_parent"
+	 	     android:layout_height="match_parent" 
+	      /> 
+	      
+	     <LinearLayout 
+	         android:id="@+id/layout_visualisation"
+		    android:layout_width="320dp"
+		    android:layout_height="match_parent"
+		    android:orientation="vertical"
+		    android:layout_gravity="right"
+		    android:background="#046380"
+	    >
+	    </LinearLayout>
+    </android.support.v4.widget.DrawerLayout>
       
     <com.devadvance.circularseekbar.CircularSeekBar
         android:id="@+id/circularSeekBar1"

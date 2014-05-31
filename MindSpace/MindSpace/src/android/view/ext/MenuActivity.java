@@ -1,10 +1,12 @@
 package android.view.ext;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
+import org.w3c.dom.Text;
+
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.PointF;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -18,7 +20,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ext.SatelliteMenu.SateliteClickedListener;
-import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.utcLABS.mindspace.ColorFragment;
@@ -30,13 +31,13 @@ import com.utcLABS.mindspace.VisualisationActivity;
 import com.utcLABS.mindspace.WikipediaFragment;
 import com.utcLABS.mindspace.model.ConceptModel;
 import com.utcLABS.mindspace.model.MindMapModel;
+import com.utcLABS.mindspace.view.ConceptView;
 import com.utcLABS.mindspace.view.MindMapView;
 
 public class MenuActivity extends ActionBarActivity {
 
 	protected MenuItem itemEdit;
 	protected MenuItem itemSee;
-	private ConceptModel currentConcept;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -102,16 +103,6 @@ public class MenuActivity extends ActionBarActivity {
            
      }
 
-	public ConceptModel getCurrentConcept() {
-		return currentConcept;
-	}
-
-	public void setCurrentConcept(ConceptModel currentConcept) {
-		this.currentConcept = currentConcept;
-	}
-
-
-
 	/**
 	 * A placeholder fragment containing a simple view.
 	 */
@@ -120,6 +111,8 @@ public class MenuActivity extends ActionBarActivity {
 		private MindMapView viewMindMap;
 		private MindMapModel model;
 		View rootView = null;
+		TextEditFragment editFg = new TextEditFragment();
+		private ConceptModel currentConcept = null;
 		
 		public PlaceholderFragment() {
 		}
@@ -128,8 +121,9 @@ public class MenuActivity extends ActionBarActivity {
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
 			rootView = inflater.inflate(R.layout.fragment_menu, container,false);
-			
 			 viewMindMap = (MindMapView)rootView.findViewById(R.id.surfaceView);
+			 viewMindMap.setCurrentFragment(this);
+			 viewMindMap.setMode(true);
 	         model = viewMindMap.getModel();
 			
 			final SatelliteMenu menu = (SatelliteMenu) rootView.findViewById(R.id.menu);
@@ -146,24 +140,23 @@ public class MenuActivity extends ActionBarActivity {
             	  public void eventOccured(int id) {
             		  if(id == 1){
             			  model.createNewConcept(new PointF(300,300));
-                		  viewMindMap.setModel(model);
+            			  viewMindMap.setModel(model);
                 		  DrawerLayout drawerLayout = (DrawerLayout)rootView.findViewById(R.id.drawer_layout);
                 		  drawerLayout.openDrawer(rootView.findViewById(R.id.layout_fragment));
             		  }	  
             	  }
             	});
 			
-			Fragment fg = new TextEditFragment();
-	        getFragmentManager().beginTransaction().add(R.id.container_fragment, fg).commit();
+	        getFragmentManager().beginTransaction().add(R.id.container_fragment, editFg).commit();
 
 	        ImageButton editConcept = (ImageButton)rootView.findViewById(R.id.edit_concept);
 	        editConcept.setOnClickListener(new View.OnClickListener() {
 				
 				@Override
 				public void onClick(View v) {
-					Fragment fg = new TextEditFragment();
+					editFg.initFragment(currentConcept);
 					FragmentTransaction transaction = getFragmentManager().beginTransaction();
-					transaction.replace(R.id.container_fragment, fg);
+					transaction.replace(R.id.container_fragment, editFg);
 			        transaction.addToBackStack(null).commit();
 				}
 			});
@@ -173,7 +166,8 @@ public class MenuActivity extends ActionBarActivity {
 				
 				@Override
 				public void onClick(View v) {
-					Fragment fg = new PictureEditFragment();
+					PictureEditFragment fg = new PictureEditFragment();
+					fg.setConceptModel(currentConcept);
 					FragmentTransaction transaction = getFragmentManager().beginTransaction();
 					transaction.replace(R.id.container_fragment, fg);
 			        transaction.addToBackStack(null).commit();
@@ -185,7 +179,8 @@ public class MenuActivity extends ActionBarActivity {
 				
 				@Override
 				public void onClick(View v) {
-					Fragment fg = new WikipediaFragment();
+					WikipediaFragment fg = new WikipediaFragment();
+					fg.setConceptModel(currentConcept);
 					FragmentTransaction transaction = getFragmentManager().beginTransaction();
 					transaction.replace(R.id.container_fragment, fg);
 			        transaction.addToBackStack(null).commit();
@@ -197,7 +192,8 @@ public class MenuActivity extends ActionBarActivity {
 				
 				@Override
 				public void onClick(View v) {
-					Fragment fg = new GoogleFragment();
+					GoogleFragment fg = new GoogleFragment();
+					fg.setConceptModel(currentConcept);
 					FragmentTransaction transaction = getFragmentManager().beginTransaction();
 					transaction.replace(R.id.container_fragment, fg);
 			        transaction.addToBackStack(null).commit();
@@ -210,13 +206,23 @@ public class MenuActivity extends ActionBarActivity {
 				
 				@Override
 				public void onClick(View v) {
-					Fragment fg = new ColorFragment();
+					ColorFragment fg = new ColorFragment();
+					fg.setConceptModel(currentConcept);
 					FragmentTransaction transaction = getFragmentManager().beginTransaction();
 					transaction.replace(R.id.container_fragment, fg);
 			        transaction.addToBackStack(null).commit();
 				}
 			});
 	   		return rootView;
+		}
+
+		public void editConcept(ConceptModel model) {
+			currentConcept = model;
+			editFg.initFragment(currentConcept);
+			DrawerLayout drawerLayout = (DrawerLayout)rootView.findViewById(R.id.drawer_layout);
+			drawerLayout.openDrawer(rootView.findViewById(R.id.layout_fragment));
+			
+			
 		}
 	}
 
