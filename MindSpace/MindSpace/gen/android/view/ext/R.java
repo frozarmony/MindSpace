@@ -1520,12 +1520,12 @@ containing a value of this type.
         public static final int disableHome=0x7f070008;
         public static final int drawer_layout=0x7f070043;
         public static final int dropdown=0x7f07000f;
+        public static final int editInput=0x7f070041;
         public static final int editLayout=0x7f07003f;
         public static final int edit_concept=0x7f070049;
         public static final int edit_picture=0x7f07004b;
         public static final int edit_query=0x7f070030;
         public static final int edit_shape=0x7f07004a;
-        public static final int edtInput=0x7f070041;
         public static final int end=0x7f070013;
         public static final int expand_activities_button=0x7f070026;
         public static final int expanded_menu=0x7f07002c;
