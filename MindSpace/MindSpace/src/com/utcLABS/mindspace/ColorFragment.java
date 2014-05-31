@@ -5,14 +5,16 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnClickListener;
 import android.view.ext.R;
 
 import com.larswerkman.holocolorpicker.ColorPicker;
 import com.larswerkman.holocolorpicker.ColorPicker.OnColorChangedListener;
+import com.utcLABS.mindspace.model.ConceptModel;
 
 public class ColorFragment extends Fragment {
 
+	private ConceptModel conceptModel;
+	
 	public ColorFragment() {
 		
 	}
@@ -28,15 +30,22 @@ public class ColorFragment extends Fragment {
 		picker.setOnColorChangedListener(new OnColorChangedListener() {
 			@Override
 			public void onColorChanged(int color) {
-				System.out.println(color);	
-				String hexColor = String.format("#%06X", (0xFFFFFF & color));
-				System.out.println(hexColor);	
+				conceptModel.setColor(color);
 
 			}
 			
 		});
+		
 		return rootView;
 	}
-	
+
+	public ConceptModel getConceptModel() {
+		return conceptModel;
+	}
+
+	public void setConceptModel(ConceptModel conceptModel) {
+		this.conceptModel = conceptModel;
+	}
+
 }
 	

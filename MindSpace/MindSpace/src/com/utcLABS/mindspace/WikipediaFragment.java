@@ -1,5 +1,7 @@
 package com.utcLABS.mindspace;
 
+import com.utcLABS.mindspace.model.ConceptModel;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,6 +16,7 @@ import android.view.ext.R;
 public class WikipediaFragment extends Fragment {
 
 	private WebView webView;
+	private ConceptModel conceptModel;
 	
 	public WikipediaFragment(){
 		
@@ -28,7 +31,7 @@ public class WikipediaFragment extends Fragment {
 		webView = (WebView) rootView.findViewById(R.id.wikipediaView);
 		webView.setWebViewClient(new MyWebView());
 		webView.getSettings().setJavaScriptEnabled(true);
-		webView.loadUrl("http://fr.wikipedia.org/");
+		webView.loadUrl("http://fr.wikipedia.org/wiki/" + conceptModel.getName());
 		return rootView;
 	}
 	
@@ -38,5 +41,9 @@ public class WikipediaFragment extends Fragment {
 	         view.loadUrl(url);
 	         return true;
 	      }
+	}
+
+	public void setConceptModel(ConceptModel currentConcept) {
+		this.conceptModel = currentConcept;
 	}
 }

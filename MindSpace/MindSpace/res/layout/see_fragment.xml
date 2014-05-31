@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+     <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:layout_marginTop="50dp"
+        android:background="#E6E2AF"
+        android:gravity="center"
+        android:text="@string/edit_concept"
+        android:textColor="#046380"
+        android:textSize="20dip" />
+     
+   <TextView
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_marginLeft="10dp"
+       android:layout_marginTop="50dp"
+       android:text="@string/title_concept"
+       android:textColor="#E6E2AF"
+       android:textSize="20dip" />
+      
+   <View
+       android:layout_width="fill_parent"
+       android:layout_height="1dip"
+       android:layout_marginBottom="10dp"
+       android:background="#E6E2AF" />
+   
+    <TextView
+       android:id="@+id/see_title"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_marginLeft="10dp"
+       android:layout_marginTop="10dp"
+       android:layout_marginBottom="30dp"
+       android:text="@string/title_concept"
+       android:textColor="#E6E2AF"
+       android:textSize="20dip" />
+    
+     <TextView
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_marginLeft="10dp"
+       android:text="@string/desc_concept"
+       android:textColor="#E6E2AF"
+       android:textSize="20dip" />
+      
+   <View
+       android:layout_width="fill_parent"
+       android:layout_height="1dip"
+       android:layout_marginBottom="10dp"
+       android:background="#E6E2AF" />
+   
+    <TextView
+       android:id="@+id/see_desc"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_marginLeft="10dp"
+       android:layout_marginTop="30dp"
+       android:text=""
+       android:textColor="#E6E2AF"
+       android:textSize="20dip" />
+    
+
+</LinearLayout>

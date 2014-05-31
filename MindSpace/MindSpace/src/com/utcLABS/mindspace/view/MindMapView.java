@@ -10,6 +10,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PointF;
+import android.support.v4.app.Fragment;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.DragEvent;
@@ -62,6 +63,8 @@ import com.utcLABS.mindspace.model.MindMapModel;
 	protected float offsetY = 0;
 	
 	private MyTouchListener touchListener;
+	private Boolean mode;
+	private Fragment currentFragment;
 
 	/*
 	 * Constructor
@@ -80,6 +83,9 @@ import com.utcLABS.mindspace.model.MindMapModel;
 		this.addView(this.mapView, 4000,4000);	// TODO compute proper mapView Size
 		
 		this.density = 0.5f;
+		
+		//Init mode edition
+		mode = true;
 		
 		/*
 		 * Model Test
@@ -131,6 +137,7 @@ import com.utcLABS.mindspace.model.MindMapModel;
  		 */
  		
  		mScaleDetector = new ScaleGestureDetector(this.getContext(), new ScaleListener());
+ 		
  		// OnTouchTest
  		this.touchListener = new MyTouchListener();
  		this.setOnTouchListener(this.touchListener);
@@ -263,6 +270,9 @@ import com.utcLABS.mindspace.model.MindMapModel;
 	// Getter
 	public float getDensity(){		return density;		}
 	
+	public MindMapModel getModel(){
+		return mindMapModel;
+	}
 	// Setter
 	public void setModel(MindMapModel model){
 		// Clear Old Model if exist
@@ -316,6 +326,30 @@ import com.utcLABS.mindspace.model.MindMapModel;
 		}
 	}
 	
+	public Boolean getMode() {
+		return mode;
+	}
+
+	public void setMode(Boolean mode) {
+		this.mode = mode;
+	}
+
+	public HashMap<ConceptModel, ConceptView> getConceptIndex() {
+		return conceptIndex;
+	}
+
+	public void setConceptIndex(HashMap<ConceptModel, ConceptView> conceptIndex) {
+		this.conceptIndex = conceptIndex;
+	}
+
+	public Fragment getCurrentFragment() {
+		return currentFragment;
+	}
+
+	public void setCurrentFragment(Fragment currentFragment) {
+		this.currentFragment = currentFragment;
+	}
+
 	public void setDensity(float newDensity){
 		if( this.density != newDensity ){
 			this.density = newDensity;
@@ -347,10 +381,5 @@ import com.utcLABS.mindspace.model.MindMapModel;
 		for( ConceptView v : conceptIndex.values() )
 			v.updateVisibility();
 	}
-
-	public MindMapModel getModel() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	
 }

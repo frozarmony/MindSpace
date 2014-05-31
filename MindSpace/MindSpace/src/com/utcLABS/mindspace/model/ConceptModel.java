@@ -39,6 +39,7 @@ public class ConceptModel {
 	
 	// Data Members
 	private String						name;
+	private String						description;
 	
 	// Form Members
 	private PointF						position;
@@ -115,6 +116,14 @@ public class ConceptModel {
 		}
 	}
 	
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	public void setPosition(PointF newPosition) {
 		if(!this.position.equals(newPosition)){
 			// Compute Translation

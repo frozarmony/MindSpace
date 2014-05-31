@@ -121,6 +121,8 @@ public class EditionActivity extends ActionBarActivity {
 		private MindMapView viewMindMap;
 		private MindMapModel model;
 		View rootView = null;
+		TextEditFragment editFg = new TextEditFragment();
+		private ConceptModel currentConcept = null;
 
 		public PlaceholderFragment() {
 		}
@@ -132,6 +134,8 @@ public class EditionActivity extends ActionBarActivity {
 					false);
 
 			viewMindMap = (MindMapView) rootView.findViewById(R.id.surfaceView);
+			viewMindMap.setCurrentFragment(this);
+			viewMindMap.setMode(true);
 			model = viewMindMap.getModel();
 
 			final SatelliteMenu menu = (SatelliteMenu) rootView
@@ -157,9 +161,8 @@ public class EditionActivity extends ActionBarActivity {
 				}
 			});
 
-			Fragment fg = new TextEditFragment();
 			getFragmentManager().beginTransaction()
-					.add(R.id.container_fragment, fg).commit();
+					.add(R.id.container_fragment, editFg).commit();
 
 			ImageButton editConcept = (ImageButton) rootView
 					.findViewById(R.id.edit_concept);
@@ -167,10 +170,10 @@ public class EditionActivity extends ActionBarActivity {
 
 				@Override
 				public void onClick(View v) {
-					Fragment fg = new TextEditFragment();
+					editFg.initFragment(currentConcept);
 					FragmentTransaction transaction = getFragmentManager()
 							.beginTransaction();
-					transaction.replace(R.id.container_fragment, fg);
+					transaction.replace(R.id.container_fragment, editFg);
 					transaction.addToBackStack(null).commit();
 				}
 			});
@@ -181,7 +184,8 @@ public class EditionActivity extends ActionBarActivity {
 
 				@Override
 				public void onClick(View v) {
-					Fragment fg = new PictureEditFragment();
+					PictureEditFragment fg = new PictureEditFragment();
+					fg.setConceptModel(currentConcept);
 					FragmentTransaction transaction = getFragmentManager()
 							.beginTransaction();
 					transaction.replace(R.id.container_fragment, fg);
@@ -195,7 +199,8 @@ public class EditionActivity extends ActionBarActivity {
 
 				@Override
 				public void onClick(View v) {
-					Fragment fg = new WikipediaFragment();
+					WikipediaFragment fg = new WikipediaFragment();
+					fg.setConceptModel(currentConcept);
 					FragmentTransaction transaction = getFragmentManager()
 							.beginTransaction();
 					transaction.replace(R.id.container_fragment, fg);
@@ -209,7 +214,8 @@ public class EditionActivity extends ActionBarActivity {
 
 				@Override
 				public void onClick(View v) {
-					Fragment fg = new GoogleFragment();
+					GoogleFragment fg = new GoogleFragment();
+					fg.setConceptModel(currentConcept);
 					FragmentTransaction transaction = getFragmentManager()
 							.beginTransaction();
 					transaction.replace(R.id.container_fragment, fg);
@@ -223,7 +229,8 @@ public class EditionActivity extends ActionBarActivity {
 
 				@Override
 				public void onClick(View v) {
-					Fragment fg = new ColorFragment();
+					ColorFragment fg = new ColorFragment();
+					fg.setConceptModel(currentConcept);
 					FragmentTransaction transaction = getFragmentManager()
 							.beginTransaction();
 					transaction.replace(R.id.container_fragment, fg);
@@ -295,6 +302,13 @@ public class EditionActivity extends ActionBarActivity {
 				}
 			});
 			return rootView;
+		}
+		
+		public void editConcept(ConceptModel model) {
+			currentConcept = model;
+			editFg.initFragment(currentConcept);
+			DrawerLayout drawerLayout = (DrawerLayout)rootView.findViewById(R.id.drawer_layout);
+			drawerLayout.openDrawer(rootView.findViewById(R.id.layout_fragment));
 		}
 	}
 
