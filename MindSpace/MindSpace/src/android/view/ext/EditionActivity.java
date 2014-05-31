@@ -3,17 +3,23 @@ package android.view.ext;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnDragListener;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import com.utcLABS.mindspace.ColorFragment;
 import com.utcLABS.mindspace.GoogleFragment;
@@ -23,6 +29,9 @@ import com.utcLABS.mindspace.VisualisationActivity;
 import com.utcLABS.mindspace.WikipediaFragment;
 import com.utcLABS.mindspace.model.ConceptModel;
 import com.utcLABS.mindspace.model.MindMapModel;
+import com.utcLABS.mindspace.utilities.MindmapAdapter;
+import com.utcLABS.mindspace.view.CircleView;
+import com.utcLABS.mindspace.view.ConceptView;
 
 public class EditionActivity extends ActionBarActivity {
 
@@ -99,15 +108,15 @@ public class EditionActivity extends ActionBarActivity {
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_edition, container,
+			final View rootView = inflater.inflate(R.layout.fragment_edition, container,
 					false);
 			
 			SatelliteMenu menu = (SatelliteMenu) rootView.findViewById(R.id.menu);
             List<SatelliteMenuItem> items = new ArrayList<SatelliteMenuItem>();
-            items.add(new SatelliteMenuItem(4, R.drawable.ic_action_undo));
-            items.add(new SatelliteMenuItem(4, R.drawable.ic_action_undo));
-            items.add(new SatelliteMenuItem(4, R.drawable.ic_action_new));
-            items.add(new SatelliteMenuItem(3, R.drawable.ic_action_new));;
+            items.add(new SatelliteMenuItem(4, R.drawable.duplicate_button));
+            items.add(new SatelliteMenuItem(4, R.drawable.redo_button));
+            items.add(new SatelliteMenuItem(4, R.drawable.undo_button));
+            items.add(new SatelliteMenuItem(3, R.drawable.add_button));;
             menu.addItems(items);
 			
 			Fragment fg = new TextEditFragment();
@@ -173,8 +182,69 @@ public class EditionActivity extends ActionBarActivity {
 			        transaction.addToBackStack(null).commit();
 				}
 			});
+	        
+	        
+	        /* Definition of the bin events */
+	        final View binDrag = (View)rootView.findViewById(R.id.binDrag);
+	        binDrag.setOnDragListener(new OnDragListener() {
+
+	     			@Override
+	     			public boolean onDrag(View v, final DragEvent event) {
+	     				// Init
+	     				final ConceptView conceptView;
+	     				
+	     				switch (event.getAction()) {
+	     				case DragEvent.ACTION_DRAG_STARTED:
+		    				if( !event.getClipDescription().hasMimeType(ConceptView.MIMETYPE_CONCEPTVIEW) )
+		    					return false;
+		    				binDrag.setBackgroundResource(R.drawable.bin_drag);
+	     					Log.d("Bin", "Action Drag Start");
+		    				break;
+	     				case DragEvent.ACTION_DROP:
+	     					Log.d("Bin", "Action Drop");
+	     					conceptView = (ConceptView) event.getLocalState();
+	     					/*Dialog Window to confirm the concept deletion */
+	     					AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(rootView.getContext())
+							.setTitle("Supprimer le concept")
+							.setMessage("Voulez-vous supprimer le concept \""+ conceptView.getModel().getName()+ "\" ?");
+				
+							dialogBuilder.setPositiveButton("Supprimer",new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,int id) {	
+			     					conceptView.getModel().delete();
+								}
+							});
+							
+							dialogBuilder.setNegativeButton("Annuler",new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,int id) {
+									dialog.cancel();
+								}
+							});	
+							
+							AlertDialog dialog = dialogBuilder.create();
+							dialog.show();   
+
+	     					break;
+	     				case DragEvent.ACTION_DRAG_ENDED:
+		    				binDrag.setBackground(null);
+	     					Log.d("Bin", "Action Drag Ended");
+	     					break;
+	     				case DragEvent.ACTION_DRAG_ENTERED:
+	     					Log.d("Bin", "Action Drag Entered");
+		    				binDrag.setBackgroundResource(R.drawable.bin_drag_hover);
+		    				break;
+	     				case DragEvent.ACTION_DRAG_EXITED:
+	     					binDrag.setBackgroundResource(R.drawable.bin_drag);
+	     					break;
+	     				}
+	     				return true;
+	     			}
+	     		});
+	        
+	        
+	        
 	   		return rootView;
 		}
+		
 
 	}
 

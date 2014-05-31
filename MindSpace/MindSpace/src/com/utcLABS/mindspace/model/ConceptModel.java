@@ -236,6 +236,10 @@ public class ConceptModel {
 		}
 	}
 	
+	public void delete(){
+		this.mindMap.deleteConcept(this);
+	}
+	
 	protected void detachFromOtherConcepts(){
 		if( this.parent != null ){
 			this.parent.children.remove(this);

@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.View;
 import android.view.ext.R;
 
@@ -19,7 +20,7 @@ public class CircleView extends View {
         // Attrs
         private int circleRadius;
         private int circleFillColor;
-        private int circleStrokeColor;
+		private int circleStrokeColor;
         private int circleStartAngle;
         private int circleEndAngle;
 
@@ -34,8 +35,18 @@ public class CircleView extends View {
         circleStrokePaint.setStyle(Paint.Style.STROKE);
         circleStrokePaint.setStrokeWidth(2);
         circleStrokePaint.setColor(circleStrokeColor);
+        
+        this.setOnDragListener(DeleteDragListener);
     }
+    
+    public int getCircleFillColor() {
+		return circleFillColor;
+	}
 
+	public void setCircleFillColor(int circleFillColor) {
+		this.circleFillColor = circleFillColor;
+	}
+	
     public void init(AttributeSet attrs)
     {
         // Go through all custom attrs.
@@ -105,4 +116,29 @@ public class CircleView extends View {
         }
          return result;
     }
+    
+    private OnDragListener DeleteDragListener = new OnDragListener() {
+
+			@Override
+			public boolean onDrag(View v, DragEvent event) {
+ 				ConceptView conceptView;
+				// Init			
+				switch (event.getAction()) {
+				case DragEvent.ACTION_DRAG_STARTED:
+					if( !event.getClipDescription().hasMimeType(ConceptView.MIMETYPE_CONCEPTVIEW) )
+						return false;
+					Log.d("Bin", "Action Drag Start");
+				break;
+				case DragEvent.ACTION_DROP:
+					Log.d("Bin", "Action Drop");
+					conceptView = (ConceptView) event.getLocalState();
+					conceptView.getModel().delete();
+					break;
+				case DragEvent.ACTION_DRAG_ENDED:
+					Log.d("Bin", "Action Drag Ended");
+					break;
+				}
+				return true;
+			}
+    };
 }

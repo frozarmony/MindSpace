@@ -16,6 +16,7 @@ import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.view.ext.R;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 

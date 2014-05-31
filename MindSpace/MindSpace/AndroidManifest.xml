@@ -20,14 +20,16 @@
         <activity
             android:name="com.utcLABS.mindspace.HomeActivity"
             android:label="@string/title_activity_home" >
+ 
         </activity>
         <activity
             android:name="android.view.ext.EditionActivity"
-            android:label="@string/title_activity_edition" >     
-            <intent-filter>
+            android:label="@string/title_activity_edition" >  
+                                    <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>          
+            </intent-filter>      
+      
         </activity>
         <activity
             android:name="com.utcLABS.mindspace.VisualisationActivity"
