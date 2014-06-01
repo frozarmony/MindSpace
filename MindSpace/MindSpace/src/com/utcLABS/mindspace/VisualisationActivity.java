@@ -1,6 +1,7 @@
 package com.utcLABS.mindspace;
 
 import com.devadvance.circularseekbar.CircularSeekBar;
+import com.devadvance.circularseekbar.CircularSeekBar.OnCircularSeekBarChangeListener;
 import com.utcLABS.mindspace.model.ConceptModel;
 import com.utcLABS.mindspace.model.MindMapModel;
 import com.utcLABS.mindspace.view.MindMapView;
@@ -108,10 +109,31 @@ public class VisualisationActivity extends ActionBarActivity {
 	        
 	        getFragmentManager().beginTransaction().add(R.id.layout_visualisation, seeFg).commit();
 	        
-	        viewMindMap.setDensity(1f);
+	        viewMindMap.setDensity(0f);
 			
 			CircularSeekBar slider = (CircularSeekBar) rootView.findViewById(R.id.circularSeekBar1);
-			
+			slider.setOnSeekBarChangeListener(new OnCircularSeekBarChangeListener(){
+
+				@Override
+				public void onProgressChanged(CircularSeekBar circularSeekBar, int progress, boolean fromUser) {
+					System.out.println(circularSeekBar.getProgress());
+					float density = (float) (progress / 100.0);
+					viewMindMap.setDensity(density);
+
+				}
+
+				@Override
+				public void onStopTrackingTouch(CircularSeekBar seekBar) {
+					
+				}
+
+				@Override
+				public void onStartTrackingTouch(CircularSeekBar seekBar) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+			}); 
 			return rootView;
 		}
 

@@ -48,5 +48,4 @@
         app1:progress="0"
         app1:start_angle="270"
         app1:use_custom_radii="true" />
-
 </RelativeLayout>
