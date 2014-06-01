@@ -20,8 +20,10 @@ import android.util.Log;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ext.EditionActivity;
 import android.widget.TextView;
 
+import com.utcLABS.mindspace.VisualisationActivity;
 import com.utcLABS.mindspace.model.ConceptModel;
 import com.utcLABS.mindspace.view.MindMapView.ScaleObject;
 
@@ -112,6 +114,7 @@ public class ConceptView {
 		
 		// Update Visibility
 		updateVisibility();
+		
 	}
 
 	@SuppressLint("NewApi")
@@ -327,7 +330,12 @@ public class ConceptView {
 				case MotionEvent.ACTION_UP :
 					// Click Action
 					if(!isMoving){
-						// TODO
+						boolean mode = mainView.isEditMode();
+						if(mode){
+							((EditionActivity.PlaceholderFragment)mainView.getCurrentFragment()).editConcept(model);
+						}else {
+							((VisualisationActivity.PlaceholderFragment)mainView.getCurrentFragment()).editConcept(model);
+						}
 					}
 					
 					startPos = null;

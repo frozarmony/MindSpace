@@ -8,9 +8,13 @@ import android.view.ViewGroup;
 import android.view.ext.R;
 
 import com.larswerkman.holocolorpicker.ColorPicker;
+import com.larswerkman.holocolorpicker.ColorPicker.OnColorChangedListener;
+import com.utcLABS.mindspace.model.ConceptModel;
 
 public class ColorFragment extends Fragment {
 
+	private ConceptModel conceptModel;
+	
 	public ColorFragment() {
 		
 	}
@@ -22,6 +26,26 @@ public class ColorFragment extends Fragment {
 				false);
 		
 		ColorPicker picker = (ColorPicker)rootView.findViewById(R.id.picker);
+		
+		picker.setOnColorChangedListener(new OnColorChangedListener() {
+			@Override
+			public void onColorChanged(int color) {
+				conceptModel.setColor(color);
+
+			}
+			
+		});
+		
 		return rootView;
 	}
+
+	public ConceptModel getConceptModel() {
+		return conceptModel;
+	}
+
+	public void setConceptModel(ConceptModel conceptModel) {
+		this.conceptModel = conceptModel;
+	}
+
 }
+	

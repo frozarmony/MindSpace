@@ -40,6 +40,7 @@ public class ConceptModel {
 	
 	// Data Members
 	private String						name;
+	private String						description;
 	
 	// Form Members
 	private PointF						position;
@@ -114,6 +115,14 @@ public class ConceptModel {
 		}
 	}
 	
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	public void setPosition(PointF newPosition) {
 		if(!this.position.equals(newPosition)){
 			// Compute Translation
@@ -244,6 +253,10 @@ public class ConceptModel {
 			// Reset to Default Properties
 			//setDefaultProperties();
 		}
+	}
+	
+	public void delete(){
+		this.mindMap.deleteConcept(this);
 	}
 	
 	protected void detachFromOtherConcepts(){

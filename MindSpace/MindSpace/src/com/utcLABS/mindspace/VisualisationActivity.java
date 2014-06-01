@@ -1,12 +1,14 @@
 package com.utcLABS.mindspace;
 
 import com.devadvance.circularseekbar.CircularSeekBar;
+import com.utcLABS.mindspace.model.ConceptModel;
 import com.utcLABS.mindspace.model.MindMapModel;
 import com.utcLABS.mindspace.view.MindMapView;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -87,22 +89,37 @@ public class VisualisationActivity extends ActionBarActivity {
 
 		private MindMapView viewMindMap;
 		private MindMapModel model;
-		
+		private View rootView = null;
+		private SeeFragment seeFg = new SeeFragment();
+		private ConceptModel currentConcept = null;
+
 		public PlaceholderFragment() {
 		}
 
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
-			View rootView = inflater.inflate(R.layout.fragment_visualisation,
+			rootView = inflater.inflate(R.layout.fragment_visualisation,
 					container, false);
 			viewMindMap = (MindMapView)rootView.findViewById(R.id.surfaceView);
 	        model = viewMindMap.getModel();
+			viewMindMap.setCurrentFragment(this);
+	        viewMindMap.setEditMode(false);
+	        
+	        getFragmentManager().beginTransaction().add(R.id.layout_visualisation, seeFg).commit();
+	        
 	        viewMindMap.setDensity(1f);
 			
 			CircularSeekBar slider = (CircularSeekBar) rootView.findViewById(R.id.circularSeekBar1);
 			
 			return rootView;
+		}
+
+		public void editConcept(ConceptModel model) {
+			currentConcept = model;
+			seeFg.initFragment(currentConcept);
+			DrawerLayout drawerLayout = (DrawerLayout)rootView.findViewById(R.id.drawer_layout_visualisation);
+			drawerLayout.openDrawer(rootView.findViewById(R.id.layout_visualisation));			
 		}
 	}
 

@@ -1,5 +1,7 @@
 package com.utcLABS.mindspace;
 
+import com.utcLABS.mindspace.model.ConceptModel;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,6 +13,7 @@ import android.view.ext.R;
 
 public class GoogleFragment extends Fragment {
 	private WebView webView;
+	private ConceptModel conceptModel;
 	
 	public GoogleFragment() {
 		
@@ -25,7 +28,7 @@ public class GoogleFragment extends Fragment {
 		webView = (WebView) rootView.findViewById(R.id.wikipediaView);
 		webView.setWebViewClient(new MyWebView());
 		webView.getSettings().setJavaScriptEnabled(true);
-		webView.loadUrl("https://www.google.fr/imghp?hl=fr&tab=wi&ei=30J_U8isMs-yhAfbwICABA&ved=0CAQQqi4oAg");
+		webView.loadUrl("https://www.google.fr/search?hl=fr&biw=1366&bih=643&site=imghp&tbm=isch&source=hp&biw=1366&bih=643&q="+conceptModel.getName());
 		return rootView;
 	}
 	
@@ -35,5 +38,9 @@ public class GoogleFragment extends Fragment {
 	         view.loadUrl(url);
 	         return true;
 	      }
+	}
+
+	public void setConceptModel(ConceptModel currentConcept) {
+		this.conceptModel = currentConcept;
 	}
 }

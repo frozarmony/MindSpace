@@ -10,6 +10,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PointF;
+import android.support.v4.app.Fragment;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.DragEvent;
@@ -31,6 +32,9 @@ import com.utcLABS.mindspace.model.MindMapModel;
 	
 	// Model Reference
 	private MindMapModel							mindMapModel;
+	
+	// Interface Reference
+	private Fragment 								currentFragment;
 	
 	// View Members
 	private HashMap<ConceptModel, ConceptView>		conceptIndex;
@@ -277,7 +281,8 @@ import com.utcLABS.mindspace.model.MindMapModel;
 	public MindMapModel	getModel(){			return mindMapModel;	}
 	public boolean		isEditMode(){		return editMode;		}
 	public float		getDensity(){		return density;			}
-	
+	public Fragment getCurrentFragment() {	return currentFragment;	}
+
 	// Setter
 	public void setModel(MindMapModel model){
 		// Clear Old Model if exist
@@ -334,7 +339,11 @@ import com.utcLABS.mindspace.model.MindMapModel;
 	public void setEditMode(boolean editMode){
 		this.editMode = editMode;
 	}
-	
+
+	public void setCurrentFragment(Fragment currentFragment) {
+		this.currentFragment = currentFragment;
+	}
+
 	public void setDensity(float newDensity){
 		if( this.density != newDensity ){
 			this.density = newDensity;
@@ -378,5 +387,4 @@ import com.utcLABS.mindspace.model.MindMapModel;
 			return scaleFactor;
 		}
 	};
-
 }

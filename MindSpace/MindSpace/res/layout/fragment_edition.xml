@@ -14,36 +14,17 @@
         <com.utcLABS.mindspace.view.MindMapView
             android:id="@+id/surfaceView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent" >
 
-	        <RelativeLayout
-	            android:layout_width="match_parent"
-	            android:layout_height="wrap_content">
-				
-	            <com.utcLABS.mindspace.view.CircleView
-	                android:id="@+id/pieCircle"
-	                android:layout_width="420dp"
-	                android:layout_height="wrap_content"
-	            	android:layout_alignParentBottom="true"
-	        		android:layout_centerHorizontal="true"
-	        		android:translationY="320dp"
-	                sat:cAngleEnd="-180"
-	                sat:cAngleStart="0"
-	                sat:cFillColor="#efecca"
-	                sat:cRadius="400"
-	                sat:cStrokeColor="#046380" >
-	            </com.utcLABS.mindspace.view.CircleView>
-	
-	            <ImageView
-	                android:layout_width="wrap_content"
-	                android:layout_height="wrap_content"
-	                android:layout_alignBottom="@id/pieCircle"
-	                android:layout_alignLeft="@id/pieCircle"
-	                android:paddingLeft="185dp"
-	                android:paddingBottom="10dp"
-	                android:src="@drawable/bin_small" />
-	        </RelativeLayout>
-		</com.utcLABS.mindspace.view.MindMapView>
+            <View
+                android:id="@+id/binDrag"
+                android:layout_width="300dp"
+                android:layout_height="80dp"
+                android:translationX="485dp"
+                android:translationY="595dp" >
+            </View>
+        </com.utcLABS.mindspace.view.MindMapView>
+
         <LinearLayout
             android:id="@+id/layout_fragment"
             android:layout_width="320dp"
