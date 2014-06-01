@@ -71,13 +71,13 @@ import com.utcLABS.mindspace.model.MindMapModel;
 		
 		this.mapView = new RelativeLayout(context);
 		this.mapView.setBackgroundColor(0xffeeeeee);
-		this.addView(this.mapView, 4000,4000);	// TODO compute proper mapView Size
+		this.addView(this.mapView, 3000, 3000);
 		
 		this.scale = new ScaleObject();
 		this.density = 0.5f;
 		
 		// Init Controller Member
-		this.editMode = false;
+		this.editMode = true;
 		this.centerX = 0f;
 		this.offsetX = 0f;
 		this.centerY = 0f;
@@ -246,14 +246,15 @@ import com.utcLABS.mindspace.model.MindMapModel;
  				if(editMode){
 	 				switch (event.getAction()) {
 	 				case DragEvent.ACTION_DRAG_STARTED:
-					if( !event.getClipDescription().hasMimeType(ConceptView.MIMETYPE_CONCEPTVIEW) )
-						return false;
+	 					if( !event.getClipDescription().hasMimeType(ConceptView.MIMETYPE_CONCEPTVIEW) )
+	 						return false;
 					break;
 	 				case DragEvent.ACTION_DROP:
 	 					Log.d("MindMapView", "Action Drop");
 	 					conceptView = (ConceptView) event.getLocalState();
 	 					conceptView.getModel().moveTo(null);
-	 					conceptView.getModel().setPosition(event.getX(), event.getY());	// TODO get Relative X Y
+	 					conceptView.getModel().setPosition(	(mapView.getScrollX()+event.getX())/scale.getScale(),
+	 														(mapView.getScrollY()+event.getY())/scale.getScale());
 	 					break;
 	 				case DragEvent.ACTION_DRAG_ENDED:
 	 					Log.d("MindMapView", "Action Ended");
