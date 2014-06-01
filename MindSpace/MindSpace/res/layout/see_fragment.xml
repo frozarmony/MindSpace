@@ -11,7 +11,7 @@
         android:layout_marginTop="50dp"
         android:background="#E6E2AF"
         android:gravity="center"
-        android:text="@string/edit_concept"
+        android:text="@string/see_concept"
         android:textColor="#046380"
         android:textSize="20dip" />
      
@@ -19,7 +19,7 @@
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
        android:layout_marginLeft="10dp"
-       android:layout_marginTop="50dp"
+       android:layout_marginTop="30dp"
        android:text="@string/title_concept"
        android:textColor="#E6E2AF"
        android:textSize="20dip" />

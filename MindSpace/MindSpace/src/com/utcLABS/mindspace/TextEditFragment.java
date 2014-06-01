@@ -7,11 +7,12 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ext.MenuActivity;
 import android.view.ext.R;
 import android.widget.EditText;
 
+
 import com.utcLABS.mindspace.model.ConceptModel;
+
 
 
 
@@ -32,8 +33,7 @@ public class TextEditFragment extends Fragment {
 		rootView = inflater.inflate(R.layout.edit_slide, container,false);
 		title = (EditText) rootView.findViewById(R.id.new_title);
 		desc = (EditText) rootView.findViewById(R.id.editInput);
-		
-		
+
 		title.addTextChangedListener(new TextWatcher() {
 		 
 		   public void afterTextChanged(Editable s) {
@@ -49,6 +49,7 @@ public class TextEditFragment extends Fragment {
 		   
 		   }
 		  });
+
 		return rootView;
 
 	}

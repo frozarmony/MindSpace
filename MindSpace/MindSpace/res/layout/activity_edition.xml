@@ -3,6 +3,6 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="android.view.ext.MenuActivity"
+    tools:context="android.view.ext.EditionActivity"
     tools:ignore="MergeRootFrame" />
 

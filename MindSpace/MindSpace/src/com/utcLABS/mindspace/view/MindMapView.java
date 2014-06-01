@@ -17,6 +17,7 @@ import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.view.ext.R;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
@@ -171,6 +172,10 @@ import com.utcLABS.mindspace.model.MindMapModel;
  		updateConceptsVisibility();
 	}
 	
+	public MindMapModel getMindMapModel(){
+		return mindMapModel;
+	}
+	
 	class MyTouchListener implements OnTouchListener{
 
 			@Override
@@ -268,10 +273,7 @@ import com.utcLABS.mindspace.model.MindMapModel;
 	
 	// Getter
 	public float getDensity(){		return density;		}
-	
-	public MindMapModel getModel(){
-		return mindMapModel;
-	}
+
 	// Setter
 	public void setModel(MindMapModel model){
 		// Clear Old Model if exist
