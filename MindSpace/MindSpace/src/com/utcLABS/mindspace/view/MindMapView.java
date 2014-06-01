@@ -278,10 +278,10 @@ import com.utcLABS.mindspace.model.MindMapModel;
 	 */
 	
 	// Getter
-	public MindMapModel	getModel(){			return mindMapModel;	}
-	public boolean		isEditMode(){		return editMode;		}
-	public float		getDensity(){		return density;			}
-	public Fragment getCurrentFragment() {	return currentFragment;	}
+	public MindMapModel	getModel(){				return mindMapModel;	}
+	public boolean		isEditMode(){			return editMode;		}
+	public float		getDensity(){			return density;			}
+	public Fragment		getCurrentFragment() {	return currentFragment;	}
 
 	// Setter
 	public void setModel(MindMapModel model){
