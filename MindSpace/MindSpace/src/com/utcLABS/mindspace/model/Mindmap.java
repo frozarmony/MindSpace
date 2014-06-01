@@ -40,5 +40,9 @@ public class Mindmap {
 	public void setTitle(String title) {
 		this.title = title;
 	}
+	
+	public boolean loadXml(String xml){
+		return false;	// TODO
+	}
 
 }

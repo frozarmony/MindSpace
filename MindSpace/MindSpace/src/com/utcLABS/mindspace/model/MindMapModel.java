@@ -2,6 +2,9 @@ package com.utcLABS.mindspace.model;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.InputStream;
+import java.io.StringBufferInputStream;
+import java.io.StringReader;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -22,6 +25,8 @@ public class MindMapModel {
 
 	// Bean
 	private PropertyChangeSupport				propertyChangeSupport;
+	
+	private MindMapXmlParser parser = new MindMapXmlParser(this);
 
 	/*
 	 * Constructor
@@ -93,7 +98,16 @@ public class MindMapModel {
 	}
 	
 	public boolean loadXml(String xml){
-		return false;	// TODO
+		try{
+			
+			//InputStream in = new StringReader ( "<foo>Hello World!</foo>" );
+			conceptIndex = parser.parse(new StringBufferInputStream("<concepts><concept name=\"Un concept\" x=\"100\" y=\"100\" size=\"0.4\" color=\"#FF0000\" shape=\"roundedRectangle\"><concept name=\"Un autre concept\" x=\"150\" y=\"150\" size=\"0.4\" color=\"#FF0000\" shape=\"rectangle\"></concept></concept><concept name=\"Un concept\" x=\"200\" y=\"100\" size=\"0.4\" color=\"#FF0000\" shape=\"roundedRectangle\"><concept name=\"Un autre concept\" x=\"250\" y=\"150\" size=\"0.4\" color=\"#FF0000\" shape=\"rectangle\"></concept></concept></concepts>" ));
+			return true;
+		}
+		catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 	/*

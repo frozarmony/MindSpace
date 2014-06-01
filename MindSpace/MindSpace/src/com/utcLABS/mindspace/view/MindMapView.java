@@ -77,7 +77,7 @@ import com.utcLABS.mindspace.model.MindMapModel;
 		this.density = 0.5f;
 		
 		// Init Controller Member
-		this.editMode = false;
+		this.editMode = true	;
 		this.centerX = 0f;
 		this.offsetX = 0f;
 		this.centerY = 0f;
@@ -87,6 +87,7 @@ import com.utcLABS.mindspace.model.MindMapModel;
 		 * Model Test
 		 */
 		MindMapModel myTestModel = new MindMapModel();
+		//myTestModel.loadXml("");
 		float coef = 0.7f;
 		
 		// Listeners
