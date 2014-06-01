@@ -40,7 +40,6 @@ public class EditionActivity extends ActionBarActivity {
 
 	protected MenuItem itemEdit;
 	protected MenuItem itemSee;
-	private ConceptModel currentConcept;
 	private String title;
 
 	@Override
@@ -111,14 +110,6 @@ public class EditionActivity extends ActionBarActivity {
 
 	}
 
-	public ConceptModel getCurrentConcept() {
-		return currentConcept;
-	}
-
-	public void setCurrentConcept(ConceptModel currentConcept) {
-		this.currentConcept = currentConcept;
-	}
-
 	/**
 	 * A placeholder fragment containing a simple view.
 	 */
@@ -126,14 +117,16 @@ public class EditionActivity extends ActionBarActivity {
 
 		private MindMapView viewMindMap;
 		private MindMapModel model;
-		View rootView = null;
-		TextEditFragment editFg = new TextEditFragment();
-
-		PictureEditFragment pictureFg = new PictureEditFragment();
-		ColorFragment colorFg = new ColorFragment();
-		WikipediaFragment wikiFg = new WikipediaFragment();
-		GoogleFragment googleFg = new GoogleFragment();
+		private View rootView = null;
+		private DrawerLayout drawer = null;
+		
+		private TextEditFragment editFg = new TextEditFragment();
+		private PictureEditFragment pictureFg = new PictureEditFragment();
+		private ColorFragment colorFg = new ColorFragment();
+		private WikipediaFragment wikiFg = new WikipediaFragment();
+		private GoogleFragment googleFg = new GoogleFragment();
 		private ConceptModel currentConcept = null;
+		private SatelliteMenu menu = null;
 		
 		public PlaceholderFragment() {
 		}
@@ -143,12 +136,114 @@ public class EditionActivity extends ActionBarActivity {
 				Bundle savedInstanceState) {
 
 			rootView = inflater.inflate(R.layout.fragment_edition, container,false);
-			 viewMindMap = (MindMapView)rootView.findViewById(R.id.surfaceView);
-			 viewMindMap.setCurrentFragment(this);
-			 viewMindMap.setMode(true);
-	         model = viewMindMap.getMindMapModel();
+			 
+			//init view
+			viewMindMap = (MindMapView)rootView.findViewById(R.id.surfaceView);
+			viewMindMap.setCurrentFragment(this);
+			viewMindMap.setMode(true);
+	        model = viewMindMap.getMindMapModel();
+	        
+	        initDrawer();
 			
-			final SatelliteMenu menu = (SatelliteMenu) rootView.findViewById(R.id.menu);
+			initSatelliteMenu();
+
+            initPanel();
+			
+            initBin();
+            			
+			return rootView;
+		}
+
+		private void initDrawer() {
+			drawer = (DrawerLayout)rootView.findViewById(R.id.drawer_layout);
+	        drawer.setDrawerListener(new DrawerLayout.DrawerListener() {
+
+				@Override
+				public void onDrawerClosed(View arg0) {
+					menu.setVisibility(View.VISIBLE);					
+				}
+
+				public void onDrawerOpened(View arg0) {
+					menu.setVisibility(View.INVISIBLE);					
+				}
+
+				public void onDrawerSlide(View arg0, float arg1) {	
+				}
+
+				public void onDrawerStateChanged(int arg0) {
+				}
+			});
+		}
+
+
+		private void initBin() {
+			final View binDrag = (View) rootView.findViewById(R.id.binDrag);
+			binDrag.setOnDragListener(new OnDragListener() {
+
+				@Override
+				public boolean onDrag(View v, final DragEvent event) {
+					// Init
+					final ConceptView conceptView;
+
+					switch (event.getAction()) {
+					case DragEvent.ACTION_DRAG_STARTED:
+						if (!event.getClipDescription().hasMimeType(
+								ConceptView.MIMETYPE_CONCEPTVIEW))
+							return false;
+						binDrag.setBackgroundResource(R.drawable.bin_drag);
+						Log.d("Bin", "Action Drag Start");
+						break;
+					case DragEvent.ACTION_DROP:
+						Log.d("Bin", "Action Drop");
+						conceptView = (ConceptView) event.getLocalState();
+						/* Dialog Window to confirm the concept deletion */
+						AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(
+								rootView.getContext()).setTitle(
+								"Supprimer le concept").setMessage(
+								"Voulez-vous supprimer le concept \""
+										+ conceptView.getModel().getName()
+										+ "\" ?");
+
+						dialogBuilder.setPositiveButton("Supprimer",
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int id) {
+										conceptView.getModel().delete();
+									}
+								});
+
+						dialogBuilder.setNegativeButton("Annuler",
+								new DialogInterface.OnClickListener() {
+									public void onClick(DialogInterface dialog,
+											int id) {
+										dialog.cancel();
+									}
+								});
+
+						AlertDialog dialog = dialogBuilder.create();
+						dialog.show();
+
+						break;
+					case DragEvent.ACTION_DRAG_ENDED:
+						binDrag.setBackground(null);
+						Log.d("Bin", "Action Drag Ended");
+						break;
+					case DragEvent.ACTION_DRAG_ENTERED:
+						Log.d("Bin", "Action Drag Entered");
+						binDrag.setBackgroundResource(R.drawable.bin_drag_hover);
+						break;
+					case DragEvent.ACTION_DRAG_EXITED:
+						binDrag.setBackgroundResource(R.drawable.bin_drag);
+						break;
+					}
+					return true;
+				}
+			});
+			
+		}
+
+		private void initSatelliteMenu() {
+			menu = (SatelliteMenu) rootView.findViewById(R.id.menu);
             List<SatelliteMenuItem> items = new ArrayList<SatelliteMenuItem>();
             items.add(new SatelliteMenuItem(4, R.drawable.duplicate_button));
             items.add(new SatelliteMenuItem(4, R.drawable.redo_button));
@@ -156,8 +251,6 @@ public class EditionActivity extends ActionBarActivity {
             items.add(new SatelliteMenuItem(1, R.drawable.add_button));;
             menu.addItems(items);
            
-            
-            
             menu.setOnItemClickedListener(new SateliteClickedListener() {
             	  public void eventOccured(int id) {
             		  if(id == 1){
@@ -175,8 +268,11 @@ public class EditionActivity extends ActionBarActivity {
             		  }	  
             	  }
             	});
-			
-	        getFragmentManager().beginTransaction().add(R.id.container_fragment, editFg).commit();
+		}
+		
+
+		private void initPanel() {
+			getFragmentManager().beginTransaction().add(R.id.container_fragment, editFg).commit();
 
 			ImageButton editConcept = (ImageButton) rootView
 					.findViewById(R.id.edit_concept);
@@ -249,79 +345,14 @@ public class EditionActivity extends ActionBarActivity {
 					transaction.addToBackStack(null).commit();
 				}
 			});
-
-			/* Definition of the bin events */
-			final View binDrag = (View) rootView.findViewById(R.id.binDrag);
-			binDrag.setOnDragListener(new OnDragListener() {
-
-				@Override
-				public boolean onDrag(View v, final DragEvent event) {
-					// Init
-					final ConceptView conceptView;
-
-					switch (event.getAction()) {
-					case DragEvent.ACTION_DRAG_STARTED:
-						if (!event.getClipDescription().hasMimeType(
-								ConceptView.MIMETYPE_CONCEPTVIEW))
-							return false;
-						binDrag.setBackgroundResource(R.drawable.bin_drag);
-						Log.d("Bin", "Action Drag Start");
-						break;
-					case DragEvent.ACTION_DROP:
-						Log.d("Bin", "Action Drop");
-						conceptView = (ConceptView) event.getLocalState();
-						/* Dialog Window to confirm the concept deletion */
-						AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(
-								rootView.getContext()).setTitle(
-								"Supprimer le concept").setMessage(
-								"Voulez-vous supprimer le concept \""
-										+ conceptView.getModel().getName()
-										+ "\" ?");
-
-						dialogBuilder.setPositiveButton("Supprimer",
-								new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog,
-											int id) {
-										conceptView.getModel().delete();
-									}
-								});
-
-						dialogBuilder.setNegativeButton("Annuler",
-								new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog,
-											int id) {
-										dialog.cancel();
-									}
-								});
-
-						AlertDialog dialog = dialogBuilder.create();
-						dialog.show();
-
-						break;
-					case DragEvent.ACTION_DRAG_ENDED:
-						binDrag.setBackground(null);
-						Log.d("Bin", "Action Drag Ended");
-						break;
-					case DragEvent.ACTION_DRAG_ENTERED:
-						Log.d("Bin", "Action Drag Entered");
-						binDrag.setBackgroundResource(R.drawable.bin_drag_hover);
-						break;
-					case DragEvent.ACTION_DRAG_EXITED:
-						binDrag.setBackgroundResource(R.drawable.bin_drag);
-						break;
-					}
-					return true;
-				}
-			});
-			return rootView;
+			
 		}
-		
 
 		public void editConcept(ConceptModel model) {
 			currentConcept = model;
 			editFg.initFragment(currentConcept);
-			DrawerLayout drawerLayout = (DrawerLayout)rootView.findViewById(R.id.drawer_layout);
-			drawerLayout.openDrawer(rootView.findViewById(R.id.layout_fragment));
+			drawer.openDrawer(rootView.findViewById(R.id.layout_fragment));
+			
 		}
 	}
 
