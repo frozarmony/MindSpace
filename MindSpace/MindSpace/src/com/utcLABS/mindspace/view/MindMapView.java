@@ -172,6 +172,10 @@ import com.utcLABS.mindspace.model.MindMapModel;
  		updateConceptsVisibility();
 	}
 	
+	public MindMapModel getMindMapModel(){
+		return mindMapModel;
+	}
+	
 	class MyTouchListener implements OnTouchListener{
 
 			@Override
@@ -269,10 +273,7 @@ import com.utcLABS.mindspace.model.MindMapModel;
 	
 	// Getter
 	public float getDensity(){		return density;		}
-	
-	public MindMapModel getModel(){
-		return mindMapModel;
-	}
+
 	// Setter
 	public void setModel(MindMapModel model){
 		// Clear Old Model if exist
@@ -381,5 +382,4 @@ import com.utcLABS.mindspace.model.MindMapModel;
 		for( ConceptView v : conceptIndex.values() )
 			v.updateVisibility();
 	}
-	
 }

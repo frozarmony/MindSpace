@@ -41,13 +41,18 @@ public class EditionActivity extends ActionBarActivity {
 	protected MenuItem itemEdit;
 	protected MenuItem itemSee;
 	private ConceptModel currentConcept;
+	private String title;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_edition);
 
+		title = this.getIntent().getExtras().getString("title");
+		setTitle(title);		
+		
 		getActionBar().setDisplayHomeAsUpEnabled(true);
+		
 		if (savedInstanceState == null) {
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
@@ -83,6 +88,7 @@ public class EditionActivity extends ActionBarActivity {
 			itemEdit.setIcon(R.drawable.ic_action_edit);
 			itemEdit.setEnabled(true);
 			Intent i0 = new Intent(this, VisualisationActivity.class);
+			i0.putExtra("title", title);
 			startActivity(i0);
 			this.finish();
 			return true;
@@ -122,44 +128,62 @@ public class EditionActivity extends ActionBarActivity {
 		private MindMapModel model;
 		View rootView = null;
 		TextEditFragment editFg = new TextEditFragment();
-		private ConceptModel currentConcept = null;
 
+		PictureEditFragment pictureFg = new PictureEditFragment();
+		ColorFragment colorFg = new ColorFragment();
+		WikipediaFragment wikiFg = new WikipediaFragment();
+		GoogleFragment googleFg = new GoogleFragment();
+		private ConceptModel currentConcept = null;
+		
 		public PlaceholderFragment() {
 		}
 
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
-			rootView = inflater.inflate(R.layout.fragment_edition, container,
-					false);
+
+			rootView = inflater.inflate(R.layout.fragment_edition, container,false);
+			 viewMindMap = (MindMapView)rootView.findViewById(R.id.surfaceView);
+			 viewMindMap.setCurrentFragment(this);
+			 viewMindMap.setMode(true);
+	         model = viewMindMap.getMindMapModel();
+			
+			final SatelliteMenu menu = (SatelliteMenu) rootView.findViewById(R.id.menu);
+            List<SatelliteMenuItem> items = new ArrayList<SatelliteMenuItem>();
+            items.add(new SatelliteMenuItem(4, R.drawable.duplicate_button));
+            items.add(new SatelliteMenuItem(4, R.drawable.redo_button));
+            items.add(new SatelliteMenuItem(4, R.drawable.undo_button));
+            items.add(new SatelliteMenuItem(1, R.drawable.add_button));;
+            menu.addItems(items);
+           
+            
+            
+            menu.setOnItemClickedListener(new SateliteClickedListener() {
+            	  public void eventOccured(int id) {
+            		  if(id == 1){
+                		  currentConcept = model.createNewConcept(new PointF(300,300));
+                		  
+                		  editFg.setConceptModel(currentConcept);
+                		  pictureFg.setConceptModel(currentConcept);
+                		  colorFg.setConceptModel(currentConcept);
+                		  wikiFg.setConceptModel(currentConcept);
+                		  googleFg.setConceptModel(currentConcept);
+                		  
+                		  viewMindMap.setModel(model);
+                		  DrawerLayout drawerLayout = (DrawerLayout)rootView.findViewById(R.id.drawer_layout);
+                		  drawerLayout.openDrawer(rootView.findViewById(R.id.layout_fragment));
+            		  }	  
+            	  }
+            	});
+			
+	        getFragmentManager().beginTransaction().add(R.id.container_fragment, editFg).commit();
+
+
 
 			viewMindMap = (MindMapView) rootView.findViewById(R.id.surfaceView);
 			viewMindMap.setCurrentFragment(this);
 			viewMindMap.setMode(true);
 			model = viewMindMap.getModel();
-
-			final SatelliteMenu menu = (SatelliteMenu) rootView
-					.findViewById(R.id.menu);
-			List<SatelliteMenuItem> items = new ArrayList<SatelliteMenuItem>();
-			items.add(new SatelliteMenuItem(4, R.drawable.duplicate_button));
-			items.add(new SatelliteMenuItem(4, R.drawable.redo_button));
-			items.add(new SatelliteMenuItem(4, R.drawable.undo_button));
-			items.add(new SatelliteMenuItem(1, R.drawable.add_button));
-			;
-			menu.addItems(items);
-
-			menu.setOnItemClickedListener(new SateliteClickedListener() {
-				public void eventOccured(int id) {
-					if (id == 1) {
-						model.createNewConcept(new PointF(300, 300));
-						viewMindMap.setModel(model);
-						DrawerLayout drawerLayout = (DrawerLayout) rootView
-								.findViewById(R.id.drawer_layout);
-						drawerLayout.openDrawer(rootView
-								.findViewById(R.id.layout_fragment));
-					}
-				}
-			});
 
 			getFragmentManager().beginTransaction()
 					.add(R.id.container_fragment, editFg).commit();
@@ -175,6 +199,7 @@ public class EditionActivity extends ActionBarActivity {
 							.beginTransaction();
 					transaction.replace(R.id.container_fragment, editFg);
 					transaction.addToBackStack(null).commit();
+
 				}
 			});
 
@@ -205,6 +230,7 @@ public class EditionActivity extends ActionBarActivity {
 							.beginTransaction();
 					transaction.replace(R.id.container_fragment, fg);
 					transaction.addToBackStack(null).commit();
+
 				}
 			});
 
@@ -214,6 +240,7 @@ public class EditionActivity extends ActionBarActivity {
 
 				@Override
 				public void onClick(View v) {
+
 					GoogleFragment fg = new GoogleFragment();
 					fg.setConceptModel(currentConcept);
 					FragmentTransaction transaction = getFragmentManager()
@@ -304,6 +331,7 @@ public class EditionActivity extends ActionBarActivity {
 			return rootView;
 		}
 		
+
 		public void editConcept(ConceptModel model) {
 			currentConcept = model;
 			editFg.initFragment(currentConcept);

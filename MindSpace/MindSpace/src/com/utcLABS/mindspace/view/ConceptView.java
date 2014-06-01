@@ -17,16 +17,13 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.PathShape;
-import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ext.EditionActivity;
 import android.view.ext.R;
 import android.widget.TextView;
-import android.view.ext.R;
 
 import com.utcLABS.mindspace.VisualisationActivity;
 import com.utcLABS.mindspace.model.ConceptModel;

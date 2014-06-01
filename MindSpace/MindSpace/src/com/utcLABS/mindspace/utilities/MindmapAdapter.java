@@ -1,24 +1,25 @@
 package com.utcLABS.mindspace.utilities;
 
 import java.util.ArrayList;
-import java.util.Date;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.util.Log;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ext.EditionActivity;
+import android.view.ext.R;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
-import android.view.ext.R;
 
 import com.utcLABS.mindspace.model.Mindmap;
 
@@ -158,7 +159,11 @@ public class MindmapAdapter extends BaseAdapter {
 	private OnItemClickListener ItemListener = new OnItemClickListener() {
        
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-           String selected = ((TextView) view.findViewById(R.id.title)).getText().toString();
+            String selected = ((TextView) view.findViewById(R.id.title)).getText().toString();
+			Intent i0 = new Intent(context, EditionActivity.class);
+			i0.putExtra("title", selected);
+			context.startActivity(i0);
+			((Activity)context).finish();
 
             Toast toast=Toast.makeText(MindmapAdapter.this.context, selected+" a été cliqué.", Toast.LENGTH_SHORT);
             toast.show();
