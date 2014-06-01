@@ -96,8 +96,10 @@ public class VisualisationActivity extends ActionBarActivity {
 		private MindMapView viewMindMap;
 		private MindMapModel model;
 		private View rootView = null;
+		private DrawerLayout drawer = null;
 		private SeeFragment seeFg = new SeeFragment();
 		private ConceptModel currentConcept = null;
+		private CircularSeekBar slider = null;
 
 		public PlaceholderFragment() {
 		}
@@ -107,22 +109,29 @@ public class VisualisationActivity extends ActionBarActivity {
 				Bundle savedInstanceState) {
 			rootView = inflater.inflate(R.layout.fragment_visualisation,
 					container, false);
+			
+			drawer = (DrawerLayout) rootView.findViewById(R.id.drawer_layout_visualisation);
+			
+			//initView
 			viewMindMap = (MindMapView)rootView.findViewById(R.id.surfaceView);
-
-	        model = viewMindMap.getModel();
+	        model = viewMindMap.getMindMapModel();
 			viewMindMap.setCurrentFragment(this);
 	        viewMindMap.setMode(false);
+	        viewMindMap.setDensity(0f);
 	        
 	        getFragmentManager().beginTransaction().add(R.id.layout_visualisation, seeFg).commit();
-	        
-	        viewMindMap.setDensity(0f);
-			
-			CircularSeekBar slider = (CircularSeekBar) rootView.findViewById(R.id.circularSeekBar1);
+	        			
+			initSlider(); 
+			return rootView;
+		}
+
+		private void initSlider() {
+			slider = (CircularSeekBar) rootView.findViewById(R.id.circularSeekBar1);
 			slider.setOnSeekBarChangeListener(new OnCircularSeekBarChangeListener(){
 
 				@Override
 				public void onProgressChanged(CircularSeekBar circularSeekBar, int progress, boolean fromUser) {
-					System.out.println(circularSeekBar.getProgress());
+					drawer.closeDrawer(rootView.findViewById(R.id.layout_visualisation));
 					float density = (float) (progress / 100.0);
 					viewMindMap.setDensity(density);
 
@@ -139,15 +148,13 @@ public class VisualisationActivity extends ActionBarActivity {
 					
 				}
 				
-			}); 
-			return rootView;
+			});
 		}
 
 		public void editConcept(ConceptModel model) {
 			currentConcept = model;
 			seeFg.initFragment(currentConcept);
-			DrawerLayout drawerLayout = (DrawerLayout)rootView.findViewById(R.id.drawer_layout_visualisation);
-			drawerLayout.openDrawer(rootView.findViewById(R.id.layout_visualisation));			
+			drawer.openDrawer(rootView.findViewById(R.id.layout_visualisation));			
 		}
 	}
 
