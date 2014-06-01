@@ -178,16 +178,6 @@ public class EditionActivity extends ActionBarActivity {
 			
 	        getFragmentManager().beginTransaction().add(R.id.container_fragment, editFg).commit();
 
-
-
-			viewMindMap = (MindMapView) rootView.findViewById(R.id.surfaceView);
-			viewMindMap.setCurrentFragment(this);
-			viewMindMap.setMode(true);
-			model = viewMindMap.getModel();
-
-			getFragmentManager().beginTransaction()
-					.add(R.id.container_fragment, editFg).commit();
-
 			ImageButton editConcept = (ImageButton) rootView
 					.findViewById(R.id.edit_concept);
 			editConcept.setOnClickListener(new View.OnClickListener() {
@@ -209,11 +199,10 @@ public class EditionActivity extends ActionBarActivity {
 
 				@Override
 				public void onClick(View v) {
-					PictureEditFragment fg = new PictureEditFragment();
-					fg.setConceptModel(currentConcept);
+					pictureFg.setConceptModel(currentConcept);
 					FragmentTransaction transaction = getFragmentManager()
 							.beginTransaction();
-					transaction.replace(R.id.container_fragment, fg);
+					transaction.replace(R.id.container_fragment, pictureFg);
 					transaction.addToBackStack(null).commit();
 				}
 			});
@@ -224,11 +213,10 @@ public class EditionActivity extends ActionBarActivity {
 
 				@Override
 				public void onClick(View v) {
-					WikipediaFragment fg = new WikipediaFragment();
-					fg.setConceptModel(currentConcept);
+					wikiFg.setConceptModel(currentConcept);
 					FragmentTransaction transaction = getFragmentManager()
 							.beginTransaction();
-					transaction.replace(R.id.container_fragment, fg);
+					transaction.replace(R.id.container_fragment, wikiFg);
 					transaction.addToBackStack(null).commit();
 
 				}
@@ -240,12 +228,10 @@ public class EditionActivity extends ActionBarActivity {
 
 				@Override
 				public void onClick(View v) {
-
-					GoogleFragment fg = new GoogleFragment();
-					fg.setConceptModel(currentConcept);
+					googleFg.setConceptModel(currentConcept);
 					FragmentTransaction transaction = getFragmentManager()
 							.beginTransaction();
-					transaction.replace(R.id.container_fragment, fg);
+					transaction.replace(R.id.container_fragment, googleFg);
 					transaction.addToBackStack(null).commit();
 				}
 			});
@@ -256,11 +242,10 @@ public class EditionActivity extends ActionBarActivity {
 
 				@Override
 				public void onClick(View v) {
-					ColorFragment fg = new ColorFragment();
-					fg.setConceptModel(currentConcept);
+					colorFg.setConceptModel(currentConcept);
 					FragmentTransaction transaction = getFragmentManager()
 							.beginTransaction();
-					transaction.replace(R.id.container_fragment, fg);
+					transaction.replace(R.id.container_fragment, colorFg);
 					transaction.addToBackStack(null).commit();
 				}
 			});

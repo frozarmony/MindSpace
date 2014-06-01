@@ -109,7 +109,7 @@ public class VisualisationActivity extends ActionBarActivity {
 					container, false);
 			viewMindMap = (MindMapView)rootView.findViewById(R.id.surfaceView);
 
-	        model = viewMindMap.getModel();
+	        model = viewMindMap.getMindMapModel();
 			viewMindMap.setCurrentFragment(this);
 	        viewMindMap.setMode(false);
 	        
