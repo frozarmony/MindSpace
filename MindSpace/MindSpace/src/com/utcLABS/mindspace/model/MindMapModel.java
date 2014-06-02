@@ -24,12 +24,15 @@ public class MindMapModel {
 	/*
 	 * Member
 	 */
+	private String								title;
+	private String								lastModificationDate;
 	private LinkedList<ConceptModel>			conceptIndex;
 
 	// Bean
 	private PropertyChangeSupport				propertyChangeSupport;
 	
-	private MindMapXmlParser parser = new MindMapXmlParser(this);
+	// Xml
+	private MindMapXmlParser					parser;
 
 	/*
 	 * Constructor
@@ -40,6 +43,26 @@ public class MindMapModel {
 		//Init
 		this.conceptIndex = new LinkedList<ConceptModel>();
 		this.propertyChangeSupport = new PropertyChangeSupport(this);
+		this.parser = new MindMapXmlParser(this);
+	}
+
+	/*
+	 * Getters
+	 */
+
+	public String getTitle() {						return title;					}
+	public String getLastModificationDate() {		return lastModificationDate;	}
+
+	/*
+	 * Setters
+	 */
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public void setLastModificationDate(String lastModificationDate) {
+		this.lastModificationDate = lastModificationDate;
 	}
 
 	/*
