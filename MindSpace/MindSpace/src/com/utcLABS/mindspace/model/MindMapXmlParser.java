@@ -1,8 +1,11 @@
 package com.utcLABS.mindspace.model;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -31,6 +34,51 @@ public class MindMapXmlParser {
             in.close();
         }
     }
+	/*
+	 * Pour écrire dans un fichier :
+	 * FileWriter fw = new FileWriter(adressedufichier, true);
+	 * BufferedWriter output = new BufferedWriter(fw);
+	 */
+	public boolean save(BufferedWriter output){
+		
+		String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+		//TODO : Ajouter les informations en entête..
+		xml += "<concepts>\n";
+		List<ConceptModel> list = model.copyOfConceptsList();
+		Iterator<ConceptModel> i = list.iterator();
+		while(i.hasNext()){
+		  ConceptModel x = i.next();
+		  if(x.getParent() == null){
+			  xml += getConceptXml(x);
+		  }
+		}
+		xml+="\n</concepts>";
+		System.out.println("Résultat XML : "+xml);
+		try {
+			output.write(xml);
+			output.flush();
+			output.close();
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	private String getConceptXml(ConceptModel cm){
+		String res = "";
+		res+="<concept name=\""+cm.getName()+"\" x=\""+cm.getPosition().x+"\" y=\""+cm.getPosition().y+"\" size=\""+cm.getSize()+"\" color=\""+getColorString(cm.getColor())+"\" shape=\""+cm.getShape()+"\">\n";
+		
+		for(int i=0;i<cm.getChildrenCount();i++){
+			res+=getConceptXml(cm.getChildAt(i));
+		}
+		res+="</concept>\n";
+		return res;
+	}
+	
+	private String getColorString(int color){
+		return "rgb("+Color.red(color)+","+Color.green(color)+","+Color.blue(color)+")";
+	}
 
 	private LinkedList<ConceptModel> readConcepts(XmlPullParser parser) throws XmlPullParserException, IOException {
 		

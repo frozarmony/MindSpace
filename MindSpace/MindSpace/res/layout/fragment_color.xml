@@ -3,23 +3,78 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:layout_marginTop="30dp"
+        android:background="#E6E2AF"
+        android:gravity="center"
+        android:text="@string/edit_shape"
+        android:textColor="#046380"
+        android:textSize="20sp" />
+    
+      <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="5dp"
+        android:text="@string/instruc_edit_shape"
+        android:textColor="#FFFFFF"
+        android:textSize="15sp" />
     
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:orientation="horizontal" >
+        
+        <ImageButton
+            android:id="@+id/rectangle"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rectangle_shape_button" />
+
+        <ImageButton
+            android:id="@+id/ellipse"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ellipse_shape_button" />
+
+        <ImageButton
+            android:id="@+id/rectangle_arrondi"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rectangle_arrondi_shape_button" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:layout_marginTop="50dp"
+        android:background="#E6E2AF"
+        android:gravity="center"
+        android:text="@string/edit_color"
+        android:textColor="#046380"
+        android:textSize="20sp" />
+    
      <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/edit_color"
-        android:textColor="#046380"
-        android:gravity="center"
-        android:layout_marginTop="50dp"
-        android:layout_marginBottom="50dp"
-        android:textSize="20dip" 
-        android:background="#E6E2AF"                                   
- 	/>
-     
-    <com.larswerkman.holocolorpicker.ColorPicker
-    android:id="@+id/picker"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"/>
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="5dp"
+        android:text="@string/instruc_edit_color"
+        android:textColor="#FFFFFF"
+        android:textSize="15sp" />
     
+
+    <com.larswerkman.holocolorpicker.ColorPicker
+        android:id="@+id/picker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp" />
+
 </LinearLayout>

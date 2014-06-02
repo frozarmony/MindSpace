@@ -8,14 +8,17 @@
     <string name="menu_see">Visualisation</string>
     <string name="menu_settings">Settings</string>
     
-    <string name="title_activity_visualisation">Visualisation</string>
-    
+    <string name="title_activity_visualisation">Visualisation</string>    
     <string name="edit_concept">Edition du concept</string>
     <string name="edit_text">Saisir ici le titre du concept</string>
     <string name="edit_desc">Saisir ici la description du concept</string>
     <string name="edit_picture">Images associées au concept</string>
     <string name="edit_color">Couleur du concept</string>
+    <string name="edit_shape">Forme du concept</string>
+    <string name="instruc_edit_shape">Sélectionner la forme du concept en cliquant sur l\'image correspondante.</string>
+    <string name="instruc_edit_color">Sélectionner la couleur du concept en glissant le curseur le long du cercle.</string>
     <string name="title_concept">Titre</string>
     <string name="desc_concept">Description</string>
-    <string name="addPicture">Parcourir</string>      
+    <string name="addPicture">Parcourir</string>  
+    <string name="see_concept">Informations du concept</string>    
 </resources>
