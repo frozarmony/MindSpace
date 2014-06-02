@@ -49,9 +49,9 @@ public class EditionActivity extends ActionBarActivity {
 
 		title = this.getIntent().getExtras().getString("title");
 		setTitle(title);		
-
+		
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-
+		
 		if (savedInstanceState == null) {
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
@@ -119,7 +119,7 @@ public class EditionActivity extends ActionBarActivity {
 		private MindMapModel model;
 		private View rootView = null;
 		private DrawerLayout drawer = null;
-
+		
 		private TextEditFragment editFg = new TextEditFragment();
 		private PictureEditFragment pictureFg = new PictureEditFragment();
 		private ColorFragment colorFg = new ColorFragment();
@@ -127,7 +127,7 @@ public class EditionActivity extends ActionBarActivity {
 		private GoogleFragment googleFg = new GoogleFragment();
 		private ConceptModel currentConcept = null;
 		private SatelliteMenu menu = null;
-
+		
 		public PlaceholderFragment() {
 		}
 
@@ -136,19 +136,19 @@ public class EditionActivity extends ActionBarActivity {
 				Bundle savedInstanceState) {
 
 			rootView = inflater.inflate(R.layout.fragment_edition, container,false);
-
+			 
 			//init view
 			viewMindMap = (MindMapView)rootView.findViewById(R.id.surfaceView);
 			viewMindMap.setCurrentFragment(this);
-			viewMindMap.setMode(true);
-	        model = viewMindMap.getMindMapModel();
-
+			viewMindMap.setEditMode(true);
+	        model = viewMindMap.getModel();
+	        
 	        initDrawer();
-
+			
 			initSatelliteMenu();
 
             initPanel();
-
+			
             initBin();
             			
 			return rootView;
@@ -239,7 +239,7 @@ public class EditionActivity extends ActionBarActivity {
 					return true;
 				}
 			});
-
+			
 		}
 
 		private void initSatelliteMenu() {
@@ -269,7 +269,7 @@ public class EditionActivity extends ActionBarActivity {
             	  }
             	});
 		}
-
+		
 
 		private void initPanel() {
 			getFragmentManager().beginTransaction().add(R.id.container_fragment, editFg).commit();
@@ -345,14 +345,15 @@ public class EditionActivity extends ActionBarActivity {
 					transaction.addToBackStack(null).commit();
 				}
 			});
-
+			
 		}
 
 		public void editConcept(ConceptModel model) {
 			currentConcept = model;
 			editFg.initFragment(currentConcept);
+			colorFg.initFragment(currentConcept);
 			drawer.openDrawer(rootView.findViewById(R.id.layout_fragment));
-
+			
 		}
 	}
 

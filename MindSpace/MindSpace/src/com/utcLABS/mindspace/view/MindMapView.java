@@ -17,7 +17,6 @@ import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
-import android.view.ext.R;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
@@ -33,6 +32,9 @@ import com.utcLABS.mindspace.model.MindMapModel;
 	
 	// Model Reference
 	private MindMapModel							mindMapModel;
+	
+	// Interface Reference
+	private Fragment 								currentFragment;
 	
 	// View Members
 	private HashMap<ConceptModel, ConceptView>		conceptIndex;
@@ -59,10 +61,6 @@ import com.utcLABS.mindspace.model.MindMapModel;
 	private OnTouchListener							onTouch;
 	private OnDragListener							onDrag;
 
-	//private MyTouchListener touchListener;
-	private Boolean mode;
-	private Fragment currentFragment;
-
 	/*
 	 * Constructor
 	 */
@@ -77,7 +75,7 @@ import com.utcLABS.mindspace.model.MindMapModel;
 		
 		this.mapView = new RelativeLayout(context);
 		this.mapView.setBackgroundColor(0xffeeeeee);
-		this.addView(this.mapView, 4000,4000);	// TODO compute proper mapView Size
+		this.addView(this.mapView, 3000, 3000);
 		
 		this.scale = new ScaleObject();
 		this.density = 0.5f;
@@ -88,9 +86,6 @@ import com.utcLABS.mindspace.model.MindMapModel;
 		this.offsetX = 0f;
 		this.centerY = 0f;
 		this.offsetY = 0f;
-
-		//Init mode edition
-		mode = false;
 		
 		/*
 		 * Model Test
@@ -137,100 +132,12 @@ import com.utcLABS.mindspace.model.MindMapModel;
  		creativity.setColor(Color.rgb(50, 200, 50));
  		
  		this.setModel(myTestModel);
+
  		// Init Controller's Listeners
  		initControllerListeners();
  		
- 		/*
- 		 * Controller Test
- 		 */
- 		/*
- 		mScaleDetector = new ScaleGestureDetector(this.getContext(), new ScaleListener());
- 		
- 		// OnTouchTest
- 		this.touchListener = new MyTouchListener();
- 		this.setOnTouchListener(this.touchListener);
- 		
- 		this.setOnDragListener(new OnDragListener() {
-
- 			@Override
- 			public boolean onDrag(View v, DragEvent event) {
- 				// Init
- 				ConceptView conceptView;
- 				
- 				switch (event.getAction()) {
- 				case DragEvent.ACTION_DRAG_STARTED:
-				if( !event.getClipDescription().hasMimeType(ConceptView.MIMETYPE_CONCEPTVIEW) )
-					return false;
-				break;
- 				case DragEvent.ACTION_DROP:
- 					Log.d("MindMapView", "Action Drop");
- 					conceptView = (ConceptView) event.getLocalState();
- 					conceptView.getModel().moveTo(null);
- 					conceptView.getModel().setPosition(event.getX(), event.getY());	// TODO get Relative X Y
- 					break;
- 				case DragEvent.ACTION_DRAG_ENDED:
- 					Log.d("MindMapView", "Action Ended");
- 					break;
- 				}
- 				return true;
- 			}
- 		});*/
- 		
  		// Update Concepts Visibility
  		updateConceptsVisibility();
-	}
-	
-	public MindMapModel getMindMapModel(){
-		return mindMapModel;
-	}
-	/*
-	class MyTouchListener implements OnTouchListener{
-
-			@Override
-			public boolean onTouch(View v, MotionEvent ev) {
-				float _x = ev.getX();
-				float _y = ev.getY();
-				
-				if(ev.getPointerCount() == 2)
-					ev.setLocation((ev.getX(0)+ev.getX(1))/2, (ev.getY(0)+ev.getY(1))/2);
-				
-
-				mScaleDetector.onTouchEvent(ev);
-				//mDoubleTapDetector.onDoubleTap(ev);
-				switch (ev.getAction()) {
-				case MotionEvent.ACTION_DOWN:
-					offsetX = _x+centerX;
-					offsetY = _y+centerY;
-					break;
-				case MotionEvent.ACTION_MOVE:
-					if(offsetX != 0 && offsetY != 0){
-						centerX = offsetX-_x;
-						centerY = offsetY-_y;
-						mapView.scrollTo((int)(centerX/scale.scaleFactor), (int)(centerY/scale.scaleFactor));
-					}
-					break;
-				case MotionEvent.ACTION_UP:					
-					offsetX = 0;
-					offsetY = 0;
-					break;
-				}
-				return true;
-			}
-		}*/
-	
-	private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
-	    @SuppressLint("NewApi") @Override
-	    public boolean onScale(ScaleGestureDetector detector) {
-	        scale.scaleFactor *= detector.getScaleFactor();
-	        scale.scaleFactor = Math.max(1f, Math.min(scale.scaleFactor, 5.0f));
-	        mapView.setPivotX(detector.getFocusX()*scale.scaleFactor);
-	        mapView.setPivotY(detector.getFocusY()*scale.scaleFactor);
-	        mapView.setScaleX(scale.scaleFactor);
-	        mapView.setScaleY(scale.scaleFactor);
-	        updateConceptsVisibility();
-	        invalidate();
-	        return true;
-	    }
 	}
 	
 	/*
@@ -344,14 +251,15 @@ import com.utcLABS.mindspace.model.MindMapModel;
  				if(editMode){
 	 				switch (event.getAction()) {
 	 				case DragEvent.ACTION_DRAG_STARTED:
-					if( !event.getClipDescription().hasMimeType(ConceptView.MIMETYPE_CONCEPTVIEW) )
-						return false;
+	 					if( !event.getClipDescription().hasMimeType(ConceptView.MIMETYPE_CONCEPTVIEW) )
+	 						return false;
 					break;
 	 				case DragEvent.ACTION_DROP:
 	 					Log.d("MindMapView", "Action Drop");
 	 					conceptView = (ConceptView) event.getLocalState();
 	 					conceptView.getModel().moveTo(null);
-	 					conceptView.getModel().setPosition(event.getX(), event.getY());	// TODO get Relative X Y
+	 					conceptView.getModel().setPosition(	(mapView.getScrollX()+event.getX())/scale.getScale(),
+	 														(mapView.getScrollY()+event.getY())/scale.getScale());
 	 					break;
 	 				case DragEvent.ACTION_DRAG_ENDED:
 	 					Log.d("MindMapView", "Action Ended");
@@ -371,10 +279,11 @@ import com.utcLABS.mindspace.model.MindMapModel;
 	 */
 	
 	// Getter
-	public MindMapModel	getModel(){			return mindMapModel;	}
-	public boolean		isEditMode(){		return editMode;		}
-	public float		getDensity(){		return density;			}
-	
+	public MindMapModel	getModel(){				return mindMapModel;	}
+	public boolean		isEditMode(){			return editMode;		}
+	public float		getDensity(){			return density;			}
+	public Fragment		getCurrentFragment() {	return currentFragment;	}
+
 	// Setter
 	public void setModel(MindMapModel model){
 		// Clear Old Model if exist
@@ -430,26 +339,6 @@ import com.utcLABS.mindspace.model.MindMapModel;
 	
 	public void setEditMode(boolean editMode){
 		this.editMode = editMode;
-	}
-	
-	public Boolean getMode() {
-		return mode;
-	}
-
-	public void setMode(Boolean mode) {
-		this.mode = mode;
-	}
-
-	public HashMap<ConceptModel, ConceptView> getConceptIndex() {
-		return conceptIndex;
-	}
-
-	public void setConceptIndex(HashMap<ConceptModel, ConceptView> conceptIndex) {
-		this.conceptIndex = conceptIndex;
-	}
-
-	public Fragment getCurrentFragment() {
-		return currentFragment;
 	}
 
 	public void setCurrentFragment(Fragment currentFragment) {
