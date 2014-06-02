@@ -351,6 +351,7 @@ public class EditionActivity extends ActionBarActivity {
 		public void editConcept(ConceptModel model) {
 			currentConcept = model;
 			editFg.initFragment(currentConcept);
+			colorFg.initFragment(currentConcept);
 			drawer.openDrawer(rootView.findViewById(R.id.layout_fragment));
 			
 		}
