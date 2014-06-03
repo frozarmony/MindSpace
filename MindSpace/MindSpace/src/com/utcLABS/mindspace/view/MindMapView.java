@@ -83,7 +83,8 @@ import com.utcLABS.mindspace.model.MindMapModel;
 		 * Model Test
 		 */
 		MindMapModel myTestModel = new MindMapModel();
-		float coef = 1f;
+		
+		float coef = 0.7f;
 		
 		// Listeners
 		//initPropertyChangeListeners(this.mindMapModel);
@@ -123,7 +124,7 @@ import com.utcLABS.mindspace.model.MindMapModel;
  		creativity.setColor(Color.rgb(50, 200, 50));
  		
  		this.setModel(myTestModel);
- 		
+
  		// Init Controller's Listeners
  		initControllerListeners();
  		

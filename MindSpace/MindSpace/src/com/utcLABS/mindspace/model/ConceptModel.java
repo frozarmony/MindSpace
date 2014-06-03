@@ -26,6 +26,15 @@ public class ConceptModel {
 	public final static int				DEFAULT_COLOR				= Color.WHITE;
 	public final static MindSpaceShape	DEFAULT_SHAPE				= MindSpaceShape.oval;
 	
+	public static MindSpaceShape getShape(String shape){
+		if(shape.equals("rectangle"))
+			return MindSpaceShape.rectangle;
+		else if(shape.equals("roundedRectangle"))
+			return MindSpaceShape.roundedRectangle;
+		else
+			return MindSpaceShape.oval;
+	}
+	
 	// Available Shapes
 	public enum MindSpaceShape{
 										rectangle,

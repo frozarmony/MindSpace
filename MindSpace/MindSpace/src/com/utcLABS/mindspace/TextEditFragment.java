@@ -12,10 +12,6 @@ import android.view.ext.R;
 
 import com.utcLABS.mindspace.model.ConceptModel;
 
-import com.utcLABS.mindspace.model.ConceptModel;
-
-
-
 
 public class TextEditFragment extends Fragment {
 		
