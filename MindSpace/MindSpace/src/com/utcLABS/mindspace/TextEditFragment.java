@@ -2,6 +2,7 @@ package com.utcLABS.mindspace;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -9,8 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ext.R;
 import android.widget.EditText;
-
-import com.utcLABS.mindspace.model.ConceptModel;
 
 import com.utcLABS.mindspace.model.ConceptModel;
 
@@ -23,6 +22,7 @@ public class TextEditFragment extends Fragment {
 	private ConceptModel conceptModel;
 	private EditText desc;
 	private EditText title;
+	private Boolean createdListener = false;
 	
 	public TextEditFragment(){
 		
@@ -35,24 +35,27 @@ public class TextEditFragment extends Fragment {
 		rootView = inflater.inflate(R.layout.edit_slide, container,false);
 		title = (EditText) rootView.findViewById(R.id.new_title);
 		desc = (EditText) rootView.findViewById(R.id.editInput);
-
-		title.addTextChangedListener(new TextWatcher() {
-		 
-		   public void afterTextChanged(Editable s) {
-				conceptModel.setName(s.toString());
-		   }
-		 
-		   public void beforeTextChanged(CharSequence s, int start, 
-		     int count, int after) {
-		   }
-		 
-		   public void onTextChanged(CharSequence s, int start, 
-		     int before, int count) {
-		   
-		   }
-		  });
+//
+//		title.addTextChangedListener(new TextWatcher() {
+//			 
+//			   public void afterTextChanged(Editable s) {
+//				   	System.out.println(title.getText().toString());
+//					conceptModel.setName(s.toString());
+//			   }
+//			 
+//			   public void beforeTextChanged(CharSequence s, int start, 
+//			     int count, int after) {
+//			   }
+//			 
+//			   public void onTextChanged(CharSequence s, int start, 
+//			     int before, int count) {
+//			   
+//			   }
+//		});
+		initFragment(conceptModel);
 
 		return rootView;
+		
 
 	}
 	
@@ -61,13 +64,18 @@ public class TextEditFragment extends Fragment {
 		if(conceptModel!=null){
 			if(conceptModel.getName()!=null){
 				title.setText(conceptModel.getName());
+			}else {
+				title.setText(null);
 			}
 			if(conceptModel.getDescription()!=null){
 				desc.setText(conceptModel.getDescription());
-
+			}else {
+				desc.setText(null);
 			}
+		}else {
+			title.setText(null);
+			desc.setText(null);
 		}
-		
 	}
 
 	public View getRootView() {
@@ -84,6 +92,7 @@ public class TextEditFragment extends Fragment {
 
 	public void setConceptModel(ConceptModel conceptModel) {
 		this.conceptModel = conceptModel;
+		initFragment(conceptModel);
 	}
 
 }

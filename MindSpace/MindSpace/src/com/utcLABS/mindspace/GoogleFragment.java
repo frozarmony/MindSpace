@@ -28,7 +28,7 @@ public class GoogleFragment extends Fragment {
 		webView = (WebView) rootView.findViewById(R.id.wikipediaView);
 		webView.setWebViewClient(new MyWebView());
 		webView.getSettings().setJavaScriptEnabled(true);
-		webView.loadUrl("https://www.google.fr/search?hl=fr&biw=1366&bih=643&site=imghp&tbm=isch&source=hp&biw=1366&bih=643&q="+conceptModel.getName());
+		webView.loadUrl("https://www.google.fr/search?hl=fr&biw=1366&bih=643&site=imghp&tbm=isch&source=hp&biw=1366&bih=643");
 		return rootView;
 	}
 	
@@ -42,5 +42,10 @@ public class GoogleFragment extends Fragment {
 
 	public void setConceptModel(ConceptModel currentConcept) {
 		this.conceptModel = currentConcept;
+	}
+	
+	public void initFragment(ConceptModel currentConcept) {
+		this.conceptModel = currentConcept;
+		webView.loadUrl("https://www.google.fr/search?hl=fr&biw=1366&bih=643&site=imghp&tbm=isch&source=hp&biw=1366&bih=643&q="+conceptModel.getName());	
 	}
 }

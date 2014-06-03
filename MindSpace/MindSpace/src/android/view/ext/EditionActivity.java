@@ -127,6 +127,7 @@ public class EditionActivity extends ActionBarActivity {
 		private GoogleFragment googleFg = new GoogleFragment();
 		private ConceptModel currentConcept = null;
 		private SatelliteMenu menu = null;
+		private Fragment currentFragment = editFg;
 		
 		public PlaceholderFragment() {
 		}
@@ -160,7 +161,8 @@ public class EditionActivity extends ActionBarActivity {
 
 				@Override
 				public void onDrawerClosed(View arg0) {
-					menu.setVisibility(View.VISIBLE);					
+					menu.setVisibility(View.VISIBLE);
+					currentFragment = editFg;
 				}
 
 				@Override
@@ -169,7 +171,7 @@ public class EditionActivity extends ActionBarActivity {
 				}
 
 				@Override
-				public void onDrawerSlide(View arg0, float arg1) {	
+				public void onDrawerSlide(View arg0, float arg1) {
 				}
 
 				@Override
@@ -274,34 +276,29 @@ public class EditionActivity extends ActionBarActivity {
 		
 
 		private void initPanel() {
-			getFragmentManager().beginTransaction().add(R.id.container_fragment, editFg).commit();
+			getFragmentManager().beginTransaction().add(R.id.container_fragment, currentFragment).commit();
 
 			ImageButton editConcept = (ImageButton) rootView
 					.findViewById(R.id.edit_concept);
 			editConcept.setOnClickListener(new View.OnClickListener() {
-
+				
 				@Override
 				public void onClick(View v) {
-					editFg.initFragment(currentConcept);
-					FragmentTransaction transaction = getFragmentManager()
-							.beginTransaction();
-					transaction.replace(R.id.container_fragment, editFg);
-					transaction.addToBackStack(null).commit();
-
+					editFg.setConceptModel(currentConcept);
+					getFragmentManager().beginTransaction().replace(R.id.container_fragment, editFg).commit();	
 				}
 			});
 
 			ImageButton editPicture = (ImageButton) rootView
 					.findViewById(R.id.edit_picture);
 			editPicture.setOnClickListener(new View.OnClickListener() {
-
+				
+				private Boolean firstTimeCalled = true;
 				@Override
 				public void onClick(View v) {
 					pictureFg.setConceptModel(currentConcept);
-					FragmentTransaction transaction = getFragmentManager()
-							.beginTransaction();
-					transaction.replace(R.id.container_fragment, pictureFg);
-					transaction.addToBackStack(null).commit();
+					getFragmentManager().beginTransaction().replace(R.id.container_fragment, pictureFg).commit();
+					currentFragment = pictureFg;
 				}
 			});
 
@@ -354,7 +351,6 @@ public class EditionActivity extends ActionBarActivity {
 			currentConcept = model;
 			editFg.initFragment(currentConcept);
 			drawer.openDrawer(rootView.findViewById(R.id.layout_fragment));
-			
 		}
 	}
 

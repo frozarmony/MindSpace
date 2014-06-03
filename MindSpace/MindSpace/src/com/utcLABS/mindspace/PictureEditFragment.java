@@ -42,12 +42,11 @@ public class PictureEditFragment extends Fragment {
 		return rootView;
 	}
 	
-	public ConceptModel getConceptModel() {
-		return conceptModel;
-	}
-
-	public void setConceptModel(ConceptModel conceptModel) {
-		this.conceptModel = conceptModel;
+	public void initFragment(ConceptModel currentConcept){
+		this.conceptModel = currentConcept;
+		if(conceptModel!=null){
+			
+		}	
 	}
 	
 	@Override
@@ -61,5 +60,13 @@ public class PictureEditFragment extends Fragment {
 		
 		//ConceptModel conceptToEdit = ((MainActivity)getActivity()).getCurrentConcept();
 		
+	}
+	
+	public ConceptModel getConceptModel() {
+		return conceptModel;
+	}
+
+	public void setConceptModel(ConceptModel conceptModel) {
+		this.conceptModel = conceptModel;
 	}
 }

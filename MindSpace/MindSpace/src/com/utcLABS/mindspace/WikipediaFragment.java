@@ -31,7 +31,7 @@ public class WikipediaFragment extends Fragment {
 		webView = (WebView) rootView.findViewById(R.id.wikipediaView);
 		webView.setWebViewClient(new MyWebView());
 		webView.getSettings().setJavaScriptEnabled(true);
-		webView.loadUrl("http://fr.wikipedia.org/wiki/" + conceptModel.getName());
+		webView.loadUrl("http://fr.wikipedia.org/wiki/");
 		return rootView;
 	}
 	
@@ -45,5 +45,10 @@ public class WikipediaFragment extends Fragment {
 
 	public void setConceptModel(ConceptModel currentConcept) {
 		this.conceptModel = currentConcept;
+	}
+
+	public void initFragment(ConceptModel currentConcept) {
+		this.conceptModel = currentConcept;
+		webView.loadUrl("http://fr.wikipedia.org/wiki/"+conceptModel.getName());	
 	}
 }
