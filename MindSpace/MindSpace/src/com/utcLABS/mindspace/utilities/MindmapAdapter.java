@@ -67,11 +67,11 @@ public class MindmapAdapter extends BaseAdapter {
 		this.mindmapsList.setOnItemClickListener(ItemListener);
 		mViewHolder.tvTitle = detail(convertView, R.id.title, mindmaps.get(position).getTitle()); 
 		mViewHolder.tvModificationDate = detail(convertView, R.id.modification_date, mindmaps.get(position).getLastModificationDate()); 
-		//mViewHolder.btDelete = detail(convertView, R.id.delete_mindmap, mindmaps.get(position).getDeleteIcon());   
-		//mViewHolder.btRename = detail(convertView, R.id.rename_mindmap, mindmaps.get(position).getRenameIcon());   
+		mViewHolder.btDelete = setButton(convertView, R.id.delete_mindmap);   
+		mViewHolder.btRename = setButton(convertView, R.id.rename_mindmap);   
 
-//		mViewHolder.btDelete.setOnClickListener(DeleteClickListener);
-//		mViewHolder.btRename.setOnClickListener(RenameClickListener);
+		mViewHolder.btDelete.setOnClickListener(DeleteClickListener);
+		mViewHolder.btRename.setOnClickListener(RenameClickListener);
 		convertView.setTag(mViewHolder);
 		
 		return convertView; 
@@ -84,9 +84,8 @@ public class MindmapAdapter extends BaseAdapter {
 		return tv; 
 	}  
 	
-	private Button detail(View v, int resId, int icon) { 
+	private Button setButton(View v, int resId) { 
 		Button bt = (Button) v.findViewById(resId); 
-		bt.setBackgroundResource(icon);   
 		return bt; 
 	}   
 	
@@ -172,7 +171,7 @@ public class MindmapAdapter extends BaseAdapter {
 	
 	private class MyViewHolder { 
 		TextView tvTitle, tvModificationDate; 
-		//Button btDelete, btRename; 
+		Button btDelete, btRename; 
 	}   
 }
 	
