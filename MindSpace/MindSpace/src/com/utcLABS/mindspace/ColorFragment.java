@@ -21,11 +21,22 @@ public class ColorFragment extends Fragment {
 		
 	}
 	
+	public static ColorFragment newInstance(ConceptModel currentConcept) {
+		ColorFragment fragment = new ColorFragment();
+		Bundle args = new Bundle();
+		args.putParcelable("currentConcept", currentConcept);
+		fragment.setArguments(args);
+		return fragment;
+	}
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_color, container,false);
 		
+		Bundle args = getArguments();
+		conceptModel = args.getParcelable("currentConcept");
+				
 		ColorPicker picker = (ColorPicker)rootView.findViewById(R.id.picker);
 		
 		picker.setOnColorChangedListener(new OnColorChangedListener() {

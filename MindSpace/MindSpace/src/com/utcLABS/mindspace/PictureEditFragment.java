@@ -23,11 +23,22 @@ public class PictureEditFragment extends Fragment {
 		
 	}
 	
+	public static PictureEditFragment newInstance(ConceptModel currentConcept) {
+		PictureEditFragment fragment = new PictureEditFragment();
+		Bundle args = new Bundle();
+		args.putParcelable("currentConcept", currentConcept);
+		fragment.setArguments(args);
+		return fragment;
+	}
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		rootView = inflater.inflate(R.layout.edit_picture, container,
 				false);
+		
+		Bundle args = getArguments();
+		conceptModel = args.getParcelable("currentConcept");
 		
 		Button loadPicture = (Button)rootView.findViewById(R.id.buttonLoadPicture);
 		loadPicture.setOnClickListener(new View.OnClickListener() {

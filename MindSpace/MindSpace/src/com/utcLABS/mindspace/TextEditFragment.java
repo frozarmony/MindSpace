@@ -14,8 +14,6 @@ import android.widget.EditText;
 import com.utcLABS.mindspace.model.ConceptModel;
 
 
-
-
 public class TextEditFragment extends Fragment {
 		
 	private View rootView; 
@@ -28,6 +26,14 @@ public class TextEditFragment extends Fragment {
 		
 	}
 	
+	public static TextEditFragment newInstance(ConceptModel currentConcept) {
+		TextEditFragment fragment = new TextEditFragment();
+		Bundle args = new Bundle();
+		args.putParcelable("currentConcept", currentConcept);
+		fragment.setArguments(args);
+		return fragment;
+	}
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -35,32 +41,36 @@ public class TextEditFragment extends Fragment {
 		rootView = inflater.inflate(R.layout.edit_slide, container,false);
 		title = (EditText) rootView.findViewById(R.id.new_title);
 		desc = (EditText) rootView.findViewById(R.id.editInput);
-//
-//		title.addTextChangedListener(new TextWatcher() {
-//			 
-//			   public void afterTextChanged(Editable s) {
-//				   	System.out.println(title.getText().toString());
-//					conceptModel.setName(s.toString());
-//			   }
-//			 
-//			   public void beforeTextChanged(CharSequence s, int start, 
-//			     int count, int after) {
-//			   }
-//			 
-//			   public void onTextChanged(CharSequence s, int start, 
-//			     int before, int count) {
-//			   
-//			   }
-//		});
-		initFragment(conceptModel);
+		
+		Bundle args = getArguments();
+		conceptModel = args.getParcelable("currentConcept");
+
+		title.addTextChangedListener(new TextWatcher() {
+			 
+			   public void afterTextChanged(Editable s) {
+				   if(conceptModel!=null){
+					   conceptModel.setName(title.getText().toString());
+				   }
+			   }
+			 
+			   public void beforeTextChanged(CharSequence s, int start, 
+			     int count, int after) {
+			   }
+			 
+			   public void onTextChanged(CharSequence s, int start, 
+			     int before, int count) {
+			   
+			   }
+		});
+		
+		initFragment();
 
 		return rootView;
 		
 
 	}
 	
-	public void initFragment(ConceptModel currentConcept){
-		this.conceptModel = currentConcept;
+	public void initFragment(){
 		if(conceptModel!=null){
 			if(conceptModel.getName()!=null){
 				title.setText(conceptModel.getName());
@@ -90,9 +100,5 @@ public class TextEditFragment extends Fragment {
 		return conceptModel;
 	}
 
-	public void setConceptModel(ConceptModel conceptModel) {
-		this.conceptModel = conceptModel;
-		initFragment(conceptModel);
-	}
 
 }

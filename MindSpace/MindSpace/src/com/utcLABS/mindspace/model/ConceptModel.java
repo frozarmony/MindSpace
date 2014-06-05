@@ -6,9 +6,11 @@ import java.util.LinkedList;
 
 import android.graphics.Color;
 import android.graphics.PointF;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 
-public class ConceptModel {
+public class ConceptModel implements Parcelable {
 	
 	/*
 	 * Constant
@@ -82,6 +84,10 @@ public class ConceptModel {
 			parent.addChildNode(this);
 		else
 			this.parent = null;
+	}
+	
+	public ConceptModel(Parcel in){
+		this.name = in.readString();
 	}
 
 	/*
@@ -299,6 +305,15 @@ public class ConceptModel {
 	public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener){
 		Log.d("ConceptView("+ this.name+")", "Remove PropertyChangeListener " + propertyName);
 		this.propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
+	}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel out, int arg1) {
 	}
 	
 }

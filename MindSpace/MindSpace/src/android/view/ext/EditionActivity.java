@@ -48,13 +48,18 @@ public class EditionActivity extends ActionBarActivity {
 		setContentView(R.layout.activity_edition);
 
 		title = this.getIntent().getExtras().getString("title");
-		setTitle(title);		
+		setTitle(title);	
+		
+		//model getIntent
 		
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		
 		if (savedInstanceState == null) {
+			PlaceholderFragment placeHolder = new PlaceholderFragment();
+			//placeHolder.setModel(model);
+			
 			getSupportFragmentManager().beginTransaction()
-					.add(R.id.container, new PlaceholderFragment()).commit();
+					.add(R.id.container, placeHolder).commit();
 		}
 	}
 
@@ -119,15 +124,8 @@ public class EditionActivity extends ActionBarActivity {
 		private MindMapModel model;
 		private View rootView = null;
 		private DrawerLayout drawer = null;
-		
-		private TextEditFragment editFg = new TextEditFragment();
-		private PictureEditFragment pictureFg = new PictureEditFragment();
-		private ColorFragment colorFg = new ColorFragment();
-		private WikipediaFragment wikiFg = new WikipediaFragment();
-		private GoogleFragment googleFg = new GoogleFragment();
 		private ConceptModel currentConcept = null;
 		private SatelliteMenu menu = null;
-		private Fragment currentFragment = editFg;
 		
 		public PlaceholderFragment() {
 		}
@@ -143,7 +141,7 @@ public class EditionActivity extends ActionBarActivity {
 			viewMindMap.setCurrentFragment(this);
 			viewMindMap.setMode(true);
 	        model = viewMindMap.getMindMapModel();
-	        
+	        //viewMindMap.setModel(model);
 	        initDrawer();
 			
 			initSatelliteMenu();
@@ -162,7 +160,6 @@ public class EditionActivity extends ActionBarActivity {
 				@Override
 				public void onDrawerClosed(View arg0) {
 					menu.setVisibility(View.VISIBLE);
-					currentFragment = editFg;
 				}
 
 				@Override
@@ -259,16 +256,8 @@ public class EditionActivity extends ActionBarActivity {
             	  public void eventOccured(int id) {
             		  if(id == 1){
                 		  currentConcept = model.createNewConcept(new PointF(300,300));
-                		  
-                		  editFg.setConceptModel(currentConcept);
-                		  pictureFg.setConceptModel(currentConcept);
-                		  colorFg.setConceptModel(currentConcept);
-                		  wikiFg.setConceptModel(currentConcept);
-                		  googleFg.setConceptModel(currentConcept);
-                		  
                 		  viewMindMap.setModel(model);
-                		  DrawerLayout drawerLayout = (DrawerLayout)rootView.findViewById(R.id.drawer_layout);
-                		  drawerLayout.openDrawer(rootView.findViewById(R.id.layout_fragment));
+                		  editConcept(currentConcept);
             		  }	  
             	  }
             	});
@@ -276,7 +265,7 @@ public class EditionActivity extends ActionBarActivity {
 		
 
 		private void initPanel() {
-			getFragmentManager().beginTransaction().add(R.id.container_fragment, currentFragment).commit();
+			getFragmentManager().beginTransaction().add(R.id.container_fragment, TextEditFragment.newInstance(currentConcept)).commit();
 
 			ImageButton editConcept = (ImageButton) rootView
 					.findViewById(R.id.edit_concept);
@@ -284,8 +273,7 @@ public class EditionActivity extends ActionBarActivity {
 				
 				@Override
 				public void onClick(View v) {
-					editFg.setConceptModel(currentConcept);
-					getFragmentManager().beginTransaction().replace(R.id.container_fragment, editFg).commit();	
+					getFragmentManager().beginTransaction().replace(R.id.container_fragment, TextEditFragment.newInstance(currentConcept)).commit();	
 				}
 			});
 
@@ -296,9 +284,7 @@ public class EditionActivity extends ActionBarActivity {
 				private Boolean firstTimeCalled = true;
 				@Override
 				public void onClick(View v) {
-					pictureFg.setConceptModel(currentConcept);
-					getFragmentManager().beginTransaction().replace(R.id.container_fragment, pictureFg).commit();
-					currentFragment = pictureFg;
+					getFragmentManager().beginTransaction().replace(R.id.container_fragment, PictureEditFragment.newInstance(currentConcept)).commit();
 				}
 			});
 
@@ -308,11 +294,7 @@ public class EditionActivity extends ActionBarActivity {
 
 				@Override
 				public void onClick(View v) {
-					wikiFg.setConceptModel(currentConcept);
-					FragmentTransaction transaction = getFragmentManager()
-							.beginTransaction();
-					transaction.replace(R.id.container_fragment, wikiFg);
-					transaction.addToBackStack(null).commit();
+					getFragmentManager().beginTransaction().replace(R.id.container_fragment, WikipediaFragment.newInstance(currentConcept)).commit();
 
 				}
 			});
@@ -323,11 +305,7 @@ public class EditionActivity extends ActionBarActivity {
 
 				@Override
 				public void onClick(View v) {
-					googleFg.setConceptModel(currentConcept);
-					FragmentTransaction transaction = getFragmentManager()
-							.beginTransaction();
-					transaction.replace(R.id.container_fragment, googleFg);
-					transaction.addToBackStack(null).commit();
+					getFragmentManager().beginTransaction().replace(R.id.container_fragment, GoogleFragment.newInstance(currentConcept)).commit();
 				}
 			});
 
@@ -337,11 +315,7 @@ public class EditionActivity extends ActionBarActivity {
 
 				@Override
 				public void onClick(View v) {
-					colorFg.setConceptModel(currentConcept);
-					FragmentTransaction transaction = getFragmentManager()
-							.beginTransaction();
-					transaction.replace(R.id.container_fragment, colorFg);
-					transaction.addToBackStack(null).commit();
+					getFragmentManager().beginTransaction().replace(R.id.container_fragment, ColorFragment.newInstance(currentConcept)).commit();
 				}
 			});
 			
@@ -349,7 +323,7 @@ public class EditionActivity extends ActionBarActivity {
 
 		public void editConcept(ConceptModel model) {
 			currentConcept = model;
-			editFg.initFragment(currentConcept);
+			getFragmentManager().beginTransaction().replace(R.id.container_fragment, TextEditFragment.newInstance(currentConcept)).commit();
 			drawer.openDrawer(rootView.findViewById(R.id.layout_fragment));
 		}
 	}

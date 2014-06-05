@@ -12,6 +12,8 @@
      <item
         android:id="@+id/menu_see"
         android:icon="@drawable/ic_action_see"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
         app:showAsAction="always"
         android:title="@string/menu_see"/>
     

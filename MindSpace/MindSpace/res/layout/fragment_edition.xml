@@ -21,7 +21,7 @@
                 android:layout_width="300dp"
                 android:layout_height="80dp"
                 android:translationX="485dp"
-                android:translationY="595dp" >
+                android:translationY="620dp" >
             </View>
         </com.utcLABS.mindspace.view.MindMapView>
 
@@ -36,7 +36,7 @@
             <RelativeLayout
                 android:id="@+id/container_fragment"
                 android:layout_width="match_parent"
-                android:layout_height="625dp"
+                android:layout_height="640dp"
                 android:orientation="vertical" />
 
             <LinearLayout
