@@ -233,7 +233,7 @@ public class ConceptView {
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				int color = (Integer)event.getNewValue();
-				nodeView.shapeView.setColors(new int[]{color, Color.LTGRAY, color});
+				nodeView.shapeView.setColor(color);
 				
 				branchPaint.setColor(color);
 				branchView.invalidate();
@@ -424,7 +424,7 @@ public class ConceptView {
 		float relativeSize		= model.getSize() * scaleFactor.getScale();
 		float minRelativeSize	= 1f - mainView.getDensity();
 		
-		Log.d("ConceptView("+ model.getName()+")", "Check Visibility " + relativeSize + " < " + minRelativeSize);
+		//Log.d("ConceptView("+ model.getName()+")", "Check Visibility " + relativeSize + " < " + minRelativeSize);
 		
 		if( model.getParent() != null && relativeSize < minRelativeSize ){
 			if( this.isVisible ){
@@ -518,7 +518,7 @@ public class ConceptView {
 			this.shapeView = new GradientDrawable();
 			this.shapeView.setOrientation(GradientDrawable.Orientation.LEFT_RIGHT);
 			this.shapeView.setStroke(1, Color.BLACK);
-			this.shapeView.setColors(new int[]{model.getColor(), Color.LTGRAY, model.getColor()});
+			this.shapeView.setColor(model.getColor());
 			this.configureShape(model.getShape());
 			
 			this.setBackground(this.shapeView);
