@@ -2,13 +2,6 @@ package com.utcLABS.mindspace.model;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.io.BufferedInputStream;
-import java.io.BufferedWriter;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -32,9 +25,6 @@ public class MindMapModel {
 	// Bean
 	private PropertyChangeSupport				propertyChangeSupport;
 	
-	// Xml
-	private MindMapXmlParser					parser;
-
 	/*
 	 * Constructor
 	 */
@@ -44,7 +34,6 @@ public class MindMapModel {
 		//Init
 		this.conceptIndex = new LinkedList<ConceptModel>();
 		this.propertyChangeSupport = new PropertyChangeSupport(this);
-		this.parser = new MindMapXmlParser(); //new MindMapXmlParser(this);
 	}
 
 	/*

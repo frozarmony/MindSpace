@@ -32,7 +32,7 @@ import com.utcLABS.mindspace.TextEditFragment;
 import com.utcLABS.mindspace.VisualisationActivity;
 import com.utcLABS.mindspace.WikipediaFragment;
 import com.utcLABS.mindspace.model.ConceptModel;
-import com.utcLABS.mindspace.model.MindMapModel;
+import com.utcLABS.mindspace.model.CurrentMindMap;
 import com.utcLABS.mindspace.view.ConceptView;
 import com.utcLABS.mindspace.view.MindMapView;
 
@@ -47,8 +47,8 @@ public class EditionActivity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_edition);
 
-		title = this.getIntent().getExtras().getString("title");
-		setTitle(title);		
+		//model = this.getIntent().getSerializableExtra("MindMapModel");
+		//setTitle(title);		
 		
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		
@@ -116,7 +116,6 @@ public class EditionActivity extends ActionBarActivity {
 	public static class PlaceholderFragment extends Fragment {
 
 		private MindMapView viewMindMap;
-		private MindMapModel model;
 		private View rootView = null;
 		private DrawerLayout drawer = null;
 		
@@ -140,8 +139,9 @@ public class EditionActivity extends ActionBarActivity {
 			//init view
 			viewMindMap = (MindMapView)rootView.findViewById(R.id.surfaceView);
 			viewMindMap.setCurrentFragment(this);
+			viewMindMap.setModel(((CurrentMindMap) getActivity().getApplication()).getCurrentMindMap());
 			viewMindMap.setEditMode(true);
-	        model = viewMindMap.getModel();
+	        //model = viewMindMap.getModel();
 	        
 	        initDrawer();
 			
@@ -254,7 +254,8 @@ public class EditionActivity extends ActionBarActivity {
             menu.setOnItemClickedListener(new SateliteClickedListener() {
             	  public void eventOccured(int id) {
             		  if(id == 1){
-                		  currentConcept = model.createNewConcept(new PointF(300,300));
+
+                		  currentConcept = viewMindMap.getModel().createNewConcept(new PointF(300,300));
                 		  
                 		  editFg.setConceptModel(currentConcept);
                 		  pictureFg.setConceptModel(currentConcept);
@@ -262,7 +263,7 @@ public class EditionActivity extends ActionBarActivity {
                 		  wikiFg.setConceptModel(currentConcept);
                 		  googleFg.setConceptModel(currentConcept);
                 		  
-                		  viewMindMap.setModel(model);
+                		  viewMindMap.setModel(viewMindMap.getModel());
                 		  DrawerLayout drawerLayout = (DrawerLayout)rootView.findViewById(R.id.drawer_layout);
                 		  drawerLayout.openDrawer(rootView.findViewById(R.id.layout_fragment));
             		  }	  

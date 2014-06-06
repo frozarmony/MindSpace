@@ -10,6 +10,7 @@ import android.view.ext.R;
 import android.widget.TextView;
 
 import com.utcLABS.mindspace.model.MindMapModel;
+import com.utcLABS.mindspace.model.MindMapXmlParser;
 import com.utcLABS.mindspace.utilities.MindmapAdapter;
 
 public class CreateMindmapDialog extends AlertDialog {
@@ -38,12 +39,13 @@ public class CreateMindmapDialog extends AlertDialog {
 		@Override
 		public void onClick(DialogInterface dialog, int which) {
 			MindMapModel newMindmap = new MindMapModel();
-			
+			MindMapXmlParser parser = new MindMapXmlParser();
 			String title = ((TextView)dialogView.findViewById(R.id.new_mindmap_title)).getText().toString();
 			
 			newMindmap.setTitle(title);
 			newMindmap.setLastModificationDate(new Date().toString());
 			
+			parser.saveToXml(newMindmap, context);
 			
 			mindmapAdapter.getMindmaps().add(newMindmap);
 			mindmapAdapter.notifyDataSetChanged();	

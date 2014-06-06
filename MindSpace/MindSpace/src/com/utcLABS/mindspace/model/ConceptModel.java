@@ -48,7 +48,6 @@ public class ConceptModel {
 	/*
 	 * Members
 	 */
-	private int id;
 	private MindMapModel				mindMap;
 	
 	// Data Members
@@ -71,39 +70,9 @@ public class ConceptModel {
 	/*
 	 * Constructors
 	 */
-	public ConceptModel(){
-		super();
-		// Init
-		this.id = id_counter;
-		id_counter++;
-		
-		this.mindMap	= mindMap;
-		
-		// Data
-		this.name		= "Concept";
-		
-		// Forms
-		this.position	= new PointF(0,0);
-		this.size		= defaultSize(parent);
-		this.color		= defaultColor(parent);
-		this.shape		= defaultShape(parent);
-		
-		// Bean
-		this.propertyChangeSupport = new PropertyChangeSupport(this);
-
-		// Link
-		this.children = new LinkedList<ConceptModel>();
-		if( parent != null )
-			parent.addChildNode(this);
-		else
-			this.parent = null;
-	}
-	
 	public ConceptModel(MindMapModel mindMap, float x, float y, ConceptModel parent) {
 		super();
 		// Init
-		this.id = id_counter;
-		id_counter++;
 		
 		this.mindMap	= mindMap;
 		
@@ -139,10 +108,11 @@ public class ConceptModel {
 	public MindSpaceShape getShape() {			return shape;			}
 	public ConceptModel getParent() {			return parent;			}
 		
-	public int getId() {
-		return id;
-	}
 	
+	public MindMapModel getMindMap() {
+		return mindMap;
+	}
+
 	public String getDescription() {
 		return description;
 	}
@@ -166,11 +136,11 @@ public class ConceptModel {
 			this.propertyChangeSupport.firePropertyChange(NP_NAME, oldName, newName);
 		}
 	}
-	
-	public void setId(int id) {
-		this.id = id;
-	}
 
+	public void setMindMap(MindMapModel mindMap) {
+		this.mindMap = mindMap;
+	}
+	
 	public void setDescription(String description) {
 		this.description = description;
 	}
@@ -360,5 +330,4 @@ public class ConceptModel {
 	public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener){
 		this.propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
 	}
-	
 }

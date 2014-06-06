@@ -40,41 +40,42 @@ public class HomeActivity extends ActionBarActivity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
 		setContentView(R.layout.activity_home);
-			
-		String[] files = context.fileList();
-		if (files.length == 0)
-			System.out.println("Vide");
-		else {
-			for(String file : files){
-				deleteFile(file);
-			}
-		}
+
+		/* TEST : SUPPRESSION DES XML*/
+//		String[] files = context.fileList();
+//		if (files.length == 0)
+//			System.out.println("Vide");
+//		else {
+//			for(String file : files){
+//				deleteFile(file);
+//			}
+//		}
 		
 		/* INSERTION FICHIER TEST */	
 		FileOutputStream output = null;        	
 		String xml = "<?xml version='1.0' encoding='UTF-8'?>"
 				+ "<mindmap>"
 				+ "<head>"
-					+ "<title>Musique</title>"
-					+ "<lastModified></lastModified>"
+					+ "<title>Santé</title>"
+					+ "<lastModificationDate>8 Jun 2014</lastModificationDate>"
 				+ "</head>"
 				+ "<concepts>"
-					+ "<concept name='Music' x='950.0' y='475.0' size='0.7' color='rgb(255,255,255)' shape='oval'>"
-						+ "<concept name='Sociability' x='740.0' y='580.0' size='0.48999998' color='rgb(50,50,200)' shape='oval'>"
-							+ "<concept name='People' x='670.0' y='632.5' size='0.343' color='rgb(50,50,200)' shape='oval'>"
+					+ "<concept name='Santé' x='950.0' y='475.0' size='0.7' color='-1' shape='oval'>"
+						+ "<concept name='Hygiène de vie' x='740.0' y='580.0' size='0.48999998' color='-16733697' shape='oval'>"
+							+ "<concept name='Sport' x='670.0' y='632.5' size='0.343' color='-16733697' shape='oval'>"
 							+ "</concept>"
 						+ "</concept>"
-						+ "<concept name='Rigour' x='1125.0' y='387.5' size='0.48999998' color='rgb(200,50,50)' shape='oval'>"
-							+ "<concept name='Theory' x='1265.0' y='317.5' size='0.343' color='rgb(200,50,50)' shape='oval'>"
+						+ "<concept name='Rigour' x='1125.0' y='387.5' size='0.48999998' color='-65495' shape='oval'>"
+							+ "<concept name='Sommeil' x='1265.0' y='317.5' size='0.343' color='-65495' shape='oval'>"
 							+ "</concept>"
 						+ "</concept>"
-						+ "<concept name='Creativity' x='775.0' y='387.5' size='0.48999998' color='rgb(50,200,50)' shape='oval'>"
+					+ "<concept name='Soins' x='775.0' y='387.5' size='0.48999998' color='-8651008' shape='oval'>"
 						+ "</concept>"
 					+ "</concept>"
 				+ "</concepts>"
 			+ "</mindmap>";
 		try {
-			output = context.openFileOutput("Test XML", Context.MODE_PRIVATE);
+			output = context.openFileOutput("Santé", Context.MODE_PRIVATE);
 			output.write(xml.getBytes());
 			if(output != null)
 			    output.close();
@@ -85,9 +86,6 @@ public class HomeActivity extends ActionBarActivity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
-		
 
 //				try {
 //					inputFile = openFileInput(file);
@@ -165,7 +163,7 @@ public class HomeActivity extends ActionBarActivity {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 			final MindmapAdapter mindmapListAdapter = new MindmapAdapter(getActivity(), listMindmaps, listMindmapsView);
 			listMindmapsView.setAdapter(mindmapListAdapter);
 	        
@@ -179,7 +177,7 @@ public class HomeActivity extends ActionBarActivity {
 					LayoutInflater inflater = getActivity().getLayoutInflater();
 					View dialogView = inflater.inflate(R.layout.new_mindmap_dialog, null);
 					
-					CreateMindmapDialog newMindmapDialog = new CreateMindmapDialog(context, dialogView, mindmapListAdapter);
+					new CreateMindmapDialog(context, dialogView, mindmapListAdapter);
 				}
 	        });
 					
@@ -198,7 +196,6 @@ public class HomeActivity extends ActionBarActivity {
 					input = context.openFileInput(file);
 					try {
 						mindmap = parser.parse(input);
-						
 						listMindmaps.add(mindmap);
 					} catch (FileNotFoundException e) {
 						// TODO Auto-generated catch block

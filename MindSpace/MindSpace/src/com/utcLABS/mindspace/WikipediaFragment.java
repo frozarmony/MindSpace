@@ -1,17 +1,15 @@
 package com.utcLABS.mindspace;
 
-import com.utcLABS.mindspace.model.ConceptModel;
-
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ext.R;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Button;
-import android.view.ext.R;
+
+import com.utcLABS.mindspace.model.ConceptModel;
 
 public class WikipediaFragment extends Fragment {
 

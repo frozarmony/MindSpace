@@ -5,7 +5,6 @@ import java.util.Date;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -22,20 +21,21 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.utcLABS.mindspace.model.CurrentMindMap;
 import com.utcLABS.mindspace.model.MindMapModel;
+import com.utcLABS.mindspace.model.MindMapXmlParser;
 
 public class MindmapAdapter extends BaseAdapter {   
 	ArrayList<MindMapModel> mindmaps = new ArrayList<MindMapModel>(); 
 	ListView mindmapsList;
 	LayoutInflater inflater; 
-	Context context;  
-	private static final String TAG = "MindmapAdapter";
+	Activity activity;  
 	
-	public MindmapAdapter(Context context, ArrayList<MindMapModel> myList, ListView myListView) { 
+	public MindmapAdapter(Activity activity, ArrayList<MindMapModel> myList, ListView myListView) { 
 		super();
 		this.mindmaps = myList; 
-		this.context = context; 
-		this.inflater = LayoutInflater.from(this.context); 	
+		this.activity = activity; 
+		this.inflater = LayoutInflater.from(this.activity); 	
 		this.mindmapsList = myListView;
 	}   
 	
@@ -72,7 +72,7 @@ public class MindmapAdapter extends BaseAdapter {
 	
 	/* Load the Mindmap XML Files */
 	public void loadMindmapfiles(){
-		String[] files = context.fileList();
+		String[] files = activity.fileList();
 
 		for(String file : files){
 			System.out.println(file);
@@ -122,7 +122,7 @@ public class MindmapAdapter extends BaseAdapter {
 			final int position = mindmapsList.getPositionForView((View) v.getParent());
             final MindMapModel deletedMindmap = mindmaps.get(position);
             
-			AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(MindmapAdapter.this.context)
+			AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(MindmapAdapter.this.activity)
 						.setTitle("Supprimer Mindmap")
 						.setMessage("Voulez-vous supprimer le Mindmap \""+ deletedMindmap.getTitle()+"\"");
 			
@@ -130,7 +130,7 @@ public class MindmapAdapter extends BaseAdapter {
 				public void onClick(DialogInterface dialog,int id) {	
 					
 					 /* Deletion of the Mindmap XML file */
-					context.deleteFile(deletedMindmap.getTitle());
+					activity.deleteFile(deletedMindmap.getTitle());
 					
 //					Test Fichiers XML
 //					String[] files = context.fileList();
@@ -166,7 +166,7 @@ public class MindmapAdapter extends BaseAdapter {
 			final TextView input = (TextView) dialogView.findViewById(R.id.new_mindmap_title);
 			input.setText(renamedMindmap.getTitle());
 
-			AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(MindmapAdapter.this.context)
+			AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(MindmapAdapter.this.activity)
 						.setView(dialogView)
 						.setTitle("Renommer Mindmap");
 			
@@ -176,8 +176,12 @@ public class MindmapAdapter extends BaseAdapter {
 
 					renamedMindmap.setTitle(input.getText().toString());
 					renamedMindmap.setLastModificationDate(new Date().toString());
-
-					context.deleteFile(oldTitle);
+					
+					MindMapXmlParser parser = new MindMapXmlParser();
+					parser.saveToXml(renamedMindmap, activity);
+		            Toast toast=Toast.makeText(MindmapAdapter.this.activity, "Modifications enregistrées"+" a été cliqué.", Toast.LENGTH_SHORT);
+		            toast.show();
+		            activity.deleteFile(oldTitle);
 		            MindmapAdapter.this.notifyDataSetChanged();
 				}
 			});
@@ -196,14 +200,15 @@ public class MindmapAdapter extends BaseAdapter {
 	private OnItemClickListener ItemListener = new OnItemClickListener() {
        
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            String selected = ((TextView) view.findViewById(R.id.title)).getText().toString();
-			Intent i0 = new Intent(context, EditionActivity.class);
-			i0.putExtra("title", selected);
-			context.startActivity(i0);
-			((Activity)context).finish();
+		
+            MindMapModel clickedMindmap = mindmaps.get(position);
+            Intent i0 = new Intent(activity, EditionActivity.class);
+			//i0.putExtra("ConceptModel", clickedMindmap.getConceptIndex().get(0));
+			
+            ((CurrentMindMap) activity.getApplication()).setCurrentMindMap(clickedMindmap);
 
-            Toast toast=Toast.makeText(MindmapAdapter.this.context, selected+" a été cliqué.", Toast.LENGTH_SHORT);
-            toast.show();
+            activity.startActivity(i0);
+			activity.finish();
         }
       };
 	
