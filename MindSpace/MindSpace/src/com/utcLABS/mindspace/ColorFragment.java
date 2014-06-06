@@ -15,10 +15,12 @@ import com.utcLABS.mindspace.model.ConceptModel.MindSpaceShape;
 
 public class ColorFragment extends Fragment {
 
+	private View rootView;
+	private ColorPicker picker;
 	private ConceptModel conceptModel;
-	
+
 	public ColorFragment() {
-		
+
 	}
 	
 	public static ColorFragment newInstance(ConceptModel currentConcept) {
@@ -28,7 +30,7 @@ public class ColorFragment extends Fragment {
 		fragment.setArguments(args);
 		return fragment;
 	}
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -42,39 +44,43 @@ public class ColorFragment extends Fragment {
 		picker.setOnColorChangedListener(new OnColorChangedListener() {
 			@Override
 			public void onColorChanged(int color) {
+				System.out.println("ColorPicker " + color);
 				conceptModel.setColor(color);
 
 			}
-			
 		});
-		
-		ImageButton rectangle = (ImageButton) rootView.findViewById(R.id.rectangle);
+
+		ImageButton rectangle = (ImageButton) rootView
+				.findViewById(R.id.rectangle);
 		rectangle.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
-				conceptModel.setShape(MindSpaceShape.rectangle);		
+				conceptModel.setShape(MindSpaceShape.rectangle);
 			}
 		});
-		
+
 		ImageButton ellipse = (ImageButton) rootView.findViewById(R.id.ellipse);
 		ellipse.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
-				conceptModel.setShape(MindSpaceShape.oval);		
+				conceptModel.setShape(MindSpaceShape.oval);
 			}
 		});
-		
-		ImageButton rectangleArrondi = (ImageButton) rootView.findViewById(R.id.rectangle_arrondi);
+
+		ImageButton rectangleArrondi = (ImageButton) rootView
+				.findViewById(R.id.rectangle_arrondi);
 		rectangleArrondi.setOnClickListener(new View.OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
-				conceptModel.setShape(MindSpaceShape.roundedRectangle);		
+				conceptModel.setShape(MindSpaceShape.roundedRectangle);
 			}
 		});
 		
+		initFragment(conceptModel);
+
 		return rootView;
 	}
 
@@ -85,5 +91,12 @@ public class ColorFragment extends Fragment {
 	public void setConceptModel(ConceptModel conceptModel) {
 		this.conceptModel = conceptModel;
 	}
+
+	public void initFragment(ConceptModel currentConcept) {
+		this.conceptModel = currentConcept;
+		if(conceptModel!=null && picker!=null){
+			picker.setOldCenterColor(conceptModel.getColor());
+		}
+	}
+
 }
-	

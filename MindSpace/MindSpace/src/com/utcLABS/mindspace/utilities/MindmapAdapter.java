@@ -21,16 +21,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.utcLABS.mindspace.model.Mindmap;
+import com.utcLABS.mindspace.model.MindMapModel;
 
 public class MindmapAdapter extends BaseAdapter {   
-	ArrayList<Mindmap> mindmaps = new ArrayList<Mindmap>(); 
+	ArrayList<MindMapModel> mindmaps = new ArrayList<MindMapModel>(); 
 	ListView mindmapsList;
 	LayoutInflater inflater; 
 	Context context;  
 	private static final String TAG = "MindmapAdapter";
 	
-	public MindmapAdapter(Context context, ArrayList<Mindmap> myList, ListView myListView) { 
+	public MindmapAdapter(Context context, ArrayList<MindMapModel> myList, ListView myListView) { 
 		super();
 		this.mindmaps = myList; 
 		this.context = context; 
@@ -44,7 +44,7 @@ public class MindmapAdapter extends BaseAdapter {
 	}  
 	
 	@Override 
-	public Mindmap getItem(int position) { 
+	public MindMapModel getItem(int position) { 
 		return mindmaps.get(position); 
 	}   
 	
@@ -67,8 +67,8 @@ public class MindmapAdapter extends BaseAdapter {
 		this.mindmapsList.setOnItemClickListener(ItemListener);
 		mViewHolder.tvTitle = detail(convertView, R.id.title, mindmaps.get(position).getTitle()); 
 		mViewHolder.tvModificationDate = detail(convertView, R.id.modification_date, mindmaps.get(position).getLastModificationDate()); 
-		mViewHolder.btDelete = detail(convertView, R.id.delete_mindmap, mindmaps.get(position).getDeleteIcon());   
-		mViewHolder.btRename = detail(convertView, R.id.rename_mindmap, mindmaps.get(position).getRenameIcon());   
+		mViewHolder.btDelete = setButton(convertView, R.id.delete_mindmap);   
+		mViewHolder.btRename = setButton(convertView, R.id.rename_mindmap);   
 
 		mViewHolder.btDelete.setOnClickListener(DeleteClickListener);
 		mViewHolder.btRename.setOnClickListener(RenameClickListener);
@@ -84,9 +84,8 @@ public class MindmapAdapter extends BaseAdapter {
 		return tv; 
 	}  
 	
-	private Button detail(View v, int resId, int icon) { 
+	private Button setButton(View v, int resId) { 
 		Button bt = (Button) v.findViewById(resId); 
-		bt.setBackgroundResource(icon);   
 		return bt; 
 	}   
 	
@@ -95,7 +94,7 @@ public class MindmapAdapter extends BaseAdapter {
 		@Override
         public void onClick(View v) {
 			final int position = mindmapsList.getPositionForView((View) v.getParent());
-            final Mindmap deletedMindmap = mindmaps.get(position);
+            final MindMapModel deletedMindmap = mindmaps.get(position);
             
 			//View dialogView = inflater.inflate(R.layout.new_mindmap_dialog, null);
 			//final TextView input = (TextView) dialogView.findViewById(R.id.new_mindmap_title);
@@ -127,7 +126,7 @@ public class MindmapAdapter extends BaseAdapter {
 		
 		public void onClick(View v) {
 			final int position = mindmapsList.getPositionForView((View) v.getParent());
-            final Mindmap renamedMindmap = mindmaps.get(position);
+            final MindMapModel renamedMindmap = mindmaps.get(position);
             
 			View dialogView = inflater.inflate(R.layout.new_mindmap_dialog, null);
 			final TextView input = (TextView) dialogView.findViewById(R.id.new_mindmap_title);

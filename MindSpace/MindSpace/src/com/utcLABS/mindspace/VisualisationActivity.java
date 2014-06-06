@@ -114,9 +114,9 @@ public class VisualisationActivity extends ActionBarActivity {
 			
 			//initView
 			viewMindMap = (MindMapView)rootView.findViewById(R.id.surfaceView);
-	        model = viewMindMap.getMindMapModel();
+	        model = viewMindMap.getModel();
 			viewMindMap.setCurrentFragment(this);
-	        viewMindMap.setMode(false);
+	        viewMindMap.setEditMode(false);
 	        viewMindMap.setDensity(0f);
 	        
 	        getFragmentManager().beginTransaction().add(R.id.layout_visualisation, seeFg).commit();

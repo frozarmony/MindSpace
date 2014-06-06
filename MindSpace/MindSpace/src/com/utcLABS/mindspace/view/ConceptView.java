@@ -13,7 +13,6 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.PathShape;
@@ -22,7 +21,6 @@ import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ext.EditionActivity;
-import android.view.ext.R;
 import android.widget.TextView;
 
 import com.utcLABS.mindspace.VisualisationActivity;
@@ -33,20 +31,22 @@ import com.utcLABS.mindspace.view.MindMapView.ScaleObject;
 @SuppressLint("NewApi")
 public class ConceptView {
 	
-	// Constants
-	public static final String			MIMETYPE_CONCEPTVIEW		= "application/conceptview";
-	
+	// Constants View
 	private static final float			TEXT_BASE_SIZE				= 70f;
 	private static final float			BRANCH_BASE_WIDTH			= 500f;
 	private static final float			BRANCH_BASE_HEIGHT			= 50f;
 	private static final int			CLOUD_BASE_SIZE				= 1000;
 	private static final float			CLOUD_RATIO_HEIGHT			= 0.7f;
 	
+	// Constants 
+	public static final String			MIMETYPE_CONCEPTVIEW		= "application/conceptview";
+	private static final float			ON_TOUCH_MIN_MOOVE			= 10f;
+	
 
-	// Model Member
+	// Model Reference
 	private ConceptModel				model;
 	
-	// View Member
+	// View Members
 	private boolean						isVisible;
 	private MindMapView					mainView;
 	private ConceptView					parentView;
@@ -63,7 +63,7 @@ public class ConceptView {
 	private View						cloudView;
 	private GradientDrawable			cloudGrad;
 	
-	// Property Change Listener
+	// Property Change Listeners
 	private PropertyChangeListener		onNameChanged;
 	private PropertyChangeListener		onPositionChanged;
 	private PropertyChangeListener		onSizeChanged;
@@ -74,7 +74,7 @@ public class ConceptView {
 	// Controller Member
 	private boolean						isMoving;
 	
-	// Controller Listener
+	// Controller Listeners
 	private View.OnTouchListener		onTouch;
 	private View.OnLongClickListener	onLongClick;
 	private View.OnDragListener			onDrag;
@@ -109,8 +109,8 @@ public class ConceptView {
 		// Init Model's Listeners
 		initPropertyChangeListeners(model);
 		
-		// Init Controller's Listener's
-		initControllerListener();
+		// Init Controller's Listeners
+		initControllerListeners();
 		
 		// Update Visibility
 		updateVisibility();
@@ -211,11 +211,11 @@ public class ConceptView {
 			@SuppressLint("NewApi")
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
-				float newSize = (Float)event.getNewValue();
+				Log.d("ConceptView("+ ConceptView.this.model.getName()+")", "OnSizeChanged : " );
+				
+				float newSize = ConceptView.this.model.getSize();
 				nodeView.setTextSize(newSize*TEXT_BASE_SIZE);
 				setNodePosition(ConceptView.this.model.getPosition());
-				
-				Log.d("ConceptView("+ ConceptView.this.model.getName()+")", "OnSizeChanged : " + newSize);
 				
 				branchView.setScaleY(newSize);
 				
@@ -233,7 +233,7 @@ public class ConceptView {
 			@Override
 			public void propertyChange(PropertyChangeEvent event) {
 				int color = (Integer)event.getNewValue();
-				nodeView.shapeView.setColors(new int[]{color, Color.LTGRAY, color});
+				nodeView.shapeView.setColor(color);
 				
 				branchPaint.setColor(color);
 				branchView.invalidate();
@@ -280,7 +280,7 @@ public class ConceptView {
 	/*
 	 *	Controller's Listeners
 	 */
-	private void initControllerListener(){
+	private void initControllerListeners(){
 		
 		// OnClickListener
 		this.onTouch = new View.OnTouchListener() {
@@ -290,64 +290,79 @@ public class ConceptView {
 			
 			@Override
 			public boolean onTouch(View v, MotionEvent event) {
+				PointF offset;
 				
 				switch(event.getAction()){
 				case MotionEvent.ACTION_DOWN :
+					// Init Action
+					isMoving = false;
 					startPos = new PointF(event.getX(),event.getY());
 					break;
 				case MotionEvent.ACTION_MOVE :
-					// Compute Offset
-					PointF offset = new PointF(event.getX()-startPos.x, event.getY()-startPos.y);
+					// If already Moving
+					if( isMoving ){
+						if( mainView.isEditMode() ){
+							PointF currPosition = model.getPosition();
+							model.setPosition(currPosition.x+event.getX()-startPos.x, currPosition.y+event.getY()-startPos.y);
+							return true;
+						}
+						else{
+							return false;
+						}
+					}
 					
-					if(offset.length()>10f){	// TODO Enhance this
+					// Compute Offset
+					offset = new PointF(event.getX()-startPos.x, event.getY()-startPos.y);
+					
+					if(offset.length()>ON_TOUCH_MIN_MOOVE){
 						isMoving = true;
-						PointF currPosition = model.getPosition();
-						model.setPosition(currPosition.x+event.getX()-startPos.x, currPosition.y+event.getY()-startPos.y);
-						return true;
+						
+						if(mainView.isEditMode()){
+							PointF currPosition = model.getPosition();
+							model.setPosition(currPosition.x+offset.x, currPosition.y+offset.y);
+							return true;
+						}
+						else{
+							return false;
+						}
 					}
 					break;
 				case MotionEvent.ACTION_UP :
+					// Click Action
+					if(!isMoving){
+						boolean mode = mainView.isEditMode();
+						if(mode){
+							((EditionActivity.PlaceholderFragment)mainView.getCurrentFragment()).editConcept(model);
+						}else {
+							((VisualisationActivity.PlaceholderFragment)mainView.getCurrentFragment()).editConcept(model);
+						}
+					}
+					
 					startPos = null;
 					isMoving = false;
-					break;
+					
+					return true;
 				}
 				
 				return false;
 			}
 		};
 		this.nodeView.setOnTouchListener(this.onTouch);
-		
-		this.nodeView.setOnClickListener(new View.OnClickListener() {
-		
-			@Override
-			public void onClick(View v) {
-				Boolean mode = mainView.getMode();
-				if(mode){
-					((EditionActivity.PlaceholderFragment)mainView.getCurrentFragment()).editConcept(model);
-				}else {
-					((VisualisationActivity.PlaceholderFragment)mainView.getCurrentFragment()).editConcept(model);
-				}
-				
-			}
-		});
 				
 		// OnLongClickListener
 		this.onLongClick = new View.OnLongClickListener() {
 			
 			@Override
 			public boolean onLongClick(View v) {
-				if( !isMoving ){
+				if( !isMoving && mainView.isEditMode() ){
 					// Create ClipData
 					ClipData.Item item =  new ClipData.Item( model.getName() );
 					ClipData dragData = new ClipData(model.getName(), new String[]{ConceptView.MIMETYPE_CONCEPTVIEW},item);
 					
 					// Create DragShadow
 					View.DragShadowBuilder myShadow = new MyDragShadowBuilder(v);
-					   
-					// Modify Current View
-					//nodeView.setVisibility(View.INVISIBLE);
-					//branchView.setVisibility(View.INVISIBLE);
 					
+					// Start Drag
 					return v.startDrag(dragData, myShadow, ConceptView.this, 0);
 				}
 				return false;
@@ -361,29 +376,31 @@ public class ConceptView {
 			@Override
 			public boolean onDrag(View v, DragEvent event) {
 				
-				switch (event.getAction()) {
-				case DragEvent.ACTION_DRAG_STARTED:
-					if( !event.getClipDescription().hasMimeType(MIMETYPE_CONCEPTVIEW) )
-						return false;
-					break;
- 				case DragEvent.ACTION_DRAG_ENTERED:
- 					setSelectMode(true);
- 					break;
- 				case DragEvent.ACTION_DRAG_EXITED:
- 					setSelectMode(false);
- 					break;
- 				case DragEvent.ACTION_DROP:
- 					Log.d("ConceptView("+model.getName()+")", "Action Drop");
- 					ConceptView conceptView = (ConceptView) event.getLocalState();
- 					conceptView.getModel().moveTo(getModel());
- 					setSelectMode(false);
- 					break;
- 				case DragEvent.ACTION_DRAG_ENDED:
- 					Log.d("ConceptView("+model.getName()+")", "Action Ended");
- 					break;
- 				}
-				
-	 			return true;
+				if(mainView.isEditMode()){
+					switch (event.getAction()) {
+					case DragEvent.ACTION_DRAG_STARTED:
+						if( !event.getClipDescription().hasMimeType(MIMETYPE_CONCEPTVIEW) )
+							return false;
+						break;
+	 				case DragEvent.ACTION_DRAG_ENTERED:
+	 					setSelectMode(true);
+	 					break;
+	 				case DragEvent.ACTION_DRAG_EXITED:
+	 					setSelectMode(false);
+	 					break;
+	 				case DragEvent.ACTION_DROP:
+	 					Log.d("ConceptView("+model.getName()+")", "Action Drop");
+	 					ConceptView conceptView = (ConceptView) event.getLocalState();
+	 					conceptView.getModel().moveTo(getModel());
+	 					setSelectMode(false);
+	 					break;
+	 				case DragEvent.ACTION_DRAG_ENDED:
+	 					Log.d("ConceptView("+model.getName()+")", "Action Ended");
+	 					break;
+	 				}
+		 			return true;
+				}
+				return false;
 			}
 		};
 		this.nodeView.setOnDragListener(this.onDrag);
@@ -407,7 +424,7 @@ public class ConceptView {
 		float relativeSize		= model.getSize() * scaleFactor.getScale();
 		float minRelativeSize	= 1f - mainView.getDensity();
 		
-		Log.d("ConceptView("+ model.getName()+")", "Check Visibility " + relativeSize + " < " + minRelativeSize);
+		//Log.d("ConceptView("+ model.getName()+")", "Check Visibility " + relativeSize + " < " + minRelativeSize);
 		
 		if( model.getParent() != null && relativeSize < minRelativeSize ){
 			if( this.isVisible ){
@@ -417,6 +434,8 @@ public class ConceptView {
 			}
 			if( model.getParent().getSize() * scaleFactor.getScale() < minRelativeSize )
 				this.branchView.setVisibility(View.INVISIBLE);
+			else
+				this.branchView.setVisibility(View.VISIBLE);
 		}
 		else{
 			if( !this.isVisible ){
@@ -453,7 +472,7 @@ public class ConceptView {
 			// Show BranchView
 			if( isVisible )
 				this.branchView.setVisibility(View.VISIBLE);
-			Log.d("ConceptView("+model.getName()+")", "Updated BranchView");
+			//Log.d("ConceptView("+model.getName()+")", "Updated BranchView");
 		}
 	}
 	
@@ -499,7 +518,7 @@ public class ConceptView {
 			this.shapeView = new GradientDrawable();
 			this.shapeView.setOrientation(GradientDrawable.Orientation.LEFT_RIGHT);
 			this.shapeView.setStroke(1, Color.BLACK);
-			this.shapeView.setColors(new int[]{model.getColor(), Color.LTGRAY, model.getColor()});
+			this.shapeView.setColor(model.getColor());
 			this.configureShape(model.getShape());
 			
 			this.setBackground(this.shapeView);
@@ -553,7 +572,7 @@ public class ConceptView {
 
 	    // The drag shadow image, defined as a drawable thing
 	    private GradientDrawable shadow =  new GradientDrawable();
-	    private Drawable enterShape = nodeView.getResources().getDrawable(R.drawable.drag_shadow);
+	    //private Drawable enterShape = nodeView.getResources().getDrawable(R.drawable.drag_shadow);
 	    private int marginShadow = 10;
 	    private int width, height;
 	    

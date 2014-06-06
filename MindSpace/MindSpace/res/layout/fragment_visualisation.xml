@@ -5,40 +5,62 @@
     android:layout_height="match_parent"
     tools:context="android.view.ext.VisualisationActivity$PlaceholderFragment" >
 
-     <android.support.v4.widget.DrawerLayout
-	    android:id="@+id/drawer_layout_visualisation"
-	    android:layout_width="match_parent"
-	    android:layout_height="match_parent"
-	    android:background="@android:color/white">
-	    
-	    <com.utcLABS.mindspace.view.MindMapView
-	 	     android:id="@+id/surfaceView"
-	  	     android:layout_width="match_parent"
-	 	     android:layout_height="match_parent" 
-	      /> 
-	      
-	     <LinearLayout 
-	         android:id="@+id/layout_visualisation"
-		    android:layout_width="320dp"
-		    android:layout_height="match_parent"
-		    android:orientation="vertical"
-		    android:layout_gravity="right"
-		    android:background="#046380"
-	    >
-	    </LinearLayout>
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drawer_layout_visualisation"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white" >
+
+        <com.utcLABS.mindspace.view.MindMapView
+            android:id="@+id/surfaceView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <LinearLayout
+            android:id="@+id/layout_visualisation"
+            android:layout_width="320dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
+            android:background="#046380"
+            android:orientation="vertical" >
+        </LinearLayout>
     </android.support.v4.widget.DrawerLayout>
-      
+
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:src="@drawable/density_max"
+        android:translationX="195dp"
+        android:translationY="-20dp" />
+
+     <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:src="@drawable/density_middle"
+        android:translationX="150dp"
+        android:translationY="-125dp" />
+       
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:src="@drawable/density_min"
+        android:translationX="15dp"
+        android:translationY="-195dp" />
+
     <com.devadvance.circularseekbar.CircularSeekBar
         android:id="@+id/circularSeekBar1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
+        pointer_halo_color="#a7a37e"
         android:translationX="-310dp"
         android:translationY="310dp"
-        app1:circle_color="#a7a37e"
-        app1:circle_progress_color="#88046380"
-        pointer_halo_color="#a7a37e"
+        app1:circle_color="#26a7a37e"
+        app1:circle_progress_color="#26046380"
         app1:circle_stroke_width="48"
         app1:circle_x_radius="250"
         app1:circle_y_radius="250"
@@ -48,4 +70,5 @@
         app1:progress="0"
         app1:start_angle="270"
         app1:use_custom_radii="true" />
+
 </RelativeLayout>

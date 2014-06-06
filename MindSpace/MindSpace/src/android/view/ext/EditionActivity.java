@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.graphics.PointF;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -84,9 +83,7 @@ public class EditionActivity extends ActionBarActivity {
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		if (id == R.id.menu_settings) {
-			return true;
-		} else if (id == R.id.menu_see) {
+		if (id == R.id.menu_see) {
 			item.setEnabled(false);
 			item.setIcon(R.drawable.ic_action_see_selected);
 			itemEdit.setIcon(R.drawable.ic_action_edit);
@@ -139,9 +136,10 @@ public class EditionActivity extends ActionBarActivity {
 			//init view
 			viewMindMap = (MindMapView)rootView.findViewById(R.id.surfaceView);
 			viewMindMap.setCurrentFragment(this);
-			viewMindMap.setMode(true);
-	        model = viewMindMap.getMindMapModel();
+			viewMindMap.setEditMode(true);
 	        //viewMindMap.setModel(model);
+	        model = viewMindMap.getModel();
+	        
 	        initDrawer();
 			
 			initSatelliteMenu();
@@ -162,20 +160,18 @@ public class EditionActivity extends ActionBarActivity {
 					menu.setVisibility(View.VISIBLE);
 				}
 
-				@Override
 				public void onDrawerOpened(View arg0) {
 					menu.setVisibility(View.INVISIBLE);					
 				}
 
-				@Override
-				public void onDrawerSlide(View arg0, float arg1) {
+				public void onDrawerSlide(View arg0, float arg1) {	
 				}
 
-				@Override
 				public void onDrawerStateChanged(int arg0) {
 				}
 			});
 		}
+
 
 		private void initBin() {
 			final View binDrag = (View) rootView.findViewById(R.id.binDrag);
