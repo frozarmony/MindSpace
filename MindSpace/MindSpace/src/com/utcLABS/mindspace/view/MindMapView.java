@@ -84,7 +84,7 @@ import com.utcLABS.mindspace.model.MindMapModel;
 		 */
 		MindMapModel myTestModel = new MindMapModel();
 		
-		float coef = 0.7f;
+		float coef = 1f;
 		
 		// Listeners
 		//initPropertyChangeListeners(this.mindMapModel);

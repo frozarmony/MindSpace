@@ -13,6 +13,7 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.PathShape;
@@ -33,12 +34,18 @@ public class ConceptView {
 	
 	// Constants View
 	private static final float			TEXT_BASE_SIZE				= 70f;
+	private static final int			TEXT_DEFAULT_COLOR			= Color.GRAY;
+	private static final int			TEXT_FILTER_COLOR			= 0xAAFFFFFF;
+	
+	private static final int			NODE_FILTER_COLOR			= 0x55000000;
+	
 	private static final float			BRANCH_BASE_WIDTH			= 500f;
 	private static final float			BRANCH_BASE_HEIGHT			= 50f;
+	
 	private static final int			CLOUD_BASE_SIZE				= 1000;
 	private static final float			CLOUD_RATIO_HEIGHT			= 0.7f;
 	
-	// Constants 
+	// Constants Controller
 	public static final String			MIMETYPE_CONCEPTVIEW		= "application/conceptview";
 	private static final float			ON_TOUCH_MIN_MOOVE			= 10f;
 	
@@ -234,6 +241,11 @@ public class ConceptView {
 			public void propertyChange(PropertyChangeEvent event) {
 				int color = (Integer)event.getNewValue();
 				nodeView.shapeView.setColor(color);
+				
+				if(color == ConceptModel.DEFAULT_COLOR)
+					nodeView.setTextColor(TEXT_DEFAULT_COLOR);
+				else
+					nodeView.setTextColor(color);
 				
 				branchPaint.setColor(color);
 				branchView.invalidate();
@@ -513,22 +525,35 @@ public class ConceptView {
 			// Init TextView
 			this.setText(model.getName());
 			this.setTextSize(model.getSize()*TEXT_BASE_SIZE);
+			this.getPaint().setColorFilter(new PorterDuffColorFilter(TEXT_FILTER_COLOR, PorterDuff.Mode.SRC_ATOP));
+
+			if(model.getColor() == ConceptModel.DEFAULT_COLOR)
+				this.setTextColor(TEXT_DEFAULT_COLOR);
+			else
+				this.setTextColor(model.getColor());
 			
 			// Init Background
 			this.shapeView = new GradientDrawable();
 			this.shapeView.setOrientation(GradientDrawable.Orientation.LEFT_RIGHT);
 			this.shapeView.setStroke(1, Color.BLACK);
 			this.shapeView.setColor(model.getColor());
+			this.shapeView.setColorFilter(NODE_FILTER_COLOR, PorterDuff.Mode.SRC_ATOP);
 			this.configureShape(model.getShape());
 			
 			this.setBackground(this.shapeView);
 		}
 		
 		public void setSelectMode(boolean select){
-			if(select)
+			if(select){
 				this.shapeView.setColorFilter(0x77ffffff, PorterDuff.Mode.SRC_ATOP);
-			else
-				this.shapeView.clearColorFilter();
+				cloudView.setScaleX(cloudView.getScaleX()*2f);
+				cloudView.setScaleY(cloudView.getScaleY()*2f);
+			}
+			else{
+				this.shapeView.setColorFilter(NODE_FILTER_COLOR, PorterDuff.Mode.SRC_ATOP);
+				cloudView.setScaleX(cloudView.getScaleX()/2f);
+				cloudView.setScaleY(cloudView.getScaleY()/2f);
+			}
 		}
 		
 		// For First Update
@@ -572,7 +597,6 @@ public class ConceptView {
 
 	    // The drag shadow image, defined as a drawable thing
 	    private GradientDrawable shadow =  new GradientDrawable();
-	    //private Drawable enterShape = nodeView.getResources().getDrawable(R.drawable.drag_shadow);
 	    private int marginShadow = 10;
 	    private int width, height;
 	    
@@ -582,7 +606,6 @@ public class ConceptView {
 			this.shadow.setOrientation(GradientDrawable.Orientation.LEFT_RIGHT);
 			this.shadow.setStroke(1, Color.BLACK);
 			this.shadow.setColors(new int[]{ Color.TRANSPARENT, Color.GRAY, Color.TRANSPARENT});
-			//v.setBackground(enterShape);
 			
         }
 
@@ -598,11 +621,7 @@ public class ConceptView {
         }
 
         @Override
-        public void onDrawShadow(Canvas canvas) { // TODO
-        	//shadow.draw(canvas);
-        	
-        	//enterShape.draw(canvas);
-        	//System.out.println(enterShape.getIntrinsicHeight());
+        public void onDrawShadow(Canvas canvas) {
         	canvas.save();
         	canvas.translate(marginShadow*scaleFactor.scaleFactor, marginShadow*scaleFactor.scaleFactor);
         	canvas.scale(scaleFactor.scaleFactor, scaleFactor.scaleFactor);
