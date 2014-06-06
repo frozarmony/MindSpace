@@ -26,6 +26,9 @@ public class ConceptModel {
 	public final static int				DEFAULT_COLOR				= Color.WHITE;
 	public final static MindSpaceShape	DEFAULT_SHAPE				= MindSpaceShape.oval;
 	
+	/* Counter to generate the concept id */
+	public static int id_counter = 0;
+	
 	public static MindSpaceShape getShape(String shape){
 		if(shape.equals("rectangle"))
 			return MindSpaceShape.rectangle;
@@ -43,8 +46,9 @@ public class ConceptModel {
 	}
 
 	/*
-	 * Member
+	 * Members
 	 */
+	private int id;
 	private MindMapModel				mindMap;
 	
 	// Data Members
@@ -65,11 +69,42 @@ public class ConceptModel {
 	private PropertyChangeSupport		propertyChangeSupport;
 
 	/*
-	 * Constructor
+	 * Constructors
 	 */
+	public ConceptModel(){
+		super();
+		// Init
+		this.id = id_counter;
+		id_counter++;
+		
+		this.mindMap	= mindMap;
+		
+		// Data
+		this.name		= "Concept";
+		
+		// Forms
+		this.position	= new PointF(0,0);
+		this.size		= defaultSize(parent);
+		this.color		= defaultColor(parent);
+		this.shape		= defaultShape(parent);
+		
+		// Bean
+		this.propertyChangeSupport = new PropertyChangeSupport(this);
+
+		// Link
+		this.children = new LinkedList<ConceptModel>();
+		if( parent != null )
+			parent.addChildNode(this);
+		else
+			this.parent = null;
+	}
+	
 	public ConceptModel(MindMapModel mindMap, float x, float y, ConceptModel parent) {
 		super();
 		// Init
+		this.id = id_counter;
+		id_counter++;
+		
 		this.mindMap	= mindMap;
 		
 		// Data
@@ -103,10 +138,18 @@ public class ConceptModel {
 	public int getColor() {						return color;			}
 	public MindSpaceShape getShape() {			return shape;			}
 	public ConceptModel getParent() {			return parent;			}
+		
+	public int getId() {
+		return id;
+	}
 	
+	public String getDescription() {
+		return description;
+	}
+
 	// Children
 	public int getChildrenCount(){				return children.size();	}
-	
+
 	public ConceptModel getChildAt(int index){
 		if(index >= children.size())
 			return null;
@@ -124,8 +167,8 @@ public class ConceptModel {
 		}
 	}
 	
-	public String getDescription() {
-		return description;
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public void setDescription(String description) {

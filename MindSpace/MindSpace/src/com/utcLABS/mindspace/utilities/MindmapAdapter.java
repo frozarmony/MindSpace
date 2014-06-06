@@ -1,6 +1,7 @@
 package com.utcLABS.mindspace.utilities;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -38,6 +39,22 @@ public class MindmapAdapter extends BaseAdapter {
 		this.mindmapsList = myListView;
 	}   
 	
+	public ArrayList<MindMapModel> getMindmaps() {
+		return mindmaps;
+	}
+
+	public void setMindmaps(ArrayList<MindMapModel> mindmaps) {
+		this.mindmaps = mindmaps;
+	}
+
+	public ListView getMindmapsList() {
+		return mindmapsList;
+	}
+
+	public void setMindmapsList(ListView mindmapsList) {
+		this.mindmapsList = mindmapsList;
+	}
+
 	@Override 
 	public int getCount() { 
 		return mindmaps.size(); 
@@ -52,6 +69,15 @@ public class MindmapAdapter extends BaseAdapter {
 	public long getItemId(int position) { 
 		return 0; 
 	}   
+	
+	/* Load the Mindmap XML Files */
+	public void loadMindmapfiles(){
+		String[] files = context.fileList();
+
+		for(String file : files){
+			System.out.println(file);
+		}
+	}
 	
 	@Override 
 	public View getView(int position, View convertView, ViewGroup parent) { 
@@ -96,16 +122,24 @@ public class MindmapAdapter extends BaseAdapter {
 			final int position = mindmapsList.getPositionForView((View) v.getParent());
             final MindMapModel deletedMindmap = mindmaps.get(position);
             
-			//View dialogView = inflater.inflate(R.layout.new_mindmap_dialog, null);
-			//final TextView input = (TextView) dialogView.findViewById(R.id.new_mindmap_title);
-			//input.setText(renamedMindmap.getTitle());
-
 			AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(MindmapAdapter.this.context)
 						.setTitle("Supprimer Mindmap")
 						.setMessage("Voulez-vous supprimer le Mindmap \""+ deletedMindmap.getTitle()+"\"");
 			
 			dialogBuilder.setPositiveButton("Supprimer",new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog,int id) {	
+					
+					 /* Deletion of the Mindmap XML file */
+					context.deleteFile(deletedMindmap.getTitle());
+					
+//					Test Fichiers XML
+//					String[] files = context.fileList();
+//					if (files.length == 0)
+//						System.out.println("Vide");
+//					else for(String file : files){
+//						System.out.println(file);
+//					}
+									
 		            mindmaps.remove(position);           
 		            MindmapAdapter.this.notifyDataSetChanged();
 				}
@@ -138,8 +172,12 @@ public class MindmapAdapter extends BaseAdapter {
 			
 			dialogBuilder.setPositiveButton("Renommer",new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog,int id) {
-					
-					renamedMindmap.setTitle(input.getText().toString());            
+					String oldTitle = renamedMindmap.getTitle();
+
+					renamedMindmap.setTitle(input.getText().toString());
+					renamedMindmap.setLastModificationDate(new Date().toString());
+
+					context.deleteFile(oldTitle);
 		            MindmapAdapter.this.notifyDataSetChanged();
 				}
 			});
@@ -173,6 +211,7 @@ public class MindmapAdapter extends BaseAdapter {
 		TextView tvTitle, tvModificationDate; 
 		Button btDelete, btRename; 
 	}   
+
 }
 	
 
