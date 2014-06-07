@@ -30,6 +30,9 @@ public class ConceptModel implements Parcelable {
 	public final static int				DEFAULT_COLOR				= Color.WHITE;
 	public final static MindSpaceShape	DEFAULT_SHAPE				= MindSpaceShape.oval;
 	
+	/* Counter to generate the concept id */
+	public static int id_counter = 0;
+	
 	public static MindSpaceShape getShape(String shape){
 		if(shape.equals("rectangle"))
 			return MindSpaceShape.rectangle;
@@ -47,7 +50,7 @@ public class ConceptModel implements Parcelable {
 	}
 
 	/*
-	 * Member
+	 * Members
 	 */
 	private MindMapModel				mindMap;
 	
@@ -69,11 +72,12 @@ public class ConceptModel implements Parcelable {
 	private PropertyChangeSupport		propertyChangeSupport;
 
 	/*
-	 * Constructor
+	 * Constructors
 	 */
 	public ConceptModel(MindMapModel mindMap, float x, float y, ConceptModel parent) {
 		super();
 		// Init
+		
 		this.mindMap	= mindMap;
 		
 		// Data
@@ -111,10 +115,19 @@ public class ConceptModel implements Parcelable {
 	public int getColor() {						return color;			}
 	public MindSpaceShape getShape() {			return shape;			}
 	public ConceptModel getParent() {			return parent;			}
+		
 	
+	public MindMapModel getMindMap() {
+		return mindMap;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
 	// Children
 	public int getChildrenCount(){				return children.size();	}
-	
+
 	public ConceptModel getChildAt(int index){
 		if(index >= children.size())
 			return null;
@@ -131,11 +144,11 @@ public class ConceptModel implements Parcelable {
 			this.propertyChangeSupport.firePropertyChange(NP_NAME, oldName, newName);
 		}
 	}
-	
-	public String getDescription() {
-		return description;
-	}
 
+	public void setMindMap(MindMapModel mindMap) {
+		this.mindMap = mindMap;
+	}
+	
 	public void setDescription(String description) {
 		this.description = description;
 	}
@@ -325,6 +338,7 @@ public class ConceptModel implements Parcelable {
 	public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener){
 		this.propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
 	}
+<<<<<<< HEAD
 
 	@Override
 	public int describeContents() {
@@ -335,4 +349,6 @@ public class ConceptModel implements Parcelable {
 	public void writeToParcel(Parcel out, int arg1) {
 	}
 	
+=======
+>>>>>>> branch 'master' of https://github.com/frozarmony/MindSpace.git
 }

@@ -31,24 +31,24 @@
         android:layout_height="40dp"
         android:layout_alignParentBottom="true"
         android:src="@drawable/density_max"
-        android:translationX="195dp"
-        android:translationY="-20dp" />
+        android:translationX="170dp"
+        android:translationY="-5dp" />
 
      <ImageView
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_alignParentBottom="true"
         android:src="@drawable/density_middle"
-        android:translationX="150dp"
-        android:translationY="-125dp" />
+        android:translationX="120dp"
+        android:translationY="-120dp" />
        
     <ImageView
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_alignParentBottom="true"
         android:src="@drawable/density_min"
-        android:translationX="15dp"
-        android:translationY="-195dp" />
+        android:translationX="5dp"
+        android:translationY="-170dp" />
 
     <com.devadvance.circularseekbar.CircularSeekBar
         android:id="@+id/circularSeekBar1"
@@ -57,8 +57,8 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         pointer_halo_color="#a7a37e"
-        android:translationX="-310dp"
-        android:translationY="310dp"
+        android:translationX="-330dp"
+        android:translationY="330dp"
         app1:circle_color="#26a7a37e"
         app1:circle_progress_color="#26046380"
         app1:circle_stroke_width="48"

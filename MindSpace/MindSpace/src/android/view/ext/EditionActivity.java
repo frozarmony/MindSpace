@@ -31,7 +31,7 @@ import com.utcLABS.mindspace.TextEditFragment;
 import com.utcLABS.mindspace.VisualisationActivity;
 import com.utcLABS.mindspace.WikipediaFragment;
 import com.utcLABS.mindspace.model.ConceptModel;
-import com.utcLABS.mindspace.model.MindMapModel;
+import com.utcLABS.mindspace.model.CurrentMindMap;
 import com.utcLABS.mindspace.view.ConceptView;
 import com.utcLABS.mindspace.view.MindMapView;
 
@@ -40,6 +40,7 @@ public class EditionActivity extends ActionBarActivity {
 	protected MenuItem itemEdit;
 	protected MenuItem itemSee;
 	private String title;
+	private int interval = 30000;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -48,15 +49,12 @@ public class EditionActivity extends ActionBarActivity {
 
 		title = this.getIntent().getExtras().getString("title");
 		setTitle(title);	
-		
-		//model getIntent
+
 		
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		
 		if (savedInstanceState == null) {
 			PlaceholderFragment placeHolder = new PlaceholderFragment();
-			//placeHolder.setModel(model);
-			
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.container, placeHolder).commit();
 		}
@@ -85,7 +83,7 @@ public class EditionActivity extends ActionBarActivity {
 		int id = item.getItemId();
 		if (id == R.id.menu_see) {
 			item.setEnabled(false);
-			item.setIcon(R.drawable.ic_action_see_selected);
+			item.setIcon(R.drawable.ic_action_see_selected2);
 			itemEdit.setIcon(R.drawable.ic_action_edit);
 			itemEdit.setEnabled(true);
 			Intent i0 = new Intent(this, VisualisationActivity.class);
@@ -118,7 +116,6 @@ public class EditionActivity extends ActionBarActivity {
 	public static class PlaceholderFragment extends Fragment {
 
 		private MindMapView viewMindMap;
-		private MindMapModel model;
 		private View rootView = null;
 		private DrawerLayout drawer = null;
 		private ConceptModel currentConcept = null;
@@ -137,10 +134,9 @@ public class EditionActivity extends ActionBarActivity {
 			//init view
 			viewMindMap = (MindMapView)rootView.findViewById(R.id.surfaceView);
 			viewMindMap.setCurrentFragment(this);
+			viewMindMap.setModel(((CurrentMindMap) getActivity().getApplication()).getCurrentMindMap());
 			viewMindMap.setEditMode(true);
 			viewMindMap.setDensity(density);
-	        //viewMindMap.setModel(model);
-	        model = viewMindMap.getModel();
 	        
 	        initDrawer();
 			
@@ -253,7 +249,8 @@ public class EditionActivity extends ActionBarActivity {
             menu.setOnItemClickedListener(new SateliteClickedListener() {
             	  public void eventOccured(int id) {
             		  if(id == 1){
-                		  currentConcept = model.createNewConcept(viewMindMap.getDefaultPosition());
+
+            			  currentConcept = viewMindMap.getModel().createNewConcept(viewMindMap.getDefaultPosition());
                 		  currentConcept.setSize(viewMindMap.getDefaultSize());
                 		  editConcept(currentConcept);
             		  }	  

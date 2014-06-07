@@ -17,6 +17,7 @@ import android.view.ext.R;
 import com.devadvance.circularseekbar.CircularSeekBar;
 import com.devadvance.circularseekbar.CircularSeekBar.OnCircularSeekBarChangeListener;
 import com.utcLABS.mindspace.model.ConceptModel;
+import com.utcLABS.mindspace.model.CurrentMindMap;
 import com.utcLABS.mindspace.model.MindMapModel;
 import com.utcLABS.mindspace.view.MindMapView;
 
@@ -52,7 +53,7 @@ public class VisualisationActivity extends ActionBarActivity {
 		
 		itemSee = menu.findItem(R.id.menu_see);
 		itemSee.setEnabled(false);
-		itemSee.setIcon(R.drawable.ic_action_see_selected);
+		itemSee.setIcon(R.drawable.ic_action_see_selected2);
 		return true;
 	}
 
@@ -113,12 +114,18 @@ public class VisualisationActivity extends ActionBarActivity {
 			drawer = (DrawerLayout) rootView.findViewById(R.id.drawer_layout_visualisation);
 			
 			//initView
-			viewMindMap = (MindMapView)rootView.findViewById(R.id.surfaceView);
-	        model = viewMindMap.getModel();
-			viewMindMap.setCurrentFragment(this);
-	        viewMindMap.setEditMode(false);
-	        viewMindMap.setDensity(0f);
+//			viewMindMap = (MindMapView)rootView.findViewById(R.id.surfaceView);
+//	        model = viewMindMap.getModel();
+//			viewMindMap.setCurrentFragment(this);
+//	        viewMindMap.setEditMode(false);
+//	        viewMindMap.setDensity(0f);
 	        
+	        viewMindMap = (MindMapView)rootView.findViewById(R.id.surfaceView);
+			viewMindMap.setCurrentFragment(this);
+			viewMindMap.setModel(((CurrentMindMap) getActivity().getApplication()).getCurrentMindMap());
+			viewMindMap.setEditMode(false);
+			viewMindMap.setDensity(0f);
+			
 	        getFragmentManager().beginTransaction().add(R.id.layout_visualisation, seeFg).commit();
 	        			
 			initSlider(); 

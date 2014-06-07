@@ -1,13 +1,14 @@
 package com.utcLABS.mindspace;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 
-import android.app.AlertDialog;
+import org.xmlpull.v1.XmlPullParserException;
+
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
@@ -18,13 +19,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.ext.R;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.view.ext.R;
 
 import com.utcLABS.mindspace.model.MindMapModel;
+import com.utcLABS.mindspace.model.MindMapXmlParser;
 import com.utcLABS.mindspace.utilities.MindmapAdapter;
+import com.utcLABS.mindspace.view.CreateMindmapDialog;
 
 public class HomeActivity extends ActionBarActivity {
 	final Context context = HomeActivity.this;
@@ -38,7 +40,70 @@ public class HomeActivity extends ActionBarActivity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
 		setContentView(R.layout.activity_home);
-	
+
+		/* TEST : SUPPRESSION DES XML*/
+//		String[] files = context.fileList();
+//		if (files.length == 0)
+//			System.out.println("Vide");
+//		else {
+//			for(String file : files){
+//				deleteFile(file);
+//			}
+//		}
+		
+		/* INSERTION FICHIER TEST */	
+		FileOutputStream output = null;        	
+		String xml = "<?xml version='1.0' encoding='UTF-8'?>"
+				+ "<mindmap>"
+				+ "<head>"
+					+ "<title>Santé</title>"
+					+ "<lastModificationDate>8 Jun 2014</lastModificationDate>"
+				+ "</head>"
+				+ "<concepts>"
+					+ "<concept name='Santé' x='950.0' y='475.0' size='0.7' color='-1' shape='oval'>"
+						+ "<concept name='Hygiène de vie' x='740.0' y='580.0' size='0.48999998' color='-16733697' shape='oval'>"
+							+ "<concept name='Sport' x='670.0' y='632.5' size='0.343' color='-16733697' shape='oval'>"
+							+ "</concept>"
+						+ "</concept>"
+						+ "<concept name='Rigour' x='1125.0' y='387.5' size='0.48999998' color='-65495' shape='oval'>"
+							+ "<concept name='Sommeil' x='1265.0' y='317.5' size='0.343' color='-65495' shape='oval'>"
+							+ "</concept>"
+						+ "</concept>"
+					+ "<concept name='Soins' x='775.0' y='387.5' size='0.48999998' color='-8651008' shape='oval'>"
+						+ "</concept>"
+					+ "</concept>"
+				+ "</concepts>"
+			+ "</mindmap>";
+		try {
+			output = context.openFileOutput("Santé", Context.MODE_PRIVATE);
+			output.write(xml.getBytes());
+			if(output != null)
+			    output.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+//				try {
+//					inputFile = openFileInput(file);
+//					MindMapModel mindmap = xmlParser.parseFile(inputFile);
+//					System.out.println(mindmap.getTitle());
+//					System.out.println(mindmap.getLastModificationDate());
+//				} catch (FileNotFoundException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				} catch (XmlPullParserException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				} catch (IOException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//			}
+//		}	
 	}
 
 	@Override
@@ -76,13 +141,9 @@ public class HomeActivity extends ActionBarActivity {
 	 */
 	public static class PlaceholderFragment extends Fragment {
 
-		ListView listeMindmaps;
-		List<HashMap<String,String>> aList = new ArrayList<HashMap<String,String>>();
-		ListView lvDetail;
-		ArrayList<MindMapModel> myList = new ArrayList<MindMapModel>();
+		ListView listMindmapsView;
+		ArrayList<MindMapModel> listMindmaps = new ArrayList<MindMapModel>();
 		
-		String[] title = new String[] { "Mindmap 1", "Mindmap 2", "Mindmap 3", "Mindmap 4",
-				"Mindmap 5", "Mindmap 6", "Mindmap 7", "Mindmap 8" };
 		
 		public PlaceholderFragment() {
 		}
@@ -90,57 +151,58 @@ public class HomeActivity extends ActionBarActivity {
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
 			final View rootView = inflater.inflate(R.layout.fragment_home, container, false);
-			listeMindmaps = (ListView) rootView.findViewById(R.id.list_mindmaps);
-								
-			getDataInList();
+			listMindmapsView = (ListView) rootView.findViewById(R.id.list_mindmaps);
 			
-			final MindmapAdapter mindmapListAdapter = new MindmapAdapter(getActivity(), myList, listeMindmaps);
-	        listeMindmaps.setAdapter(mindmapListAdapter);
+			/* Loading of the existing Mindmaps */
+			try {
+ 				loadMindmapFiles(getActivity());
+			} catch (XmlPullParserException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			final MindmapAdapter mindmapListAdapter = new MindmapAdapter(getActivity(), listMindmaps, listMindmapsView);
+			listMindmapsView.setAdapter(mindmapListAdapter);
 	        
-	        // Behavior of the newMindMap button
+	        // Definition of the new MindMap button behavior
 	        Button newMindMap = (Button)rootView.findViewById(R.id.nouveau_mindmap);
 	        newMindMap.setOnClickListener(new View.OnClickListener() {
 				
 				@Override
 				public void onClick(View arg0) {
+					Context context = getActivity();
 					LayoutInflater inflater = getActivity().getLayoutInflater();
 					View dialogView = inflater.inflate(R.layout.new_mindmap_dialog, null);
-					final TextView input = (TextView) dialogView.findViewById(R.id.new_mindmap_title);
 					
-					AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity())
-					.setView(dialogView);
-					dialogBuilder.setTitle("Nouveau")
-					.setPositiveButton("Créer",new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog,int id) {
-							MindMapModel newRow = new MindMapModel();
-							newRow.setTitle(input.getText().toString());
-							newRow.setLastModificationDate("Modifié le "+ new Date().toString());
-		                    myList.add(newRow);
-		                    mindmapListAdapter.notifyDataSetChanged();
-						}
-					})
-					.setNegativeButton("Annuler",new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog,int id) {
-							dialog.cancel();
-						}
-					});	
-					AlertDialog dialog = dialogBuilder.create();
-					dialog.show();
-					
+					new CreateMindmapDialog(context, dialogView, mindmapListAdapter);
 				}
-			});     
-	        	          
+	        });
+					
 			return rootView;
 		}
-		
-		 private void getDataInList() { 
-			 for(int i=0;i<8;i++) { 
-		 		 // Create a new object for each list item 
-				 MindMapModel ld = new MindMapModel(); 
-				 ld.setTitle(title[i]); 
-				 ld.setLastModificationDate(new Date().toString()); 
-				 myList.add(ld); 
-			 } 
-		} 
+		 
+		private void loadMindmapFiles(Context context) throws XmlPullParserException, IOException{
+			String[] files = context.fileList();
+			MindMapXmlParser parser = new MindMapXmlParser();
+			FileInputStream input;
+			MindMapModel mindmap = null;
+			if (files.length == 0)
+				System.out.println("Vide");
+			else {
+				for(String file : files){
+					input = context.openFileInput(file);
+					try {
+						mindmap = parser.parse(input);
+						listMindmaps.add(mindmap);
+					} catch (FileNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		}	
 	}
 }
