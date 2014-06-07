@@ -36,7 +36,7 @@
             <RelativeLayout
                 android:id="@+id/container_fragment"
                 android:layout_width="match_parent"
-                android:layout_height="625dp"
+                android:layout_height="640dp"
                 android:orientation="vertical" />
 
             <LinearLayout

@@ -8,6 +8,7 @@ import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.PointF;
 import android.support.v4.app.Fragment;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -391,6 +392,14 @@ import com.utcLABS.mindspace.model.MindMapModel;
 	private void updateConceptsVisibility(){
 		for( ConceptView v : conceptIndex.values() )
 			v.updateVisibility();
+	}
+	
+	public PointF getDefaultPosition(){
+		return new PointF(300,300);
+	}
+	
+	public float getDefaultSize(){
+		return 0;
 	}
 	
 	/*

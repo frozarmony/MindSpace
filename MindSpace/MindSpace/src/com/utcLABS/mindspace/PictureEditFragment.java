@@ -23,11 +23,22 @@ public class PictureEditFragment extends Fragment {
 		
 	}
 	
+	public static PictureEditFragment newInstance(ConceptModel currentConcept) {
+		PictureEditFragment fragment = new PictureEditFragment();
+		Bundle args = new Bundle();
+		args.putParcelable("currentConcept", currentConcept);
+		fragment.setArguments(args);
+		return fragment;
+	}
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		rootView = inflater.inflate(R.layout.edit_picture, container,
 				false);
+		
+		Bundle args = getArguments();
+		conceptModel = args.getParcelable("currentConcept");
 		
 		Button loadPicture = (Button)rootView.findViewById(R.id.buttonLoadPicture);
 		loadPicture.setOnClickListener(new View.OnClickListener() {
@@ -42,12 +53,11 @@ public class PictureEditFragment extends Fragment {
 		return rootView;
 	}
 	
-	public ConceptModel getConceptModel() {
-		return conceptModel;
-	}
-
-	public void setConceptModel(ConceptModel conceptModel) {
-		this.conceptModel = conceptModel;
+	public void initFragment(ConceptModel currentConcept){
+		this.conceptModel = currentConcept;
+		if(conceptModel!=null){
+			
+		}	
 	}
 	
 	@Override
@@ -61,5 +71,13 @@ public class PictureEditFragment extends Fragment {
 		
 		//ConceptModel conceptToEdit = ((MainActivity)getActivity()).getCurrentConcept();
 		
+	}
+	
+	public ConceptModel getConceptModel() {
+		return conceptModel;
+	}
+
+	public void setConceptModel(ConceptModel conceptModel) {
+		this.conceptModel = conceptModel;
 	}
 }
