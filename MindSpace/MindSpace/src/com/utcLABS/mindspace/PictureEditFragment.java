@@ -1,17 +1,20 @@
 package com.utcLABS.mindspace;
 
 
-import com.utcLABS.mindspace.model.ConceptModel;
-
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ext.EditionActivity;
+import android.view.ext.R;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.view.ext.R;
+
+import com.utcLABS.mindspace.model.ConceptModel;
+import com.utcLABS.mindspace.model.MindMapXmlParser;
 
 public class PictureEditFragment extends Fragment {
 
@@ -40,6 +43,8 @@ public class PictureEditFragment extends Fragment {
 		Bundle args = getArguments();
 		conceptModel = args.getParcelable("currentConcept");
 		
+		initFragment();
+		
 		Button loadPicture = (Button)rootView.findViewById(R.id.buttonLoadPicture);
 		loadPicture.setOnClickListener(new View.OnClickListener() {
 			
@@ -53,10 +58,12 @@ public class PictureEditFragment extends Fragment {
 		return rootView;
 	}
 	
-	public void initFragment(ConceptModel currentConcept){
-		this.conceptModel = currentConcept;
+	public void initFragment(){
 		if(conceptModel!=null){
-			
+			System.out.println(conceptModel.getOnlyPicture());
+			ImageView imgcover = (ImageView) rootView.findViewById(R.id.imgView);
+			Uri path = Uri.parse(conceptModel.getOnlyPicture());
+			imgcover.setImageURI(path);
 		}	
 	}
 	
@@ -67,10 +74,8 @@ public class PictureEditFragment extends Fragment {
 		if (requestCode == RESULT_LOAD_IMAGE && null != data) {
 	         ImageView imgcover = (ImageView) rootView.findViewById(R.id.imgView);
 	         imgcover.setImageURI(data.getData());
-	     }
-		
-		//ConceptModel conceptToEdit = ((MainActivity)getActivity()).getCurrentConcept();
-		
+	         conceptModel.setOnlyPicture(data.getData().toString());
+	     }		
 	}
 	
 	public ConceptModel getConceptModel() {

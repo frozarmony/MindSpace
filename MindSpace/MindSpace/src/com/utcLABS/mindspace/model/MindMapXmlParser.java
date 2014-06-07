@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -93,14 +94,16 @@ public class MindMapXmlParser {
 	private String getConceptXml(ConceptModel cm) {
 		String res = "";
 		res += "<concept "
+				+ "picture=\"" + cm.getOnlyPicture()
 				+ "name=\"" + cm.getName() 
+				+ "desc=\"" + cm.getDescription()
 				+ "\" x=\"" + cm.getPosition().x
 				+ "\" y=\"" + cm.getPosition().y
 				+ "\" size=\"" + cm.getSize() 
-				+ "\" color=\"" + getColorString(cm.getColor()) 
+				+ "\" color=\"" + cm.getColor()
 				+ "\" shape=\"" + cm.getShape()
 				+ "\">\n";
-
+		
 		for (int i = 0; i < cm.getChildrenCount(); i++) {
 			res += getConceptXml(cm.getChildAt(i));
 		}
@@ -144,6 +147,21 @@ public class MindMapXmlParser {
 		node.setSize(Float.parseFloat(parser.getAttributeValue("", "size")));
 		node.setName(parser.getAttributeValue("", "name"));
 		node.setShape(ConceptModel.getShape(parser.getAttributeValue("","shape")));
+		node.setOnlyPicture(parser.getAttributeValue("", "picture"));
+		node.setDescription(parser.getAttributeValue("", "desc"));
+		
+//		parser.require(XmlPullParser.START_TAG, "", "picture");
+//		List<String> pictures = new ArrayList<String>();
+//		while (parser.next() != XmlPullParser.END_TAG) {
+//			if (parser.getEventType() != XmlPullParser.START_TAG) {
+//				continue;
+//			}
+//			String name = parser.getName();
+//			if (name.equals("picture")) {
+//				pictures.add(parser.getAttributeValue("", "path"));
+//			}
+//		}
+//		node.setPictures(pictures);
 
 		parser.require(XmlPullParser.START_TAG, "", "concept");
 		while (parser.next() != XmlPullParser.END_TAG) {

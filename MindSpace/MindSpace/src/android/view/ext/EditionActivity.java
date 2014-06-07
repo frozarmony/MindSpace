@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PointF;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -22,6 +23,7 @@ import android.view.View.OnDragListener;
 import android.view.ViewGroup;
 import android.view.ext.SatelliteMenu.SateliteClickedListener;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.utcLABS.mindspace.ColorFragment;
 import com.utcLABS.mindspace.GoogleFragment;
@@ -32,6 +34,8 @@ import com.utcLABS.mindspace.VisualisationActivity;
 import com.utcLABS.mindspace.WikipediaFragment;
 import com.utcLABS.mindspace.model.ConceptModel;
 import com.utcLABS.mindspace.model.CurrentMindMap;
+import com.utcLABS.mindspace.model.MindMapModel;
+import com.utcLABS.mindspace.model.MindMapXmlParser;
 import com.utcLABS.mindspace.view.ConceptView;
 import com.utcLABS.mindspace.view.MindMapView;
 
@@ -40,22 +44,58 @@ public class EditionActivity extends ActionBarActivity {
 	protected MenuItem itemEdit;
 	protected MenuItem itemSee;
 	private String title;
-	private int interval = 30000;
+
+	private int interval = 5000;
+	private Handler saveHandler;
+
+	/* Timer to periodically record the mindmap */
+	private Runnable timer = new Runnable() {
+		
+		@Override
+		public void run() {
+			MindMapModel model = ((CurrentMindMap) getApplication()).getCurrentMindMap();
+			
+			if(((CurrentMindMap) getApplication()).getCurrentMindMap() != null){
+				new MindMapXmlParser().saveToXml(model, getBaseContext());
+				System.out.println("Mindmap saved");
+				saveHandler.postDelayed(timer, interval);
+			}
+			
+		}
+	};
+	
+	public void save(){
+		MindMapModel model = ((CurrentMindMap) getApplication()).getCurrentMindMap();
+		new MindMapXmlParser().saveToXml(model, getBaseContext());
+	}
+
+	void startRepeatingTask() {
+		timer.run();
+	}
+
+	void stopRepeatingTask() {
+		saveHandler.removeCallbacks(timer);
+	}
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
 		setContentView(R.layout.activity_edition);
 
-//		title = this.getIntent().getExtras().getString("title");
-//		setTitle(title);	
+		title = this.getIntent().getExtras().getString("title");
+		setTitle(title);	
+
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-		
+
 		if (savedInstanceState == null) {
 			PlaceholderFragment placeHolder = new PlaceholderFragment();
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.container, placeHolder).commit();
 		}
+		saveHandler = new Handler();
+		saveHandler.postDelayed(timer, interval);
 	}
 
 	@Override
@@ -84,12 +124,14 @@ public class EditionActivity extends ActionBarActivity {
 			item.setIcon(R.drawable.ic_action_see_selected);
 			itemEdit.setIcon(R.drawable.ic_action_edit);
 			itemEdit.setEnabled(true);
+			Toast.makeText(getApplicationContext(), "Enregistrement automatique", Toast.LENGTH_SHORT).show();
 			Intent i0 = new Intent(this, VisualisationActivity.class);
 			i0.putExtra("title", title);
 			startActivity(i0);
 			this.finish();
 			return true;
 		} else if (id == android.R.id.home) {
+			Toast.makeText(getApplicationContext(), "Enregistrement automatique", Toast.LENGTH_SHORT).show();
 			Intent i0 = new Intent(this, HomeActivity.class);
 			startActivity(i0);
 			this.finish();
@@ -118,6 +160,7 @@ public class EditionActivity extends ActionBarActivity {
 		private DrawerLayout drawer = null;
 		private ConceptModel currentConcept = null;
 		private SatelliteMenu menu = null;
+
 		private static float density = 0.8f;
 		
 		public PlaceholderFragment() {
@@ -131,25 +174,26 @@ public class EditionActivity extends ActionBarActivity {
 			 
 			//init view
 			viewMindMap = (MindMapView)rootView.findViewById(R.id.surfaceView);
+
 			viewMindMap.setCurrentFragment(this);
 			viewMindMap.setModel(((CurrentMindMap) getActivity().getApplication()).getCurrentMindMap());
 			viewMindMap.setEditMode(true);
 			viewMindMap.setDensity(density);
 	        
 	        initDrawer();
-			
+	
 			initSatelliteMenu();
 
-            initPanel();
-			
-            initBin();
-            			
+			initPanel();
+
+			initBin();
+
 			return rootView;
 		}
 
 		private void initDrawer() {
-			drawer = (DrawerLayout)rootView.findViewById(R.id.drawer_layout);
-	        drawer.setDrawerListener(new DrawerLayout.DrawerListener() {
+			drawer = (DrawerLayout) rootView.findViewById(R.id.drawer_layout);
+			drawer.setDrawerListener(new DrawerLayout.DrawerListener() {
 
 				@Override
 				public void onDrawerClosed(View arg0) {
@@ -157,17 +201,16 @@ public class EditionActivity extends ActionBarActivity {
 				}
 
 				public void onDrawerOpened(View arg0) {
-					menu.setVisibility(View.INVISIBLE);					
+					menu.setVisibility(View.INVISIBLE);
 				}
 
-				public void onDrawerSlide(View arg0, float arg1) {	
+				public void onDrawerSlide(View arg0, float arg1) {
 				}
 
 				public void onDrawerStateChanged(int arg0) {
 				}
 			});
 		}
-
 
 		private void initBin() {
 			final View binDrag = (View) rootView.findViewById(R.id.binDrag);
@@ -232,7 +275,7 @@ public class EditionActivity extends ActionBarActivity {
 					return true;
 				}
 			});
-			
+
 		}
 
 		private void initSatelliteMenu() {
@@ -254,8 +297,9 @@ public class EditionActivity extends ActionBarActivity {
             		  }	  
             	  }
             	});
+
 		}
-		
+
 
 		private void initPanel() {
 			getFragmentManager().beginTransaction().add(R.id.container_fragment, TextEditFragment.newInstance(currentConcept)).commit();
@@ -311,7 +355,7 @@ public class EditionActivity extends ActionBarActivity {
 					getFragmentManager().beginTransaction().replace(R.id.container_fragment, ColorFragment.newInstance(currentConcept)).commit();
 				}
 			});
-			
+
 		}
 
 		public void editConcept(ConceptModel model) {
@@ -319,6 +363,11 @@ public class EditionActivity extends ActionBarActivity {
 			getFragmentManager().beginTransaction().replace(R.id.container_fragment, TextEditFragment.newInstance(currentConcept)).commit();
 			drawer.openDrawer(rootView.findViewById(R.id.layout_fragment));
 		}
+
+		public MindMapView getViewMindMap() {
+			return viewMindMap;
+		}
+
 	}
 
 }

@@ -42,40 +42,40 @@ public class HomeActivity extends ActionBarActivity {
 		setContentView(R.layout.activity_home);
 
 		/* TEST : SUPPRESSION DES XML*/
-//		String[] files = context.fileList();
-//		if (files.length == 0)
-//			System.out.println("Vide");
-//		else {
-//			for(String file : files){
-//				deleteFile(file);
-//			}
-//		}
+		String[] files = context.fileList();
+		if (files.length == 0)
+			System.out.println("Vide");
+		else {
+			for(String file : files){
+				deleteFile(file);
+			}
+		}
 		
 		/* INSERTION FICHIER TEST */	
 		FileOutputStream output = null;        	
 		String xml = "<?xml version='1.0' encoding='UTF-8'?>"
 				+ "<mindmap>"
 				+ "<head>"
-					+ "<title>Santé</title>"
+					+ "<title>Test</title>"
 					+ "<lastModificationDate>8 Jun 2014</lastModificationDate>"
 				+ "</head>"
 				+ "<concepts>"
-					+ "<concept name='Santé' x='950.0' y='475.0' size='0.7' color='-1' shape='oval'>"
-						+ "<concept name='Hygiène de vie' x='740.0' y='580.0' size='0.48999998' color='-16733697' shape='oval'>"
-							+ "<concept name='Sport' x='670.0' y='632.5' size='0.343' color='-16733697' shape='oval'>"
+					+ "<concept desc='' picture='content://media/external/images/media/13' name='Santé' x='950.0' y='475.0' size='0.7' color='-1' shape='oval'>"
+						+ "<concept desc='' picture='' name='Hygiène de vie' x='740.0' y='580.0' size='0.48999998' color='-16733697' shape='oval'>"
+						+ "<concept desc='' picture='' name='Sport' x='670.0' y='632.5' size='0.343' color='-16733697' shape='oval'>"
 							+ "</concept>"
 						+ "</concept>"
-						+ "<concept name='Rigour' x='1125.0' y='387.5' size='0.48999998' color='-65495' shape='oval'>"
-							+ "<concept name='Sommeil' x='1265.0' y='317.5' size='0.343' color='-65495' shape='oval'>"
+						+ "<concept desc='' picture='' name='Rigour' x='1125.0' y='387.5' size='0.48999998' color='-65495' shape='oval'>"
+							+ "<concept desc='' picture='' name='Sommeil' x='1265.0' y='317.5' size='0.343' color='-65495' shape='oval'>"
 							+ "</concept>"
 						+ "</concept>"
-					+ "<concept name='Soins' x='775.0' y='387.5' size='0.48999998' color='-8651008' shape='oval'>"
+					+ "<concept desc='' picture='' name='Soins' x='775.0' y='387.5' size='0.48999998' color='-8651008' shape='oval'>"
 						+ "</concept>"
 					+ "</concept>"
 				+ "</concepts>"
 			+ "</mindmap>";
 		try {
-			output = context.openFileOutput("Santé", Context.MODE_PRIVATE);
+			output = context.openFileOutput("Test", Context.MODE_PRIVATE);
 			output.write(xml.getBytes());
 			if(output != null)
 			    output.close();

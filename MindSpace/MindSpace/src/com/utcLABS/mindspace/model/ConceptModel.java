@@ -2,7 +2,9 @@ package com.utcLABS.mindspace.model;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 import android.graphics.Color;
 import android.graphics.PointF;
@@ -57,6 +59,8 @@ public class ConceptModel implements Parcelable {
 	// Data Members
 	private String						name;
 	private String						description;
+	private List<String> pictures;
+	private String onlyPicture;
 	
 	// Form Members
 	private PointF						position;
@@ -88,6 +92,7 @@ public class ConceptModel implements Parcelable {
 		this.size		= defaultSize(parent);
 		this.color		= defaultColor(parent);
 		this.shape		= defaultShape(parent);
+		this.pictures = new ArrayList<String>();
 		
 		// Bean
 		this.propertyChangeSupport = new PropertyChangeSupport(this);
@@ -205,6 +210,22 @@ public class ConceptModel implements Parcelable {
 			this.shape = newShape;
 			this.propertyChangeSupport.firePropertyChange(NP_SHAPE, oldShape, newShape);
 		}
+	}
+
+	public List<String> getPictures() {
+		return pictures;
+	}
+
+	public void setPictures(List<String> pictures) {
+		this.pictures = pictures;
+	}
+
+	public String getOnlyPicture() {
+		return onlyPicture;
+	}
+
+	public void setOnlyPicture(String onlyPicture) {
+		this.onlyPicture = onlyPicture;
 	}
 
 	/*

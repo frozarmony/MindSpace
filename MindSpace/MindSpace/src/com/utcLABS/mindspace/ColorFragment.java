@@ -40,11 +40,10 @@ public class ColorFragment extends Fragment {
 		conceptModel = args.getParcelable("currentConcept");
 				
 		picker = (ColorPicker)rootView.findViewById(R.id.picker);
-		
+
 		picker.setOnColorChangedListener(new OnColorChangedListener() {
 			@Override
 			public void onColorChanged(int color) {
-				System.out.println("ColorPicker " + color);
 				conceptModel.setColor(color);
 
 			}
@@ -96,6 +95,7 @@ public class ColorFragment extends Fragment {
 		this.conceptModel = currentConcept;
 		if(conceptModel!=null && picker!=null){
 			picker.setOldCenterColor(conceptModel.getColor());
+			picker.setColor(conceptModel.getColor());
 		}
 	}
 

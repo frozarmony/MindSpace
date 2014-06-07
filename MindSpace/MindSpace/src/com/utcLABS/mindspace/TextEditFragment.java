@@ -65,6 +65,24 @@ public class TextEditFragment extends Fragment {
 			   }
 		});
 		
+		desc.addTextChangedListener(new TextWatcher() {
+			 
+			   public void afterTextChanged(Editable s) {
+				   if(conceptModel!=null){
+					   conceptModel.setDescription(desc.getText().toString());
+				   }
+			   }
+			 
+			   public void beforeTextChanged(CharSequence s, int start, 
+			     int count, int after) {
+			   }
+			 
+			   public void onTextChanged(CharSequence s, int start, 
+			     int before, int count) {
+			   
+			   }
+		});
+		
 		initFragment();
 
 		return rootView;
@@ -101,6 +119,4 @@ public class TextEditFragment extends Fragment {
 	public ConceptModel getConceptModel() {
 		return conceptModel;
 	}
-
-
 }
