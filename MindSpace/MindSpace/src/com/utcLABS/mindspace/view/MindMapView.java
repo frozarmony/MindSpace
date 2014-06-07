@@ -394,6 +394,14 @@ import com.utcLABS.mindspace.model.MindMapModel;
 			v.updateVisibility();
 	}
 	
+	public PointF getDefaultPosition(){
+		return new PointF(300,300);
+	}
+	
+	public float getDefaultSize(){
+		return 0;
+	}
+	
 	/*
 	 * Class Declaration
 	 */

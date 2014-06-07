@@ -123,6 +123,7 @@ public class EditionActivity extends ActionBarActivity {
 		private DrawerLayout drawer = null;
 		private ConceptModel currentConcept = null;
 		private SatelliteMenu menu = null;
+		private static float density = 0.8f;
 		
 		public PlaceholderFragment() {
 		}
@@ -137,6 +138,7 @@ public class EditionActivity extends ActionBarActivity {
 			viewMindMap = (MindMapView)rootView.findViewById(R.id.surfaceView);
 			viewMindMap.setCurrentFragment(this);
 			viewMindMap.setEditMode(true);
+			viewMindMap.setDensity(density);
 	        //viewMindMap.setModel(model);
 	        model = viewMindMap.getModel();
 	        
@@ -251,8 +253,8 @@ public class EditionActivity extends ActionBarActivity {
             menu.setOnItemClickedListener(new SateliteClickedListener() {
             	  public void eventOccured(int id) {
             		  if(id == 1){
-                		  currentConcept = model.createNewConcept(new PointF(300,300));
-                		  viewMindMap.setModel(model);
+                		  currentConcept = model.createNewConcept(viewMindMap.getDefaultPosition());
+                		  currentConcept.setSize(viewMindMap.getDefaultSize());
                 		  editConcept(currentConcept);
             		  }	  
             	  }
