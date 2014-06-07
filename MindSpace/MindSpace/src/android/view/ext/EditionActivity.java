@@ -47,10 +47,8 @@ public class EditionActivity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_edition);
 
-		title = this.getIntent().getExtras().getString("title");
-		setTitle(title);	
-
-		
+//		title = this.getIntent().getExtras().getString("title");
+//		setTitle(title);	
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		
 		if (savedInstanceState == null) {
@@ -83,7 +81,7 @@ public class EditionActivity extends ActionBarActivity {
 		int id = item.getItemId();
 		if (id == R.id.menu_see) {
 			item.setEnabled(false);
-			item.setIcon(R.drawable.ic_action_see_selected2);
+			item.setIcon(R.drawable.ic_action_see_selected);
 			itemEdit.setIcon(R.drawable.ic_action_edit);
 			itemEdit.setEnabled(true);
 			Intent i0 = new Intent(this, VisualisationActivity.class);
@@ -243,15 +241,15 @@ public class EditionActivity extends ActionBarActivity {
             items.add(new SatelliteMenuItem(4, R.drawable.duplicate_button));
             items.add(new SatelliteMenuItem(4, R.drawable.redo_button));
             items.add(new SatelliteMenuItem(4, R.drawable.undo_button));
-            items.add(new SatelliteMenuItem(1, R.drawable.add_button));;
+            items.add(new SatelliteMenuItem(1, R.drawable.add_button));
             menu.addItems(items);
            
             menu.setOnItemClickedListener(new SateliteClickedListener() {
             	  public void eventOccured(int id) {
             		  if(id == 1){
-
-            			  currentConcept = viewMindMap.getModel().createNewConcept(viewMindMap.getDefaultPosition());
-                		  currentConcept.setSize(viewMindMap.getDefaultSize());
+//            			  currentConcept = viewMindMap.getModel().createNewConcept(viewMindMap.getDefaultPosition());
+//                		  currentConcept.setSize(viewMindMap.getDefaultSize());
+            			  currentConcept = viewMindMap.getModel().createNewConcept(new PointF(300,300));
                 		  editConcept(currentConcept);
             		  }	  
             	  }

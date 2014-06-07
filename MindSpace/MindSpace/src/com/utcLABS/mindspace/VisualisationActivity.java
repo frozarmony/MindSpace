@@ -53,7 +53,7 @@ public class VisualisationActivity extends ActionBarActivity {
 		
 		itemSee = menu.findItem(R.id.menu_see);
 		itemSee.setEnabled(false);
-		itemSee.setIcon(R.drawable.ic_action_see_selected2);
+		itemSee.setIcon(R.drawable.ic_action_see_selected);
 		return true;
 	}
 

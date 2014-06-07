@@ -338,7 +338,6 @@ public class ConceptModel implements Parcelable {
 	public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener){
 		this.propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
 	}
-<<<<<<< HEAD
 
 	@Override
 	public int describeContents() {
@@ -348,7 +347,5 @@ public class ConceptModel implements Parcelable {
 	@Override
 	public void writeToParcel(Parcel out, int arg1) {
 	}
-	
-=======
->>>>>>> branch 'master' of https://github.com/frozarmony/MindSpace.git
+
 }
