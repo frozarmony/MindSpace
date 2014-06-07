@@ -21,7 +21,6 @@ import com.utcLABS.mindspace.model.CurrentMindMap;
 import com.utcLABS.mindspace.model.MindMapModel;
 import com.utcLABS.mindspace.view.MindMapView;
 
-
 public class VisualisationActivity extends ActionBarActivity {
 
 	protected MenuItem itemEdit;
@@ -53,7 +52,7 @@ public class VisualisationActivity extends ActionBarActivity {
 		
 		itemSee = menu.findItem(R.id.menu_see);
 		itemSee.setEnabled(false);
-		itemSee.setIcon(R.drawable.ic_action_see_selected2);
+		itemSee.setIcon(R.drawable.ic_action_see_selected);
 		return true;
 	}
 
@@ -95,7 +94,6 @@ public class VisualisationActivity extends ActionBarActivity {
 	public static class PlaceholderFragment extends Fragment {
 
 		private MindMapView viewMindMap;
-		private MindMapModel model;
 		private View rootView = null;
 		private DrawerLayout drawer = null;
 		private SeeFragment seeFg = new SeeFragment();

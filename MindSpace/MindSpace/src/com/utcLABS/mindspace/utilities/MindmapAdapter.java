@@ -179,7 +179,7 @@ public class MindmapAdapter extends BaseAdapter {
 					
 					MindMapXmlParser parser = new MindMapXmlParser();
 					parser.saveToXml(renamedMindmap, activity);
-		            Toast toast=Toast.makeText(MindmapAdapter.this.activity, "Modifications enregistrées"+" a été cliqué.", Toast.LENGTH_SHORT);
+		            Toast toast=Toast.makeText(MindmapAdapter.this.activity, "Modifications enregistrées"	, Toast.LENGTH_SHORT);
 		            toast.show();
 		            activity.deleteFile(oldTitle);
 		            MindmapAdapter.this.notifyDataSetChanged();
@@ -202,12 +202,13 @@ public class MindmapAdapter extends BaseAdapter {
 		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		
             MindMapModel clickedMindmap = mindmaps.get(position);
-            Intent i0 = new Intent(activity, EditionActivity.class);
-			//i0.putExtra("ConceptModel", clickedMindmap.getConceptIndex().get(0));
-			
+            
             ((CurrentMindMap) activity.getApplication()).setCurrentMindMap(clickedMindmap);
-
-            activity.startActivity(i0);
+            
+            Intent i0 = new Intent(activity, EditionActivity.class);
+			i0.putExtra("title", clickedMindmap.getTitle());
+            
+			activity.startActivity(i0);
 			activity.finish();
         }
       };

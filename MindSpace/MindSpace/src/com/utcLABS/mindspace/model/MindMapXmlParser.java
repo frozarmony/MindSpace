@@ -97,7 +97,7 @@ public class MindMapXmlParser {
 				+ "\" x=\"" + cm.getPosition().x
 				+ "\" y=\"" + cm.getPosition().y
 				+ "\" size=\"" + cm.getSize() 
-				+ "\" color=\"" + getColorString(cm.getColor()) 
+				+ "\" color=\"" + cm.getColor()
 				+ "\" shape=\"" + cm.getShape()
 				+ "\">\n";
 

@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.AlertDialog;
+import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PointF;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -33,6 +35,8 @@ import com.utcLABS.mindspace.VisualisationActivity;
 import com.utcLABS.mindspace.WikipediaFragment;
 import com.utcLABS.mindspace.model.ConceptModel;
 import com.utcLABS.mindspace.model.CurrentMindMap;
+import com.utcLABS.mindspace.model.MindMapModel;
+import com.utcLABS.mindspace.model.MindMapXmlParser;
 import com.utcLABS.mindspace.view.ConceptView;
 import com.utcLABS.mindspace.view.MindMapView;
 
@@ -41,22 +45,49 @@ public class EditionActivity extends ActionBarActivity {
 	protected MenuItem itemEdit;
 	protected MenuItem itemSee;
 	private String title;
-	private int interval = 30000;
+
+	private int interval = 5000;
+	private Handler saveHandler;
+
+	/* Timer to periodically record the mindmap */
+	private Runnable timer = new Runnable() {
+		@Override
+		public void run() {
+			MindMapModel model = ((CurrentMindMap) getApplication()).getCurrentMindMap();
+			
+			if(((CurrentMindMap) getApplication()).getCurrentMindMap() != null){
+				new MindMapXmlParser().saveToXml(model, getBaseContext());
+				System.out.println("Mindmap saved");
+				saveHandler.postDelayed(timer, interval);
+			}
+			
+		}
+	};
+
+	void startRepeatingTask() {
+		timer.run();
+	}
+
+	void stopRepeatingTask() {
+		saveHandler.removeCallbacks(timer);
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
 		setContentView(R.layout.activity_edition);
-
-		//model = this.getIntent().getSerializableExtra("MindMapModel");
-		//setTitle(title);		
+		title = this.getIntent().getExtras().getString("title");
+		setTitle(title);
 		
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-		
+
 		if (savedInstanceState == null) {
 			getSupportFragmentManager().beginTransaction()
 					.add(R.id.container, new PlaceholderFragment()).commit();
 		}
+		saveHandler = new Handler();
+		saveHandler.postDelayed(timer, interval);
 	}
 
 	@Override
@@ -84,7 +115,7 @@ public class EditionActivity extends ActionBarActivity {
 			return true;
 		} else if (id == R.id.menu_see) {
 			item.setEnabled(false);
-			item.setIcon(R.drawable.ic_action_see_selected2);
+			item.setIcon(R.drawable.ic_action_see_selected);
 			itemEdit.setIcon(R.drawable.ic_action_edit);
 			itemEdit.setEnabled(true);
 			Intent i0 = new Intent(this, VisualisationActivity.class);
@@ -119,7 +150,7 @@ public class EditionActivity extends ActionBarActivity {
 		private MindMapView viewMindMap;
 		private View rootView = null;
 		private DrawerLayout drawer = null;
-		
+
 		private TextEditFragment editFg = new TextEditFragment();
 		private PictureEditFragment pictureFg = new PictureEditFragment();
 		private ColorFragment colorFg = new ColorFragment();
@@ -127,55 +158,53 @@ public class EditionActivity extends ActionBarActivity {
 		private GoogleFragment googleFg = new GoogleFragment();
 		private ConceptModel currentConcept = null;
 		private SatelliteMenu menu = null;
-		
-		public PlaceholderFragment() {
-		}
 
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
 
-			rootView = inflater.inflate(R.layout.fragment_edition, container,false);
-			 
-			//init view
-			viewMindMap = (MindMapView)rootView.findViewById(R.id.surfaceView);
+			rootView = inflater.inflate(R.layout.fragment_edition, container,
+					false);
+
+			// init view
+			viewMindMap = (MindMapView) rootView.findViewById(R.id.surfaceView);
 			viewMindMap.setCurrentFragment(this);
-			viewMindMap.setModel(((CurrentMindMap) getActivity().getApplication()).getCurrentMindMap());
+			viewMindMap.setModel(((CurrentMindMap) getActivity()
+					.getApplication()).getCurrentMindMap());
 			viewMindMap.setEditMode(true);
-	        //model = viewMindMap.getModel();
-	        
-	        initDrawer();
-			
+			// model = viewMindMap.getModel();
+		
+			initDrawer();
+
 			initSatelliteMenu();
 
-            initPanel();
-			
-            initBin();
-            			
+			initPanel();
+
+			initBin();
+
 			return rootView;
 		}
 
 		private void initDrawer() {
-			drawer = (DrawerLayout)rootView.findViewById(R.id.drawer_layout);
-	        drawer.setDrawerListener(new DrawerLayout.DrawerListener() {
+			drawer = (DrawerLayout) rootView.findViewById(R.id.drawer_layout);
+			drawer.setDrawerListener(new DrawerLayout.DrawerListener() {
 
 				@Override
 				public void onDrawerClosed(View arg0) {
-					menu.setVisibility(View.VISIBLE);					
+					menu.setVisibility(View.VISIBLE);
 				}
 
 				public void onDrawerOpened(View arg0) {
-					menu.setVisibility(View.INVISIBLE);					
+					menu.setVisibility(View.INVISIBLE);
 				}
 
-				public void onDrawerSlide(View arg0, float arg1) {	
+				public void onDrawerSlide(View arg0, float arg1) {
 				}
 
 				public void onDrawerStateChanged(int arg0) {
 				}
 			});
 		}
-
 
 		private void initBin() {
 			final View binDrag = (View) rootView.findViewById(R.id.binDrag);
@@ -240,41 +269,45 @@ public class EditionActivity extends ActionBarActivity {
 					return true;
 				}
 			});
-			
+
 		}
 
 		private void initSatelliteMenu() {
 			menu = (SatelliteMenu) rootView.findViewById(R.id.menu);
-            List<SatelliteMenuItem> items = new ArrayList<SatelliteMenuItem>();
-            items.add(new SatelliteMenuItem(4, R.drawable.duplicate_button));
-            items.add(new SatelliteMenuItem(4, R.drawable.redo_button));
-            items.add(new SatelliteMenuItem(4, R.drawable.undo_button));
-            items.add(new SatelliteMenuItem(1, R.drawable.add_button));;
-            menu.addItems(items);
-           
-            menu.setOnItemClickedListener(new SateliteClickedListener() {
-            	  public void eventOccured(int id) {
-            		  if(id == 1){
+			List<SatelliteMenuItem> items = new ArrayList<SatelliteMenuItem>();
+			items.add(new SatelliteMenuItem(4, R.drawable.duplicate_button));
+			items.add(new SatelliteMenuItem(4, R.drawable.redo_button));
+			items.add(new SatelliteMenuItem(4, R.drawable.undo_button));
+			items.add(new SatelliteMenuItem(1, R.drawable.add_button));
+			;
+			menu.addItems(items);
 
-                		  currentConcept = viewMindMap.getModel().createNewConcept(new PointF(300,300));
-                		  
-                		  editFg.setConceptModel(currentConcept);
-                		  pictureFg.setConceptModel(currentConcept);
-                		  colorFg.setConceptModel(currentConcept);
-                		  wikiFg.setConceptModel(currentConcept);
-                		  googleFg.setConceptModel(currentConcept);
-                		  
-                		  viewMindMap.setModel(viewMindMap.getModel());
-                		  DrawerLayout drawerLayout = (DrawerLayout)rootView.findViewById(R.id.drawer_layout);
-                		  drawerLayout.openDrawer(rootView.findViewById(R.id.layout_fragment));
-            		  }	  
-            	  }
-            	});
+			menu.setOnItemClickedListener(new SateliteClickedListener() {
+				public void eventOccured(int id) {
+					if (id == 1) {
+
+						currentConcept = viewMindMap.getModel()
+								.createNewConcept(new PointF(300, 300));
+
+						editFg.setConceptModel(currentConcept);
+						pictureFg.setConceptModel(currentConcept);
+						colorFg.setConceptModel(currentConcept);
+						wikiFg.setConceptModel(currentConcept);
+						googleFg.setConceptModel(currentConcept);
+
+						viewMindMap.setModel(viewMindMap.getModel());
+						DrawerLayout drawerLayout = (DrawerLayout) rootView
+								.findViewById(R.id.drawer_layout);
+						drawerLayout.openDrawer(rootView
+								.findViewById(R.id.layout_fragment));
+					}
+				}
+			});
 		}
-		
 
 		private void initPanel() {
-			getFragmentManager().beginTransaction().add(R.id.container_fragment, editFg).commit();
+			getFragmentManager().beginTransaction()
+					.add(R.id.container_fragment, editFg).commit();
 
 			ImageButton editConcept = (ImageButton) rootView
 					.findViewById(R.id.edit_concept);
@@ -347,7 +380,7 @@ public class EditionActivity extends ActionBarActivity {
 					transaction.addToBackStack(null).commit();
 				}
 			});
-			
+
 		}
 
 		public void editConcept(ConceptModel model) {
@@ -355,8 +388,13 @@ public class EditionActivity extends ActionBarActivity {
 			editFg.initFragment(currentConcept);
 			colorFg.initFragment(currentConcept);
 			drawer.openDrawer(rootView.findViewById(R.id.layout_fragment));
-			
+
 		}
+
+		public MindMapView getViewMindMap() {
+			return viewMindMap;
+		}
+
 	}
 
 }
