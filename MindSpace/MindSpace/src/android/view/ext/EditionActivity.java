@@ -41,6 +41,7 @@ public class EditionActivity extends ActionBarActivity {
 	protected MenuItem itemEdit;
 	protected MenuItem itemSee;
 	private String title;
+	private int interval = 30000;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +84,7 @@ public class EditionActivity extends ActionBarActivity {
 			return true;
 		} else if (id == R.id.menu_see) {
 			item.setEnabled(false);
-			item.setIcon(R.drawable.ic_action_see_selected);
+			item.setIcon(R.drawable.ic_action_see_selected2);
 			itemEdit.setIcon(R.drawable.ic_action_edit);
 			itemEdit.setEnabled(true);
 			Intent i0 = new Intent(this, VisualisationActivity.class);
