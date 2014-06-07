@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.app.AlertDialog;
-import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PointF;
@@ -24,6 +23,7 @@ import android.view.View.OnDragListener;
 import android.view.ViewGroup;
 import android.view.ext.SatelliteMenu.SateliteClickedListener;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.utcLABS.mindspace.ColorFragment;
 import com.utcLABS.mindspace.GoogleFragment;
@@ -50,6 +50,7 @@ public class EditionActivity extends ActionBarActivity {
 
 	/* Timer to periodically record the mindmap */
 	private Runnable timer = new Runnable() {
+		
 		@Override
 		public void run() {
 			MindMapModel model = ((CurrentMindMap) getApplication()).getCurrentMindMap();
@@ -62,6 +63,11 @@ public class EditionActivity extends ActionBarActivity {
 			
 		}
 	};
+	
+	public void save(){
+		MindMapModel model = ((CurrentMindMap) getApplication()).getCurrentMindMap();
+		new MindMapXmlParser().saveToXml(model, getBaseContext());
+	}
 
 	void startRepeatingTask() {
 		timer.run();
@@ -71,15 +77,16 @@ public class EditionActivity extends ActionBarActivity {
 		saveHandler.removeCallbacks(timer);
 	}
 
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_edition);
+
 		title = this.getIntent().getExtras().getString("title");
 		setTitle(title);	
 
-		
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 
 		if (savedInstanceState == null) {
@@ -117,12 +124,14 @@ public class EditionActivity extends ActionBarActivity {
 			item.setIcon(R.drawable.ic_action_see_selected);
 			itemEdit.setIcon(R.drawable.ic_action_edit);
 			itemEdit.setEnabled(true);
+			Toast.makeText(getApplicationContext(), "Enregistrement automatique", Toast.LENGTH_SHORT).show();
 			Intent i0 = new Intent(this, VisualisationActivity.class);
 			i0.putExtra("title", title);
 			startActivity(i0);
 			this.finish();
 			return true;
 		} else if (id == android.R.id.home) {
+			Toast.makeText(getApplicationContext(), "Enregistrement automatique", Toast.LENGTH_SHORT).show();
 			Intent i0 = new Intent(this, HomeActivity.class);
 			startActivity(i0);
 			this.finish();
@@ -149,13 +158,6 @@ public class EditionActivity extends ActionBarActivity {
 		private MindMapView viewMindMap;
 		private View rootView = null;
 		private DrawerLayout drawer = null;
-
-		private TextEditFragment editFg = new TextEditFragment();
-		private PictureEditFragment pictureFg = new PictureEditFragment();
-		private ColorFragment colorFg = new ColorFragment();
-		private WikipediaFragment wikiFg = new WikipediaFragment();
-		private GoogleFragment googleFg = new GoogleFragment();
-
 		private ConceptModel currentConcept = null;
 		private SatelliteMenu menu = null;
 
@@ -168,20 +170,14 @@ public class EditionActivity extends ActionBarActivity {
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
 
-
-			rootView = inflater.inflate(R.layout.fragment_edition, container,
-					false);
-
-			// init view
-			viewMindMap = (MindMapView) rootView.findViewById(R.id.surfaceView);
+			rootView = inflater.inflate(R.layout.fragment_edition, container,false);
+			 
+			//init view
+			viewMindMap = (MindMapView)rootView.findViewById(R.id.surfaceView);
 
 			viewMindMap.setCurrentFragment(this);
-			viewMindMap.setModel(((CurrentMindMap) getActivity()
-					.getApplication()).getCurrentMindMap());
+			viewMindMap.setModel(((CurrentMindMap) getActivity().getApplication()).getCurrentMindMap());
 			viewMindMap.setEditMode(true);
-
-			// model = viewMindMap.getModel();
-	
 			viewMindMap.setDensity(density);
 	        
 	        initDrawer();
@@ -284,32 +280,29 @@ public class EditionActivity extends ActionBarActivity {
 
 		private void initSatelliteMenu() {
 			menu = (SatelliteMenu) rootView.findViewById(R.id.menu);
+            List<SatelliteMenuItem> items = new ArrayList<SatelliteMenuItem>();
+            items.add(new SatelliteMenuItem(4, R.drawable.duplicate_button));
+            items.add(new SatelliteMenuItem(4, R.drawable.redo_button));
+            items.add(new SatelliteMenuItem(4, R.drawable.undo_button));
+            items.add(new SatelliteMenuItem(1, R.drawable.add_button));
+            menu.addItems(items);
+           
+            menu.setOnItemClickedListener(new SateliteClickedListener() {
+            	  public void eventOccured(int id) {
+            		  if(id == 1){
+//            			  currentConcept = viewMindMap.getModel().createNewConcept(viewMindMap.getDefaultPosition());
+//                		  currentConcept.setSize(viewMindMap.getDefaultSize());
+            			  currentConcept = viewMindMap.getModel().createNewConcept(new PointF(300,300));
+                		  editConcept(currentConcept);
+            		  }	  
+            	  }
+            	});
 
-			List<SatelliteMenuItem> items = new ArrayList<SatelliteMenuItem>();
-			items.add(new SatelliteMenuItem(4, R.drawable.duplicate_button));
-			items.add(new SatelliteMenuItem(4, R.drawable.redo_button));
-			items.add(new SatelliteMenuItem(4, R.drawable.undo_button));
-			items.add(new SatelliteMenuItem(1, R.drawable.add_button));
-			
-			menu.addItems(items);
-
-			menu.setOnItemClickedListener(new SateliteClickedListener() {
-				public void eventOccured(int id) {
-					if (id == 1) {
-
-						currentConcept = viewMindMap.getModel()
-								.createNewConcept(new PointF(300,300)); 
-						//viewMindMap.getDefaultPosition()
-						//currentConcept.setSize(viewMindMap.getDefaultSize());
-              		  	editConcept(currentConcept);
-					}
-				}
-			});
 		}
+
 
 		private void initPanel() {
 			getFragmentManager().beginTransaction().add(R.id.container_fragment, TextEditFragment.newInstance(currentConcept)).commit();
-
 
 			ImageButton editConcept = (ImageButton) rootView
 					.findViewById(R.id.edit_concept);

@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ext.EditionActivity;
 import android.view.ext.R;
+import android.widget.Toast;
 
 import com.devadvance.circularseekbar.CircularSeekBar;
 import com.devadvance.circularseekbar.CircularSeekBar.OnCircularSeekBarChangeListener;
@@ -64,11 +65,13 @@ public class VisualisationActivity extends ActionBarActivity {
 			item.setIcon(R.drawable.ic_action_edit_selected);
 			itemSee.setIcon(R.drawable.ic_action_see);
 			itemSee.setEnabled(true);
+			Toast.makeText(getApplicationContext(), "Enregistrement automatique", Toast.LENGTH_SHORT).show();
 			Intent i0 = new Intent(this, EditionActivity.class);
 			i0.putExtra("title", title);
 			startActivity(i0);
 			this.finish();
 		}else if(id == android.R.id.home){
+			Toast.makeText(getApplicationContext(), "Enregistrement automatique", Toast.LENGTH_SHORT).show();
 			Intent i0 = new Intent(this, HomeActivity.class);
 			startActivity(i0);
 			this.finish();
@@ -111,13 +114,7 @@ public class VisualisationActivity extends ActionBarActivity {
 			
 			drawer = (DrawerLayout) rootView.findViewById(R.id.drawer_layout_visualisation);
 			
-			//initView
-//			viewMindMap = (MindMapView)rootView.findViewById(R.id.surfaceView);
-//	        model = viewMindMap.getModel();
-//			viewMindMap.setCurrentFragment(this);
-//	        viewMindMap.setEditMode(false);
-//	        viewMindMap.setDensity(0f);
-	        
+			//initView	        
 	        viewMindMap = (MindMapView)rootView.findViewById(R.id.surfaceView);
 			viewMindMap.setCurrentFragment(this);
 			viewMindMap.setModel(((CurrentMindMap) getActivity().getApplication()).getCurrentMindMap());

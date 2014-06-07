@@ -34,14 +34,13 @@ public class ColorFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-
-		rootView = inflater.inflate(R.layout.fragment_color, container, false);
-
-		picker = (ColorPicker) rootView.findViewById(R.id.picker);
-
+		rootView = inflater.inflate(R.layout.fragment_color, container,false);
+		
 		Bundle args = getArguments();
 		conceptModel = args.getParcelable("currentConcept");
 				
+		picker = (ColorPicker)rootView.findViewById(R.id.picker);
+
 		picker.setOnColorChangedListener(new OnColorChangedListener() {
 			@Override
 			public void onColorChanged(int color) {
