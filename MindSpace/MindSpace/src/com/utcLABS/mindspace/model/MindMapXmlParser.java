@@ -4,7 +4,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -70,7 +69,7 @@ public class MindMapXmlParser {
 			}
 		}
 		xml += "\n</concepts>";
-		System.out.println("Résultat XML : " + xml);
+//		System.out.println("Résultat XML : " + xml);
 
 		FileOutputStream output = null;        	        	
 		try {
@@ -95,8 +94,8 @@ public class MindMapXmlParser {
 		String res = "";
 		res += "<concept "
 				+ "picture=\"" + cm.getOnlyPicture()
-				+ "name=\"" + cm.getName() 
-				+ "desc=\"" + cm.getDescription()
+				+ "\" name=\"" + cm.getName() 
+				+ "\" desc=\"" + cm.getDescription()
 				+ "\" x=\"" + cm.getPosition().x
 				+ "\" y=\"" + cm.getPosition().y
 				+ "\" size=\"" + cm.getSize() 
