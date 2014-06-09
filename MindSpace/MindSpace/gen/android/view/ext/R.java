@@ -1721,6 +1721,7 @@ containing a value of this type.
         public static final int action_settings=0x7f060027;
         public static final int addPicture=0x7f06001e;
         public static final int app_name=0x7f06000e;
+        public static final int confirm_ressource_assoc=0x7f06002c;
         public static final int delete_icon=0x7f060024;
         public static final int desc_concept=0x7f06001d;
         public static final int edit_color=0x7f060018;
@@ -1741,7 +1742,9 @@ containing a value of this type.
         public static final int newFile=0x7f060029;
         public static final int new_mindmap_hint=0x7f060026;
         public static final int new_mindmap_message=0x7f060025;
+        public static final int non=0x7f06002e;
         public static final int nouveau_mindmap=0x7f060021;
+        public static final int oui=0x7f06002d;
         public static final int see_concept=0x7f06001f;
         public static final int title_activity_edition=0x7f06002a;
         public static final int title_activity_home=0x7f060028;

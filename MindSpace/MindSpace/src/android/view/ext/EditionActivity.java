@@ -1,5 +1,6 @@
 package android.view.ext;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PointF;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
@@ -142,6 +144,8 @@ public class EditionActivity extends ActionBarActivity {
 			viewMindMap.setCurrentFragment(this);
 			viewMindMap.setEditMode(true);
 	        model = viewMindMap.getModel();
+	        //model.setTitle("Musique");
+	        //model.saveXmlToFile("mindmap1.xml");
 	        
 	        initDrawer();
 			

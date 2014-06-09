@@ -83,7 +83,7 @@ import com.utcLABS.mindspace.model.MindMapModel;
 		 * Model Test
 		 */
 		MindMapModel myTestModel = new MindMapModel();
-		
+		//myTestModel.loadXmlFromFile("mindmap1.xml");
 		float coef = 0.7f;
 		
 		// Listeners
