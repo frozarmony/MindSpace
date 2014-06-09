@@ -20,5 +20,7 @@
     <string name="title_concept">Titre</string>
     <string name="desc_concept">Description</string>
     <string name="addPicture">Parcourir</string>  
-    <string name="see_concept">Informations du concept</string>    
+    <string name="see_concept">Informations du concept</string>  
+    <string name="picture_concept">Images</string>    
+    
 </resources>

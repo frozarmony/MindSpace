@@ -1492,6 +1492,7 @@ containing a value of this type.
         public static final int sat_item=0x7f020081;
         public static final int sat_main=0x7f020082;
         public static final int undo_button=0x7f020083;
+        public static final int wikipedia=0x7f020084;
     }
     public static final class id {
         public static final int action_bar=0x7f07001c;
@@ -1505,7 +1506,7 @@ containing a value of this type.
         public static final int action_menu_divider=0x7f070016;
         public static final int action_menu_presenter=0x7f070017;
         public static final int action_mode_close_button=0x7f070024;
-        public static final int action_settings=0x7f070067;
+        public static final int action_settings=0x7f070068;
         public static final int activity_chooser_view_content=0x7f070025;
         public static final int always=0x7f07000b;
         public static final int beginning=0x7f070011;
@@ -1551,9 +1552,8 @@ containing a value of this type.
         public static final int list_mindmaps=0x7f070058;
         public static final int logo=0x7f070053;
         public static final int menu=0x7f070051;
-        public static final int menu_edit=0x7f070068;
-        public static final int menu_see=0x7f070069;
-        public static final int menu_settings=0x7f07006a;
+        public static final int menu_edit=0x7f070069;
+        public static final int menu_see=0x7f07006a;
         public static final int mes_mindmaps=0x7f070057;
         public static final int middle=0x7f070012;
         public static final int modification_date=0x7f07005e;
@@ -1584,6 +1584,7 @@ containing a value of this type.
         public static final int search_src_text=0x7f070037;
         public static final int search_voice_btn=0x7f07003b;
         public static final int see_desc=0x7f070066;
+        public static final int see_picture=0x7f070067;
         public static final int see_title=0x7f070065;
         public static final int shortcut=0x7f07002e;
         public static final int showCustom=0x7f070007;
@@ -1718,11 +1719,11 @@ containing a value of this type.
         /**  Description of a share target (both in the list of such or the default share button) in a ShareActionProvider (share UI). [CHAR LIMIT=NONE] 
          */
         public static final int abc_shareactionprovider_share_with_application=0x7f06000c;
-        public static final int action_settings=0x7f060027;
+        public static final int action_settings=0x7f060028;
         public static final int addPicture=0x7f06001e;
         public static final int app_name=0x7f06000e;
-        public static final int confirm_ressource_assoc=0x7f06002c;
-        public static final int delete_icon=0x7f060024;
+        public static final int confirm_ressource_assoc=0x7f06002d;
+        public static final int delete_icon=0x7f060025;
         public static final int desc_concept=0x7f06001d;
         public static final int edit_color=0x7f060018;
         public static final int edit_concept=0x7f060014;
@@ -1734,24 +1735,25 @@ containing a value of this type.
         public static final int hello_world=0x7f06000f;
         public static final int instruc_edit_color=0x7f06001b;
         public static final int instruc_edit_shape=0x7f06001a;
-        public static final int logo=0x7f060020;
+        public static final int logo=0x7f060021;
         public static final int menu_edit=0x7f060010;
         public static final int menu_see=0x7f060011;
         public static final int menu_settings=0x7f060012;
-        public static final int mes_mindmaps=0x7f060023;
-        public static final int newFile=0x7f060029;
-        public static final int new_mindmap_hint=0x7f060026;
-        public static final int new_mindmap_message=0x7f060025;
-        public static final int non=0x7f06002e;
-        public static final int nouveau_mindmap=0x7f060021;
-        public static final int oui=0x7f06002d;
+        public static final int mes_mindmaps=0x7f060024;
+        public static final int newFile=0x7f06002a;
+        public static final int new_mindmap_hint=0x7f060027;
+        public static final int new_mindmap_message=0x7f060026;
+        public static final int non=0x7f06002f;
+        public static final int nouveau_mindmap=0x7f060022;
+        public static final int oui=0x7f06002e;
+        public static final int picture_concept=0x7f060020;
         public static final int see_concept=0x7f06001f;
-        public static final int title_activity_edition=0x7f06002a;
-        public static final int title_activity_home=0x7f060028;
-        public static final int title_activity_picture_edit=0x7f06002b;
+        public static final int title_activity_edition=0x7f06002b;
+        public static final int title_activity_home=0x7f060029;
+        public static final int title_activity_picture_edit=0x7f06002c;
         public static final int title_activity_visualisation=0x7f060013;
         public static final int title_concept=0x7f06001c;
-        public static final int tutoriel=0x7f060022;
+        public static final int tutoriel=0x7f060023;
     }
     public static final class style {
         /** 

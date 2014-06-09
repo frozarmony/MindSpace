@@ -36,22 +36,32 @@ import com.utcLABS.mindspace.model.ConceptModel;
 	public GoogleFragment() {
 		
 	}
+
+	
+	public static GoogleFragment newInstance(ConceptModel currentConcept) {
+		GoogleFragment fragment = new GoogleFragment();
+		Bundle args = new Bundle();
+		args.putParcelable("currentConcept", currentConcept);
+		fragment.setArguments(args);
+		return fragment;
+	}
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_web, container,false);
 		
+
+		Bundle args = getArguments();
+		conceptModel = args.getParcelable("currentConcept");
+				
 		webView = (WebView) rootView.findViewById(R.id.wikipediaView);
 		
 		webView.setWebViewClient(new MyWebView());
 		webView.getSettings().setJavaScriptEnabled(true);
 		webView.addJavascriptInterface(new WebAppInterface(rootView.getContext()), "MindSpace");
-		ArrayMap<String, String> header = new ArrayMap<String,String>();
-
 		
-		
-		header.put("user-agent","Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_3_2 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8H7 Safari/6533.18.5");
-		webView.loadUrl("https://www.google.fr/search?hl=fr&biw=1366&bih=643&site=imghp&tbm=isch&source=hp&biw=1366&bih=643&q="+conceptModel.getName(),header);
+		initFragment();
 		return rootView;
 	}	
 	
@@ -171,5 +181,15 @@ import com.utcLABS.mindspace.model.ConceptModel;
 
 	public void setConceptModel(ConceptModel currentConcept) {
 		this.conceptModel = currentConcept;
+	}
+	
+	public void initFragment() {
+		if(conceptModel!=null){
+			ArrayMap<String, String> header = new ArrayMap<String,String>();
+			header.put("user-agent","Mozilla/5.0 (iPhone; U; CPU iPhone OS 4_3_2 like Mac OS X; en-us) AppleWebKit/533.17.9 (KHTML, like Gecko) Version/5.0.2 Mobile/8H7 Safari/6533.18.5");
+			webView.loadUrl("https://www.google.fr/search?hl=fr&biw=1366&bih=643&site=imghp&tbm=isch&source=hp&biw=1366&bih=643&q="+conceptModel.getName(),header);
+		}else {
+			webView.loadUrl("https://www.google.fr/search?hl=fr&biw=1366&bih=643&site=imghp&tbm=isch&source=hp&biw=1366&bih=643");
+		}
 	}
 }

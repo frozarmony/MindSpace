@@ -8,7 +8,6 @@ import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.PointF;
 import android.support.v4.app.Fragment;
 import android.util.AttributeSet;
@@ -21,7 +20,6 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import com.utcLABS.mindspace.model.ConceptModel;
-import com.utcLABS.mindspace.model.ConceptModel.MindSpaceShape;
 import com.utcLABS.mindspace.model.MindMapModel;
 
 @SuppressLint("NewApi") public class MindMapView extends FrameLayout  {
@@ -47,7 +45,7 @@ import com.utcLABS.mindspace.model.MindMapModel;
 	private PropertyChangeListener					onConceptDeleted;
 	
 	// Test Members
-	private ConceptModel							root;
+	//private ConceptModel							root;
 	
 	// Controller Members
 	private boolean									editMode;
@@ -64,7 +62,7 @@ import com.utcLABS.mindspace.model.MindMapModel;
 		super(context, attrs);
 		
 		// Init Model Reference
-		this.mindMapModel = null;
+		this.mindMapModel = new MindMapModel();
 		
 		// Init View Member
 		this.conceptIndex = new HashMap<ConceptModel, ConceptView>();
@@ -78,53 +76,56 @@ import com.utcLABS.mindspace.model.MindMapModel;
 		
 		// Init Controller Member
 		this.editMode = true;
-		
+				
 		/*
 		 * Model Test
 		 */
-		MindMapModel myTestModel = new MindMapModel();
-		//myTestModel.loadXmlFromFile("mindmap1.xml");
-		float coef = 0.7f;
+//		MindMapModel myTestModel = new MindMapModel();
+		
+
+//		float coef = 1f;
+		
+//		initPropertyChangeListeners(this.mindMapModel);		
+		
+// 		// Root
+// 		root = myTestModel.createNewConcept(new PointF(500f*coef+600f, 250f*coef+300f));
+// 		root.setName("Music");
+// 		root.setSize(coef);
+// 		
+// 		// Sociability
+// 		ConceptModel sociability = myTestModel.createNewConcept(root);
+// 		sociability.setPosition(200f*coef+600f, 400f*coef+300f);
+// 		sociability.setName("Sociability");
+// 		sociability.setColor(Color.rgb(50, 50, 200));
+// 		
+// 		// Titi
+// 		ConceptModel titi = myTestModel.createNewConcept(sociability);
+// 		titi.setPosition(100f*coef+600f, 475f*coef+300f);
+// 		titi.setName("People");
+// 		
+// 		// Rigour
+// 		ConceptModel rigour = myTestModel.createNewConcept(root);
+// 		rigour.setPosition(750f*coef+600f, 125f*coef+300f);
+// 		rigour.setName("Rigour");
+// 		rigour.setColor(Color.rgb(200, 50, 50));
+// 		rigour.setShape(MindSpaceShape.oval);
+// 		
+// 		// Theory
+// 		ConceptModel theory = myTestModel.createNewConcept(rigour);
+// 		theory.setPosition(950f*coef+600f, 25f*coef+300f);
+// 		theory.setName("Theory");
+// 		
+// 		// Creativity
+// 		ConceptModel creativity = myTestModel.createNewConcept(root);
+// 		creativity.setPosition(250f*coef+600f, 125f*coef+300f);
+// 		creativity.setName("Creativity");
+// 		creativity.setColor(Color.rgb(50, 200, 50));
+ 		
+// 		this.setModel(myTestModel);
+
+		
 		
 		// Listeners
-		//initPropertyChangeListeners(this.mindMapModel);
-		
- 		// Root
- 		root = myTestModel.createNewConcept(new PointF(500f*coef+600f, 250f*coef+300f));
- 		root.setName("Music");
- 		root.setSize(coef);
- 		
- 		// Sociability
- 		ConceptModel sociability = myTestModel.createNewConcept(root);
- 		sociability.setPosition(200f*coef+600f, 400f*coef+300f);
- 		sociability.setName("Sociability");
- 		sociability.setColor(Color.rgb(50, 50, 200));
- 		
- 		// Titi
- 		ConceptModel titi = myTestModel.createNewConcept(sociability);
- 		titi.setPosition(100f*coef+600f, 475f*coef+300f);
- 		titi.setName("People");
- 		
- 		// Rigour
- 		ConceptModel rigour = myTestModel.createNewConcept(root);
- 		rigour.setPosition(750f*coef+600f, 125f*coef+300f);
- 		rigour.setName("Rigour");
- 		rigour.setColor(Color.rgb(200, 50, 50));
- 		rigour.setShape(MindSpaceShape.oval);
- 		
- 		// Theory
- 		ConceptModel theory = myTestModel.createNewConcept(rigour);
- 		theory.setPosition(950f*coef+600f, 25f*coef+300f);
- 		theory.setName("Theory");
- 		
- 		// Creativity
- 		ConceptModel creativity = myTestModel.createNewConcept(root);
- 		creativity.setPosition(250f*coef+600f, 125f*coef+300f);
- 		creativity.setName("Creativity");
- 		creativity.setColor(Color.rgb(50, 200, 50));
- 		
- 		this.setModel(myTestModel);
-
  		// Init Controller's Listeners
  		initControllerListeners();
  		
@@ -246,10 +247,10 @@ import com.utcLABS.mindspace.model.MindMapModel;
 				mapView.scrollTo(	(int)(targetX - 0.5f*getWidth() /scale.scaleFactor),
 									(int)(targetY - 0.5f*getHeight()/scale.scaleFactor));
 				
-				Log.d("MindMapView", "Scale " + scale.scaleFactor);
-				Log.d("MindMapView", "Scale Detector " + detector.getScaleFactor());
-				Log.d("MindMapView", "Focus on " + detector.getFocusX() + " " + detector.getFocusY());
-				Log.d("MindMapView", "ScrollTo " + mapView.getScrollX() + " " + mapView.getScrollY());
+//				Log.d("MindMapView", "Scale " + scale.scaleFactor);
+//				Log.d("MindMapView", "Scale Detector " + detector.getScaleFactor());
+//				Log.d("MindMapView", "Focus on " + detector.getFocusX() + " " + detector.getFocusY());
+//				Log.d("MindMapView", "ScrollTo " + mapView.getScrollX() + " " + mapView.getScrollY());
 				
 				updateConceptsVisibility();
 				invalidate();
@@ -272,7 +273,6 @@ import com.utcLABS.mindspace.model.MindMapModel;
 	 						return false;
 					break;
 	 				case DragEvent.ACTION_DROP:
-	 					Log.d("MindMapView", "Action Drop");
 	 					conceptView = (ConceptView) event.getLocalState();
 	 					conceptView.getModel().moveTo(null);
 	 					conceptView.getModel().setPosition(	mapView.getScrollX()+event.getX()/scale.getScale(),
@@ -392,6 +392,14 @@ import com.utcLABS.mindspace.model.MindMapModel;
 	private void updateConceptsVisibility(){
 		for( ConceptView v : conceptIndex.values() )
 			v.updateVisibility();
+	}
+	
+	public PointF getDefaultPosition(){
+		return new PointF(300,300);
+	}
+	
+	public float getDefaultSize(){
+		return 0;
 	}
 	
 	/*

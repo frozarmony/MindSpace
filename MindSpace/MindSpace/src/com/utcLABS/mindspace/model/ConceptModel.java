@@ -2,12 +2,18 @@ package com.utcLABS.mindspace.model;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 import android.graphics.Color;
 import android.graphics.PointF;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class ConceptModel {
+
+
+public class ConceptModel implements Parcelable {
 	
 	/*
 	 * Constant
@@ -26,6 +32,9 @@ public class ConceptModel {
 	public final static int				DEFAULT_COLOR				= Color.WHITE;
 	public final static MindSpaceShape	DEFAULT_SHAPE				= MindSpaceShape.oval;
 	
+	/* Counter to generate the concept id */
+	public static int id_counter = 0;
+	
 	public static MindSpaceShape getShape(String shape){
 		if(shape.equals("rectangle"))
 			return MindSpaceShape.rectangle;
@@ -43,13 +52,15 @@ public class ConceptModel {
 	}
 
 	/*
-	 * Member
+	 * Members
 	 */
 	private MindMapModel				mindMap;
 	
 	// Data Members
 	private String						name;
 	private String						description;
+	private List<String> pictures;
+	private String onlyPicture;
 	
 	// Form Members
 	private PointF						position;
@@ -66,11 +77,12 @@ public class ConceptModel {
 	
 	
 	/*
-	 * Constructor
+	 * Constructors
 	 */
 	public ConceptModel(MindMapModel mindMap, float x, float y, ConceptModel parent) {
 		super();
 		// Init
+		
 		this.mindMap	= mindMap;
 		
 		// Data
@@ -81,6 +93,7 @@ public class ConceptModel {
 		this.size		= defaultSize(parent);
 		this.color		= defaultColor(parent);
 		this.shape		= defaultShape(parent);
+		this.pictures = new ArrayList<String>();
 		
 		// Bean
 		this.propertyChangeSupport = new PropertyChangeSupport(this);
@@ -91,6 +104,10 @@ public class ConceptModel {
 			parent.addChildNode(this);
 		else
 			this.parent = null;
+	}
+	
+	public ConceptModel(Parcel in){
+		this.name = in.readString();
 	}
 
 	/*
@@ -104,10 +121,19 @@ public class ConceptModel {
 	public int getColor() {						return color;			}
 	public MindSpaceShape getShape() {			return shape;			}
 	public ConceptModel getParent() {			return parent;			}
+		
 	
+	public MindMapModel getMindMap() {
+		return mindMap;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
 	// Children
 	public int getChildrenCount(){				return children.size();	}
-	
+
 	public ConceptModel getChildAt(int index){
 		if(index >= children.size())
 			return null;
@@ -124,11 +150,11 @@ public class ConceptModel {
 			this.propertyChangeSupport.firePropertyChange(NP_NAME, oldName, newName);
 		}
 	}
-	
-	public String getDescription() {
-		return description;
-	}
 
+	public void setMindMap(MindMapModel mindMap) {
+		this.mindMap = mindMap;
+	}
+	
 	public void setDescription(String description) {
 		this.description = description;
 	}
@@ -185,6 +211,22 @@ public class ConceptModel {
 			this.shape = newShape;
 			this.propertyChangeSupport.firePropertyChange(NP_SHAPE, oldShape, newShape);
 		}
+	}
+
+	public List<String> getPictures() {
+		return pictures;
+	}
+
+	public void setPictures(List<String> pictures) {
+		this.pictures = pictures;
+	}
+
+	public String getOnlyPicture() {
+		return onlyPicture;
+	}
+
+	public void setOnlyPicture(String onlyPicture) {
+		this.onlyPicture = onlyPicture;
 	}
 
 	/*
@@ -318,5 +360,14 @@ public class ConceptModel {
 	public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener){
 		this.propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
 	}
-	
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel out, int arg1) {
+	}
+
 }

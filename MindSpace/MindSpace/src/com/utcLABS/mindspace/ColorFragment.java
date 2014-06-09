@@ -22,18 +22,28 @@ public class ColorFragment extends Fragment {
 	public ColorFragment() {
 
 	}
+	
+	public static ColorFragment newInstance(ConceptModel currentConcept) {
+		ColorFragment fragment = new ColorFragment();
+		Bundle args = new Bundle();
+		args.putParcelable("currentConcept", currentConcept);
+		fragment.setArguments(args);
+		return fragment;
+	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		rootView = inflater.inflate(R.layout.fragment_color, container, false);
-
-		picker = (ColorPicker) rootView.findViewById(R.id.picker);
+		rootView = inflater.inflate(R.layout.fragment_color, container,false);
+		
+		Bundle args = getArguments();
+		conceptModel = args.getParcelable("currentConcept");
+				
+		picker = (ColorPicker)rootView.findViewById(R.id.picker);
 
 		picker.setOnColorChangedListener(new OnColorChangedListener() {
 			@Override
 			public void onColorChanged(int color) {
-				System.out.println("ColorPicker " + color);
 				conceptModel.setColor(color);
 
 			}
@@ -85,6 +95,7 @@ public class ColorFragment extends Fragment {
 		this.conceptModel = currentConcept;
 		if(conceptModel!=null && picker!=null){
 			picker.setOldCenterColor(conceptModel.getColor());
+			picker.setColor(conceptModel.getColor());
 		}
 	}
 

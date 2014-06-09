@@ -11,7 +11,7 @@
         android:textColor="#046380"
         android:gravity="center"
         android:layout_marginTop="50dp"
-        android:layout_marginBottom="50dp"
+        android:layout_marginBottom="30dp"
         android:textSize="20dip" 
         android:background="#E6E2AF"                                   
  	/>
@@ -25,8 +25,9 @@
     
     <ImageView
         android:id="@+id/imgView"
-        android:layout_width="fill_parent"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="60dp"
         android:layout_weight="1"></ImageView>
 
     

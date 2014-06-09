@@ -1,9 +1,9 @@
 package com.utcLABS.mindspace.model;
 
-import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -11,159 +11,169 @@ import java.util.List;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.util.Xml;
 
 public class MindMapXmlParser {
-	
-	private LinkedList<ConceptModel> res;
-	private MindMapModel model;
-	
-	public MindMapXmlParser(MindMapModel _model){
-		model = _model;
-	}
-	
-	public LinkedList<ConceptModel> parse(InputStream in) throws XmlPullParserException, IOException {
-		res = new LinkedList<ConceptModel>();
-        try {
-            XmlPullParser parser = Xml.newPullParser();
-            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
-            parser.setInput(in, null);
-            parser.nextTag();
-            readHead(parser);
-            return readConcepts(parser);
-        } finally {
-            in.close();
-        }
-    }
-	
-	private void readHead(XmlPullParser parser) {
-		try {
 
-			parser.require(XmlPullParser.START_TAG, "", "mindmap");
-			parser.next();
-			parser.next();
-			parser.require(XmlPullParser.START_TAG, "", "head");
-			String lastModif = "";
-			//String  = "";
-			while (parser.next() != XmlPullParser.END_TAG && lastModif == "") {
-		        if (parser.getEventType() != XmlPullParser.START_TAG) {
-		            continue;
-		        }
-		        parser.next();
-		        String name = parser.getText();
-		        System.out.println(name);
-		    }
-			
-			/*
-			parser.require(XmlPullParser.START_TAG, "", "mindmap");
-			//parser.require(XmlPullParser.START_TAG, "", "title");
-			parser.require(XmlPullParser.TEXT, "", "title");
-			model.setTitle(parser.getText());
-			
-			parser.require(XmlPullParser.TEXT, "", "lastModified");
-			model.setLastModificationDate(parser.getText());*/
-			
-		} catch (XmlPullParserException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+	private LinkedList<ConceptModel> res;
+
+	public MindMapModel parse(InputStream in) throws XmlPullParserException, IOException {
+		res = new LinkedList<ConceptModel>();
+        MindMapModel readMindmap = new MindMapModel();
+		try {
+			XmlPullParser parser = Xml.newPullParser();
+			parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+			parser.setInput(in, null);
+	        int eventType = parser.getEventType();
+			while (eventType != XmlPullParser.END_DOCUMENT){
+	            String name = null;
+	            switch (eventType){
+	                case XmlPullParser.START_TAG:
+	                    name = parser.getName();
+	                    if (name.equalsIgnoreCase("title")){
+	                    	readMindmap.setTitle(parser.nextText());
+	                    }
+	                    else if (name.equalsIgnoreCase("lastModificationDate")){
+	                    	readMindmap.setLastModificationDate(parser.nextText());
+	                    }
+	                    else if (name.equalsIgnoreCase("concepts")){
+	                    	readConcepts(parser, readMindmap);           
+	                    	readMindmap.setConceptIndex(res);
+	                    }
+	            }
+	            eventType = parser.next();
+			}
+			return readMindmap;
+		} finally {
+			in.close();
 		}
 	}
 
 	/*
-	 * Pour écrire dans un fichier :
-	 * FileWriter fw = new FileWriter(adressedufichier, true);
-	 * BufferedWriter output = new BufferedWriter(fw);
+	 * Sauvegarder le mindmap dans un fichier XML
 	 */
-	public boolean save(BufferedWriter output){
-		model.setLastModificationDate(new Date().toString());
+	public boolean saveToXml(MindMapModel model, Context context) {
+
 		String xml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
-		
-		xml += "<mindmap>\n"
-				+ "\t<head>\n"
-					+ "\t\t<title>" + model.getTitle() + "</title>\n"
-					+ "\t\t<lastModified>" + model.getLastModificationDate() + "</lastModified>\n"
-				+ "\t</head>\n";
-		
+		xml += "<title>" + model.getTitle() + "</title>";
+		xml += "<lastModificationDate>" + model.getLastModificationDate() + "</lastModificationDate>"; 
 		xml += "<concepts>\n";
 		List<ConceptModel> list = model.copyOfConceptsList();
 		Iterator<ConceptModel> i = list.iterator();
-		while(i.hasNext()){
-		  ConceptModel x = i.next();
-		  if(x.getParent() == null){
-			  xml += getConceptXml(x);
-		  }
+		while (i.hasNext()) {
+			ConceptModel x = i.next();
+			if (x.getParent() == null) {
+				xml += getConceptXml(x);
+			}
 		}
-		xml+="\n</concepts>\n</mindmap>";
-		System.out.println("Résultat XML : "+xml);
+		xml += "\n</concepts>";
+//		System.out.println("Résultat XML : " + xml);
+
+		FileOutputStream output = null;        	        	
 		try {
-			output.write(xml);
-			output.flush();
-			output.close();
-			return true;
+			output = context.openFileOutput(model.getTitle(), Context.MODE_PRIVATE);
+			output.write(xml.getBytes());
+			if(output != null){
+			    output.close();
+			}
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
 		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
 		}
-	}
-	
-	private String getConceptXml(ConceptModel cm){
-		String res = "";
-		res+="<concept name=\""+cm.getName()+"\" x=\""+cm.getPosition().x+"\" y=\""+cm.getPosition().y+"\" size=\""+cm.getSize()+"\" color=\""+getColorString(cm.getColor())+"\" shape=\""+cm.getShape()+"\">\n";
-		
-		for(int i=0;i<cm.getChildrenCount();i++){
-			res+=getConceptXml(cm.getChildAt(i));
-		}
-		res+="</concept>\n";
-		return res;
-	}
-	
-	private String getColorString(int color){
-		return "rgb("+Color.red(color)+","+Color.green(color)+","+Color.blue(color)+")";
+		return true;
 	}
 
-	private LinkedList<ConceptModel> readConcepts(XmlPullParser parser) throws XmlPullParserException, IOException {
+	private String getConceptXml(ConceptModel cm) {
+		String res = "";
+		res += "<concept "
+				+ "picture=\"" + cm.getOnlyPicture()
+				+ "\" name=\"" + cm.getName() 
+				+ "\" desc=\"" + cm.getDescription()
+				+ "\" x=\"" + cm.getPosition().x
+				+ "\" y=\"" + cm.getPosition().y
+				+ "\" size=\"" + cm.getSize() 
+				+ "\" color=\"" + cm.getColor()
+				+ "\" shape=\"" + cm.getShape()
+				+ "\">\n";
+
+		for (int i = 0; i < cm.getChildrenCount(); i++) {
+			res += getConceptXml(cm.getChildAt(i));
+		}
+		res += "</concept>\n";
+		return res;
+	}
+
+	private String getColorString(int color) {
+		return "rgb(" + Color.red(color) + "," + Color.green(color) + ","
+				+ Color.blue(color) + ")";
+	}
+
+	private LinkedList<ConceptModel> readConcepts(XmlPullParser parser, MindMapModel model)
+			throws XmlPullParserException, IOException {
+
 		parser.require(XmlPullParser.START_TAG, "", "concepts");
 		while (parser.next() != XmlPullParser.END_TAG) {
-            if (parser.getEventType() != XmlPullParser.START_TAG) {
-                continue;
-            }
-            String name = parser.getName();
-            if (name.equals("concept")) {
-            	res.add(readConcept(parser,null));
-            	
-            	//root.addChildNode(readConcept(parser));
-            }
-        }
-		
+			if (parser.getEventType() != XmlPullParser.START_TAG) {
+				continue;
+			}
+			String name = parser.getName();
+			if (name.equals("concept")) {
+				res.add(readConcept(parser, null, model));
+
+				// root.addChildNode(readConcept(parser));
+			}
+		}
+
 		return res;
 	}
 
-	private ConceptModel readConcept(XmlPullParser parser, ConceptModel parent) throws XmlPullParserException, IOException {
-		
-		float x = Float.parseFloat(parser.getAttributeValue("","x"));
-		float y = Float.parseFloat(parser.getAttributeValue("","y"));
-		
-		ConceptModel node = new ConceptModel(model,x,y,parent);
-		
-		node.setColor(Color.parseColor(parser.getAttributeValue("","color")));
-		node.setSize(Float.parseFloat(parser.getAttributeValue("","size")));
+	private ConceptModel readConcept(XmlPullParser parser, ConceptModel parent, MindMapModel model)
+			throws XmlPullParserException, IOException {
+
+		float x = Float.parseFloat(parser.getAttributeValue("", "x"));
+		float y = Float.parseFloat(parser.getAttributeValue("", "y"));
+
+		ConceptModel node = new ConceptModel(model, x, y, parent);
+
+		node.setColor(Integer.parseInt(parser.getAttributeValue("", "color")));
+		node.setSize(Float.parseFloat(parser.getAttributeValue("", "size")));
 		node.setName(parser.getAttributeValue("", "name"));
-		node.setShape(ConceptModel.getShape(parser.getAttributeValue("", "shape")));
-		
+		node.setShape(ConceptModel.getShape(parser.getAttributeValue("","shape")));
+		node.setOnlyPicture(parser.getAttributeValue("", "picture"));
+		node.setDescription(parser.getAttributeValue("", "desc"));
+
+//		parser.require(XmlPullParser.START_TAG, "", "picture");
+//		List<String> pictures = new ArrayList<String>();
+//		while (parser.next() != XmlPullParser.END_TAG) {
+//			if (parser.getEventType() != XmlPullParser.START_TAG) {
+//				continue;
+//			}
+//			String name = parser.getName();
+//			if (name.equals("picture")) {
+//				pictures.add(parser.getAttributeValue("", "path"));
+//			}
+//		}
+//		node.setPictures(pictures);
+
 		parser.require(XmlPullParser.START_TAG, "", "concept");
 		while (parser.next() != XmlPullParser.END_TAG) {
-            if (parser.getEventType() != XmlPullParser.START_TAG) {
-                continue;
-            }
-            String name = parser.getName();
-            if (name.equals("concept")) {
-            	ConceptModel child = readConcept(parser,node);
-            	res.add(child);
-            }
+			if (parser.getEventType() != XmlPullParser.START_TAG) {
+				continue;
+			}
+			String name = parser.getName();
+			if (name.equals("concept")) {
+				ConceptModel child = readConcept(parser, node, model);
+				res.add(child);
+			}
 		}
-		
+
 		return node;
 	}
 }
