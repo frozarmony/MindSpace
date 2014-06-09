@@ -4,6 +4,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -11,6 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import android.graphics.PointF;
+import android.os.Environment;
 
 public class MindMapModel {
 	
@@ -118,10 +120,11 @@ public class MindMapModel {
 		return new LinkedList<ConceptModel>(this.conceptIndex);
 	}
 	
-	public boolean saveXmlToFile(String filepath){
+	public boolean saveXmlToFile(String name){
 		FileWriter fw;
 		try {
-			fw = new FileWriter(filepath, true);
+			File mindMapFile = new File(Environment.getExternalStorageDirectory() + File.separator + "MindSpace" + File.separator + "mindmaps"+ File.separator + name);
+			fw = new FileWriter(mindMapFile);
 			BufferedWriter output = new BufferedWriter(fw);
 			return parser.save(output);
 		} catch (IOException e) {
@@ -130,11 +133,12 @@ public class MindMapModel {
 		}
 	}
 	
-	public boolean loadXmlFromFile(String xmlPath){
+	public boolean loadXmlFromFile(String fileName){
 		try{
 			
 			//conceptIndex = parser.parse(new StringBufferInputStream("<concepts><concept name=\"Un concept\" x=\"100\" y=\"100\" size=\"0.4\" color=\"#FF0000\" shape=\"roundedRectangle\"><concept name=\"Un autre concept\" x=\"150\" y=\"150\" size=\"0.4\" color=\"#FF0000\" shape=\"rectangle\"></concept></concept><concept name=\"Un concept\" x=\"200\" y=\"100\" size=\"0.4\" color=\"#FF0000\" shape=\"roundedRectangle\"><concept name=\"Un autre concept\" x=\"250\" y=\"150\" size=\"0.4\" color=\"#FF0000\" shape=\"rectangle\"></concept></concept></concepts>" ));
-			conceptIndex = parser.parse(new BufferedInputStream(new FileInputStream(xmlPath)));
+			File mindMapFile = new File(Environment.getExternalStorageDirectory() + File.separator + "MindSpace" + File.separator + "mindmaps"+ File.separator + fileName);
+			conceptIndex = parser.parse(new BufferedInputStream(new FileInputStream(mindMapFile)));
 			return true;
 		}
 		catch(Exception e){

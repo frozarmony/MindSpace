@@ -1,5 +1,6 @@
 package com.utcLABS.mindspace;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -9,6 +10,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.view.KeyEvent;
@@ -18,10 +20,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.ext.R;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.view.ext.R;
 
 import com.utcLABS.mindspace.model.MindMapModel;
 import com.utcLABS.mindspace.utilities.MindmapAdapter;
@@ -36,9 +38,23 @@ public class HomeActivity extends ActionBarActivity {
 			getSupportFragmentManager().beginTransaction().add(R.id.container, new PlaceholderFragment()).commit();
 		}
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-
+		initStorageDirectory();
 		setContentView(R.layout.activity_home);
 	
+	}
+
+	private void initStorageDirectory() { // initialise le dossier de stockage des fichier locaux
+
+		File mindSpaceDir = new File(Environment.getExternalStorageDirectory() + File.separator + "MindSpace");
+		
+		if(!mindSpaceDir.exists() && !mindSpaceDir.mkdir())
+			System.err.println("Impossible de créer le dossier de l'application");
+		
+		File mindMapsDir = new File(Environment.getExternalStorageDirectory() + File.separator + "MindSpace" + File.separator + "mindmaps");
+		
+		if(!mindMapsDir.exists() && !mindMapsDir.mkdir())
+			System.err.println("Impossible de créer le dossier de mindmap");
+		
 	}
 
 	@Override

@@ -63,7 +63,8 @@ public class ConceptModel {
 	
 	// Bean
 	private PropertyChangeSupport		propertyChangeSupport;
-
+	
+	
 	/*
 	 * Constructor
 	 */
