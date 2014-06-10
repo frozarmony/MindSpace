@@ -44,7 +44,7 @@ public class HomeActivity extends ActionBarActivity {
 		initStorageDirectory();
 		setContentView(R.layout.activity_home);
 
-		/* TEST : SUPPRESSION DES XML*/
+//		/* TEST : SUPPRESSION DES XML*/
 //		String[] files = context.fileList();
 //		if (files.length == 0)
 //			System.out.println("Vide");
@@ -55,13 +55,13 @@ public class HomeActivity extends ActionBarActivity {
 //				System.out.println("supprimé");
 //			}
 //		}
-		
-		/* INSERTION FICHIER TEST */	
+//		
+//		/* INSERTION FICHIER TEST */	
 //		FileOutputStream output = null;        	
 //		String xml = "<?xml version='1.0' encoding='UTF-8'?>"
 //				+ "<mindmap>"
 //				+ "<head>"
-//					+ "<title>Test</title>"
+//					+ "<title>Santé</title>"
 //					+ "<lastModificationDate>8 Jun 2014</lastModificationDate>"
 //				+ "</head>"
 //				+ "<concepts>"
@@ -80,7 +80,7 @@ public class HomeActivity extends ActionBarActivity {
 //				+ "</concepts>"
 //			+ "</mindmap>";
 //		try {
-//			output = context.openFileOutput("Test", Context.MODE_PRIVATE);
+//			output = context.openFileOutput("Santé", Context.MODE_PRIVATE);
 //			output.write(xml.getBytes());
 //			if(output != null)
 //			    output.close();

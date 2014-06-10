@@ -178,7 +178,7 @@ public class ConceptView {
 		// Init Cloud View
 		this.cloudView = new View(this.mainView.getContext());
 		this.cloudView.setBackground(this.cloudGrad);
-		this.cloudView.setScaleX(model.getSize());
+		this.cloudView.setScaleX(model.getSize()*nodeView.getText().length()/6f);
 		this.cloudView.setScaleY(model.getSize()*CLOUD_RATIO_HEIGHT);
 
 		// Add to mainView
@@ -226,7 +226,7 @@ public class ConceptView {
 				
 				branchView.setScaleY(newSize);
 				
-				cloudView.setScaleX(newSize);
+				cloudView.setScaleX(newSize*nodeView.getText().length()/6f);
 				cloudView.setScaleY(newSize*CLOUD_RATIO_HEIGHT);
 				
 				updateVisibility();
@@ -565,25 +565,26 @@ public class ConceptView {
 		
 		// Shape Configuration
 		private void configureShape(ConceptModel.MindSpaceShape mindspaceShape){
-			int padding;
+			float padding;
 			
 			// Specific Config according to shape
 			switch(mindspaceShape){
 			case oval:
 				padding = (int)(20f*model.getSize());
+				float textRatioWidth = getText().length()/2.5f;
 				this.shapeView.setShape(GradientDrawable.OVAL);
-				this.setPadding(padding*2, padding/3, padding*2, padding/2);
+				this.setPadding((int)(padding*textRatioWidth), (int)(padding/3), (int)(padding*textRatioWidth), (int)(padding/2));
 				break;
 			case rectangle:
 				this.shapeView.setShape(GradientDrawable.RECTANGLE);
 				padding = (int)(10f*model.getSize());
-				this.setPadding(padding, padding, padding, padding);
+				this.setPadding((int)padding, (int)padding, (int)padding, (int)padding);
 				break;
 			case roundedRectangle:
 				this.shapeView.setShape(GradientDrawable.RECTANGLE);
 				this.shapeView.setCornerRadius(20);
 				padding = (int)(10f*model.getSize());
-				this.setPadding(padding, padding, padding, padding);
+				this.setPadding((int)padding, (int)padding, (int)padding, (int)padding);
 				break;
 			}
 		}

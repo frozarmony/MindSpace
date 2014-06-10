@@ -183,7 +183,7 @@ public class ConceptModel implements Parcelable {
 	public void setSize(float newSize) {
 		// Compute Size Ceil
 		if(this.parent!=null)
-			newSize = Math.min(newSize, this.parent.size*MAX_SIZE_RATIO);
+			newSize = Math.min(newSize, this.parent.size*DEFAULT_SIZE_RATIO);
 		
 		// Update Size if necessary
 		if(this.size!=newSize){
@@ -276,7 +276,7 @@ public class ConceptModel implements Parcelable {
 				oldParent.children.remove(this);
 			}
 			else{
-				translation = new PointF( 200f, 200f );	// TODO Default Position
+				translation = new PointF( 200f*newParent.size, 200f*newParent.size );
 			}
 			
 			// Move to new parent
@@ -291,7 +291,7 @@ public class ConceptModel implements Parcelable {
 			this.setSize(this.size);
 
 			// Reset to Default Properties
-			//setDefaultProperties();
+			setDefaultProperties();
 		}
 		else if( newParent == null ){
 			if( oldParent != null ){
@@ -303,7 +303,7 @@ public class ConceptModel implements Parcelable {
 			this.propertyChangeSupport.firePropertyChange(NP_MOVE, oldParent, null);
 			
 			// Reset to Default Properties
-			//setDefaultProperties();
+			setDefaultProperties();
 		}
 	}
 	
@@ -329,15 +329,15 @@ public class ConceptModel implements Parcelable {
 		return false;
 	}
 	
-	/*private void setDefaultProperties(){
+	private void setDefaultProperties(){
 		// Default Change
-		this.setSize( defaultSize(this.parent) );
-		this.setColor( defaultColor(this.parent) );
+		if( this.parent != null )
+			this.setColor( defaultColor(this.parent) );
 		
 		// Repeat For Childs
 		for( ConceptModel c : this.children )
 			c.setDefaultProperties();
-	}*/
+	}
 
 	/*
 	 * Property Change Support Delegate
@@ -361,6 +361,9 @@ public class ConceptModel implements Parcelable {
 		this.propertyChangeSupport.removePropertyChangeListener(propertyName, listener);
 	}
 
+	/*
+	 * Parcelable Implementation
+	 */
 	@Override
 	public int describeContents() {
 		return 0;
