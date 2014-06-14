@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
     
-     <TextView
+     <!-- <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
@@ -23,26 +23,27 @@
        android:layout_marginTop="30dp"
        android:text="@string/title_concept"
        android:textColor="#E6E2AF"
-       android:textSize="20sp" />
+       android:textSize="20sp" /> 
       
    <View
        android:layout_width="fill_parent"
        android:layout_height="1dip"
        android:layout_marginBottom="10dp"
-       android:background="#E6E2AF" />
+       android:background="#E6E2AF" /> -->
    
     <TextView
        android:id="@+id/see_title"
-       android:layout_width="match_parent"
+       android:layout_width="fill_parent"
        android:layout_height="wrap_content"
        android:layout_marginLeft="10dp"
        android:layout_marginTop="10dp"
-       android:layout_marginBottom="30dp"
+       android:layout_marginBottom="20dp"
        android:text="@string/title_concept"
        android:textColor="#E6E2AF"
-       android:textSize="20sp" />
+       android:textSize="40sp"
+       android:gravity="center" />
     
-     <TextView
+   <!--  <TextView
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
        android:layout_marginLeft="10dp"
@@ -50,11 +51,11 @@
        android:textColor="#E6E2AF"
        android:textSize="20sp" />
       
-   <View
+    <View
        android:layout_width="fill_parent"
        android:layout_height="1dip"
        android:layout_marginBottom="10dp"
-       android:background="#E6E2AF" />
+       android:background="#E6E2AF" /> -->
    
     <TextView
        android:id="@+id/see_desc"
@@ -65,9 +66,11 @@
        android:layout_marginBottom="30dp"
        android:text=""
        android:textColor="#E6E2AF"
-       android:textSize="20sp" />
+       android:textSize="20sp" 
+       
+       />
     
-      <TextView
+     <!-- <TextView
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
        android:layout_marginLeft="10dp"
@@ -78,13 +81,13 @@
        <View
        android:layout_width="fill_parent"
        android:layout_height="1dip"
-       android:background="#E6E2AF" />
+       android:background="#E6E2AF" />!-->
       
-      <ImageView
-        android:id="@+id/see_picture"
-        android:layout_width="200dp"
-        android:layout_height="0dp"
-        android:layout_marginLeft="60dp"
-        android:layout_weight="1"/>
+       <ListView
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:id="@+id/image_list" >
+		    
+		</ListView>
 
 </LinearLayout>

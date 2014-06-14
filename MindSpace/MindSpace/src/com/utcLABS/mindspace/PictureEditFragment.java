@@ -8,19 +8,20 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ext.EditionActivity;
 import android.view.ext.R;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 
 import com.utcLABS.mindspace.model.ConceptModel;
-import com.utcLABS.mindspace.model.MindMapXmlParser;
+import com.utcLABS.mindspace.utilities.ImageListAdapter;
 
 public class PictureEditFragment extends Fragment {
 
 	private int RESULT_LOAD_IMAGE = 1;
 	View rootView;
 	ConceptModel conceptModel;
+	private ListView imgList;
 
 	public PictureEditFragment(){
 		
@@ -43,7 +44,8 @@ public class PictureEditFragment extends Fragment {
 		Bundle args = getArguments();
 		conceptModel = args.getParcelable("currentConcept");
 		
-		initFragment();
+		initImageList();
+//		initFragment();
 		
 		Button loadPicture = (Button)rootView.findViewById(R.id.buttonLoadPicture);
 		loadPicture.setOnClickListener(new View.OnClickListener() {
@@ -58,23 +60,34 @@ public class PictureEditFragment extends Fragment {
 		return rootView;
 	}
 	
-	public void initFragment(){
+	public void initImageList() {
 		if(conceptModel!=null){
-			System.out.println(conceptModel.getOnlyPicture());
-			ImageView imgcover = (ImageView) rootView.findViewById(R.id.imgView);
-			Uri path = Uri.parse(conceptModel.getOnlyPicture());
-			imgcover.setImageURI(path);
-		}	
+			imgList = (ListView) rootView.findViewById(R.id.image_list);
+			imgList.setAdapter(new ImageListAdapter(rootView.getContext(),conceptModel, this));
+			((ImageListAdapter)imgList.getAdapter()).setPictures(conceptModel.getPictures());
+		}
 	}
+
+//	public void initFragment(){
+//		if(conceptModel!=null){
+//			System.out.println(conceptModel.getOnlyPicture());
+//			ImageView imgcover = (ImageView) rootView.findViewById(R.id.imgView);
+//			Uri path = Uri.parse(conceptModel.getOnlyPicture());
+//			imgcover.setImageURI(path);
+//		}	
+//	}
 	
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 	     super.onActivityResult(requestCode, resultCode, data);
 
 		if (requestCode == RESULT_LOAD_IMAGE && null != data) {
-	         ImageView imgcover = (ImageView) rootView.findViewById(R.id.imgView);
-	         imgcover.setImageURI(data.getData());
-	         conceptModel.setOnlyPicture(data.getData().toString());
+//	         ImageView imgcover = (ImageView) rootView.findViewById(R.id.imgView);
+//	         imgcover.setImageURI(data.getData());
+//	         conceptModel.setOnlyPicture(data.getData().toString());
+			conceptModel.addPicture(data.getData().toString());
+			((ImageListAdapter)imgList.getAdapter()).setPictures(conceptModel.getPictures());
+			initImageList();
 	     }		
 	}
 	

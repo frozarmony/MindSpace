@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -43,7 +44,8 @@ public class HomeActivity extends ActionBarActivity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		initStorageDirectory();
 		setContentView(R.layout.activity_home);
-
+		
+		
 		/* TEST : SUPPRESSION DES XML*/
 //		String[] files = context.fileList();
 //		if (files.length == 0)
@@ -122,6 +124,11 @@ public class HomeActivity extends ActionBarActivity {
 		
 		if(!mindMapsDir.exists() && !mindMapsDir.mkdir())
 			System.err.println("Impossible de créer le dossier de mindmap");
+		
+		File imagesDir = new File(Environment.getExternalStorageDirectory() + File.separator + "MindSpace" + File.separator + "images");
+		
+		if(!imagesDir.exists() && !imagesDir.mkdir())
+			System.err.println("Impossible de créer le dossier d'image");
 		
 	}
 

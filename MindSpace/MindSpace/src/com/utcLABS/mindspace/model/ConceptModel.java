@@ -3,6 +3,7 @@ package com.utcLABS.mindspace.model;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import android.graphics.Color;
 import android.graphics.PointF;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 
 
@@ -59,8 +61,7 @@ public class ConceptModel implements Parcelable {
 	// Data Members
 	private String						name;
 	private String						description;
-	private List<String> pictures;
-	private String onlyPicture;
+	private ArrayList<String> pictures;
 	
 	// Form Members
 	private PointF						position;
@@ -93,7 +94,7 @@ public class ConceptModel implements Parcelable {
 		this.size		= defaultSize(parent);
 		this.color		= defaultColor(parent);
 		this.shape		= defaultShape(parent);
-		this.pictures = new ArrayList<String>();
+		this.pictures 	= new ArrayList<String>();
 		
 		// Bean
 		this.propertyChangeSupport = new PropertyChangeSupport(this);
@@ -104,6 +105,8 @@ public class ConceptModel implements Parcelable {
 			parent.addChildNode(this);
 		else
 			this.parent = null;
+		
+		
 	}
 	
 	public ConceptModel(Parcel in){
@@ -216,18 +219,34 @@ public class ConceptModel implements Parcelable {
 	public List<String> getPictures() {
 		return pictures;
 	}
-
-	public void setPictures(List<String> pictures) {
+/*
+	public void setPictures(ArrayList<String> pictures) {
 		this.pictures = pictures;
 	}
+*/
+	public void addPicture(String path) {
+		if(path != "")
+			this.pictures.add(path);
+	}
+	public void removePicture(String path) {
+		if(pictures.contains(path))
+			pictures.remove(path);
+	}
+	
 
-	public String getOnlyPicture() {
-		return onlyPicture;
+	public String getPipedSeparatedPicturesPath() {
+		String res = TextUtils.join("#####", pictures);
+		return res;
 	}
 
-	public void setOnlyPicture(String onlyPicture) {
-		this.onlyPicture = onlyPicture;
+	public void setPipedSeparatedPicturesPath(String pictureList) {
+		String [] tab = pictureList.split("#####");
+		pictures.clear();
+		for (int i = 0; i < tab.length; i++) {
+			pictures.add(tab[i]);
+		}
 	}
+
 
 	/*
 	 * Default Values

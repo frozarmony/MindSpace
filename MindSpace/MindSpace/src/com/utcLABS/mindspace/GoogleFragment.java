@@ -1,5 +1,7 @@
 package com.utcLABS.mindspace;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -11,6 +13,7 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.util.ArrayMap;
@@ -22,7 +25,6 @@ import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.utcLABS.mindspace.model.ConceptModel;
@@ -151,7 +153,19 @@ import com.utcLABS.mindspace.model.ConceptModel;
 								System.out.println("Début téléchargement");
 					    	    URL  imageUrl = new URL (fullUrl);
 					    	    Bitmap img = BitmapFactory.decodeStream(imageUrl.openConnection().getInputStream());
-					    	    //TODO : enregistrer l'image et le lier au concept
+					    	    FileOutputStream out = null;
+					    	    String imgLocalPath = Environment.getExternalStorageDirectory() + File.separator + "MindSpace" + File.separator + "images" + File.separator + fullUrl.hashCode()+".jpg";
+					    	    try {
+					    	           out = new FileOutputStream(imgLocalPath);
+					    	           img.compress(Bitmap.CompressFormat.JPEG, 70, out);
+					    	    } catch (Exception e) {
+					    	        e.printStackTrace();
+					    	    } finally {
+					    	           try{
+					    	               out.close();
+					    	           } catch(Throwable ignore) {}
+					    	    }
+					    	    conceptModel.addPicture(imgLocalPath);
 					    	    System.out.println("Fin téléchargement");
 					    	    DisplayInToast("L'image "+fullUrl+"a été associée au concept "+conceptModel.getName());
 					    	  }

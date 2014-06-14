@@ -8,7 +8,4 @@
     <string name="title_activity_edition">EditionActivity</string>
     <string name="title_activity_visualisation">VisualisationActivity</string>
     <string name="title_activity_picture_edit">PictureEditActivity</string>
-	<string name="confirm_ressource_assoc">Voulez vous associer cette ressource au concept ?</string>
-	<string name="oui">Oui</string>
-	<string name="non">Non</string>
 </resources>

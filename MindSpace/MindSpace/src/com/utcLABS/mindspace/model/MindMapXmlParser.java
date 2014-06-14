@@ -93,7 +93,7 @@ public class MindMapXmlParser {
 	private String getConceptXml(ConceptModel cm) {
 		String res = "";
 		res += "<concept "
-				+ "picture=\"" + cm.getOnlyPicture()
+				+ "picture=\"" + cm.getPipedSeparatedPicturesPath() //TODO !!
 				+ "\" name=\"" + cm.getName() 
 				+ "\" desc=\"" + cm.getDescription()
 				+ "\" x=\"" + cm.getPosition().x
@@ -146,7 +146,7 @@ public class MindMapXmlParser {
 		node.setSize(Float.parseFloat(parser.getAttributeValue("", "size")));
 		node.setName(parser.getAttributeValue("", "name"));
 		node.setShape(ConceptModel.getShape(parser.getAttributeValue("","shape")));
-		node.setOnlyPicture(parser.getAttributeValue("", "picture"));
+		node.setPipedSeparatedPicturesPath(parser.getAttributeValue("", "picture"));
 		node.setDescription(parser.getAttributeValue("", "desc"));
 
 //		parser.require(XmlPullParser.START_TAG, "", "picture");
