@@ -1,5 +1,6 @@
 package com.utcLABS.mindspace;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -10,6 +11,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.view.KeyEvent;
@@ -22,6 +24,7 @@ import android.view.Window;
 import android.view.ext.R;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.utcLABS.mindspace.model.MindMapModel;
 import com.utcLABS.mindspace.model.MindMapXmlParser;
@@ -38,10 +41,10 @@ public class HomeActivity extends ActionBarActivity {
 			getSupportFragmentManager().beginTransaction().add(R.id.container, new PlaceholderFragment()).commit();
 		}
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
-
+		initStorageDirectory();
 		setContentView(R.layout.activity_home);
 
-		/* TEST : SUPPRESSION DES XML*/
+//		/* TEST : SUPPRESSION DES XML*/
 //		String[] files = context.fileList();
 //		if (files.length == 0)
 //			System.out.println("Vide");
@@ -52,13 +55,13 @@ public class HomeActivity extends ActionBarActivity {
 //				System.out.println("supprimé");
 //			}
 //		}
-		
-		/* INSERTION FICHIER TEST */	
+//		
+//		/* INSERTION FICHIER TEST */	
 //		FileOutputStream output = null;        	
 //		String xml = "<?xml version='1.0' encoding='UTF-8'?>"
 //				+ "<mindmap>"
 //				+ "<head>"
-//					+ "<title>Test</title>"
+//					+ "<title>Santé</title>"
 //					+ "<lastModificationDate>8 Jun 2014</lastModificationDate>"
 //				+ "</head>"
 //				+ "<concepts>"
@@ -77,7 +80,7 @@ public class HomeActivity extends ActionBarActivity {
 //				+ "</concepts>"
 //			+ "</mindmap>";
 //		try {
-//			output = context.openFileOutput("Test", Context.MODE_PRIVATE);
+//			output = context.openFileOutput("Santé", Context.MODE_PRIVATE);
 //			output.write(xml.getBytes());
 //			if(output != null)
 //			    output.close();
@@ -106,6 +109,20 @@ public class HomeActivity extends ActionBarActivity {
 //				}
 //			}
 //		}	
+	}
+
+	private void initStorageDirectory() { // initialise le dossier de stockage des fichier locaux
+
+		File mindSpaceDir = new File(Environment.getExternalStorageDirectory() + File.separator + "MindSpace");
+		
+		if(!mindSpaceDir.exists() && !mindSpaceDir.mkdir())
+			System.err.println("Impossible de créer le dossier de l'application");
+		
+		File mindMapsDir = new File(Environment.getExternalStorageDirectory() + File.separator + "MindSpace" + File.separator + "mindmaps");
+		
+		if(!mindMapsDir.exists() && !mindMapsDir.mkdir())
+			System.err.println("Impossible de créer le dossier de mindmap");
+		
 	}
 
 	@Override

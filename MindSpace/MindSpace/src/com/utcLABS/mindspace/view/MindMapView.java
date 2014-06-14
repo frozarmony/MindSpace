@@ -23,7 +23,13 @@ import com.utcLABS.mindspace.model.ConceptModel;
 import com.utcLABS.mindspace.model.MindMapModel;
 
 @SuppressLint("NewApi") public class MindMapView extends FrameLayout  {
-
+	
+	/*
+	 * Constant
+	 */
+	public final static float						MIN_SCALE							= 0.7f;
+	public final static float						CREATION_POS_RATIO					= 0.15f;
+	
 	/*
 	 * Member
 	 */
@@ -69,61 +75,18 @@ import com.utcLABS.mindspace.model.MindMapModel;
 		
 		this.mapView = new RelativeLayout(context);
 		this.mapView.setBackgroundColor(0xffeeeeee);
-		this.addView(this.mapView, 3000, 3000);
+		this.addView(this.mapView, 4000, 4000);
 		
+		// Init Scale & Density
 		this.scale = new ScaleObject();
 		this.density = 0.5f;
+		this.mapView.setPivotX(0f);
+		this.mapView.setPivotY(0f);
+		this.mapView.setScaleX(scale.scaleFactor);
+		this.mapView.setScaleY(scale.scaleFactor);
 		
 		// Init Controller Member
-		this.editMode = true;
-				
-		/*
-		 * Model Test
-		 */
-//		MindMapModel myTestModel = new MindMapModel();
-		
-
-//		float coef = 1f;
-		
-//		initPropertyChangeListeners(this.mindMapModel);		
-		
-// 		// Root
-// 		root = myTestModel.createNewConcept(new PointF(500f*coef+600f, 250f*coef+300f));
-// 		root.setName("Music");
-// 		root.setSize(coef);
-// 		
-// 		// Sociability
-// 		ConceptModel sociability = myTestModel.createNewConcept(root);
-// 		sociability.setPosition(200f*coef+600f, 400f*coef+300f);
-// 		sociability.setName("Sociability");
-// 		sociability.setColor(Color.rgb(50, 50, 200));
-// 		
-// 		// Titi
-// 		ConceptModel titi = myTestModel.createNewConcept(sociability);
-// 		titi.setPosition(100f*coef+600f, 475f*coef+300f);
-// 		titi.setName("People");
-// 		
-// 		// Rigour
-// 		ConceptModel rigour = myTestModel.createNewConcept(root);
-// 		rigour.setPosition(750f*coef+600f, 125f*coef+300f);
-// 		rigour.setName("Rigour");
-// 		rigour.setColor(Color.rgb(200, 50, 50));
-// 		rigour.setShape(MindSpaceShape.oval);
-// 		
-// 		// Theory
-// 		ConceptModel theory = myTestModel.createNewConcept(rigour);
-// 		theory.setPosition(950f*coef+600f, 25f*coef+300f);
-// 		theory.setName("Theory");
-// 		
-// 		// Creativity
-// 		ConceptModel creativity = myTestModel.createNewConcept(root);
-// 		creativity.setPosition(250f*coef+600f, 125f*coef+300f);
-// 		creativity.setName("Creativity");
-// 		creativity.setColor(Color.rgb(50, 200, 50));
- 		
-// 		this.setModel(myTestModel);
-
-		
+		this.editMode = true;		
 		
 		// Listeners
  		// Init Controller's Listeners
@@ -230,7 +193,7 @@ import com.utcLABS.mindspace.model.MindMapModel;
 		    public boolean onScale(ScaleGestureDetector detector) {
 		    	float oldScale = scale.scaleFactor;
 				scale.scaleFactor *= detector.getScaleFactor();
-				scale.scaleFactor = Math.max(1f, Math.min(scale.scaleFactor, 5.0f));
+				scale.scaleFactor = Math.max(MIN_SCALE, Math.min(scale.scaleFactor, 5.0f));
 				
 				mapView.setPivotX(0f);
 				mapView.setPivotY(0f);
@@ -246,11 +209,6 @@ import com.utcLABS.mindspace.model.MindMapModel;
 				
 				mapView.scrollTo(	(int)(targetX - 0.5f*getWidth() /scale.scaleFactor),
 									(int)(targetY - 0.5f*getHeight()/scale.scaleFactor));
-				
-//				Log.d("MindMapView", "Scale " + scale.scaleFactor);
-//				Log.d("MindMapView", "Scale Detector " + detector.getScaleFactor());
-//				Log.d("MindMapView", "Focus on " + detector.getFocusX() + " " + detector.getFocusY());
-//				Log.d("MindMapView", "ScrollTo " + mapView.getScrollX() + " " + mapView.getScrollY());
 				
 				updateConceptsVisibility();
 				invalidate();
@@ -395,11 +353,12 @@ import com.utcLABS.mindspace.model.MindMapModel;
 	}
 	
 	public PointF getDefaultPosition(){
-		return new PointF(300,300);
+		return new PointF(	this.mapView.getScrollX()+this.getWidth() *0.2f/this.scale.scaleFactor,
+							this.mapView.getScrollY()+this.getHeight()*0.2f/this.scale.scaleFactor);
 	}
 	
 	public float getDefaultSize(){
-		return 0;
+		return Math.min(1f, 1f/scale.scaleFactor);
 	}
 	
 	/*
@@ -408,7 +367,7 @@ import com.utcLABS.mindspace.model.MindMapModel;
 	
 	// ScaleObject which is shared with this MindMapView's ConceptView
 	public class ScaleObject {
-		public float scaleFactor = 1f;
+		public float scaleFactor = MIN_SCALE;
 		public float getScale(){
 			return scaleFactor;
 		}

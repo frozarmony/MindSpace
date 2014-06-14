@@ -2,10 +2,17 @@ package com.utcLABS.mindspace.model;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.BufferedInputStream;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
 import android.graphics.PointF;
+import android.os.Environment;
 
 public class MindMapModel {
 	
@@ -120,6 +127,7 @@ public class MindMapModel {
 		return new LinkedList<ConceptModel>(this.conceptIndex);
 	}
 	
+
 //	public boolean saveXmlToFile(String filepath){
 //		FileWriter fw;
 //		try {
@@ -145,7 +153,6 @@ public class MindMapModel {
 //		}
 //	}
 	
-
 	/*
 	 * Property Change Support Delegate
 	 */

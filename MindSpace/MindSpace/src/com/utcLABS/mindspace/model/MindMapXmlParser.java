@@ -102,7 +102,7 @@ public class MindMapXmlParser {
 				+ "\" color=\"" + cm.getColor()
 				+ "\" shape=\"" + cm.getShape()
 				+ "\">\n";
-		
+
 		for (int i = 0; i < cm.getChildrenCount(); i++) {
 			res += getConceptXml(cm.getChildAt(i));
 		}
@@ -117,7 +117,7 @@ public class MindMapXmlParser {
 
 	private LinkedList<ConceptModel> readConcepts(XmlPullParser parser, MindMapModel model)
 			throws XmlPullParserException, IOException {
-		
+
 		parser.require(XmlPullParser.START_TAG, "", "concepts");
 		while (parser.next() != XmlPullParser.END_TAG) {
 			if (parser.getEventType() != XmlPullParser.START_TAG) {
@@ -148,7 +148,7 @@ public class MindMapXmlParser {
 		node.setShape(ConceptModel.getShape(parser.getAttributeValue("","shape")));
 		node.setOnlyPicture(parser.getAttributeValue("", "picture"));
 		node.setDescription(parser.getAttributeValue("", "desc"));
-		
+
 //		parser.require(XmlPullParser.START_TAG, "", "picture");
 //		List<String> pictures = new ArrayList<String>();
 //		while (parser.next() != XmlPullParser.END_TAG) {

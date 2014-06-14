@@ -1,5 +1,6 @@
 package android.view.ext;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PointF;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
@@ -290,9 +292,8 @@ public class EditionActivity extends ActionBarActivity {
             menu.setOnItemClickedListener(new SateliteClickedListener() {
             	  public void eventOccured(int id) {
             		  if(id == 1){
-//            			  currentConcept = viewMindMap.getModel().createNewConcept(viewMindMap.getDefaultPosition());
-//                		  currentConcept.setSize(viewMindMap.getDefaultSize());
-            			  currentConcept = viewMindMap.getModel().createNewConcept(new PointF(300,300));
+            			  currentConcept = viewMindMap.getModel().createNewConcept(viewMindMap.getDefaultPosition());
+            			  currentConcept.setSize(viewMindMap.getDefaultSize());
                 		  editConcept(currentConcept);
             		  }	  
             	  }
