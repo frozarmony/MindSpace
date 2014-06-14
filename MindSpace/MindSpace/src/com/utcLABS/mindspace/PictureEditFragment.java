@@ -60,12 +60,14 @@ public class PictureEditFragment extends Fragment {
 	
 	public void initFragment(){
 		if(conceptModel!=null){
-			System.out.println(conceptModel.getOnlyPicture());
-			ImageView imgcover = (ImageView) rootView.findViewById(R.id.imgView);
-			Uri path = Uri.parse(conceptModel.getOnlyPicture());
-			imgcover.setImageURI(path);
+			if(conceptModel.getOnlyPicture()!=null && !conceptModel.getOnlyPicture().equals("")){
+				Uri path = Uri.parse(conceptModel.getOnlyPicture());
+				ImageView imgcover = (ImageView) rootView.findViewById(R.id.imgView);
+				imgcover.setImageURI(path);
+			}	
 		}	
 	}
+
 	
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
