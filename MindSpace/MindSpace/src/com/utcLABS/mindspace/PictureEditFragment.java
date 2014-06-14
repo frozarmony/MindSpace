@@ -2,7 +2,6 @@ package com.utcLABS.mindspace;
 
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -10,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ext.R;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.utcLABS.mindspace.model.ConceptModel;
@@ -67,24 +65,12 @@ public class PictureEditFragment extends Fragment {
 			((ImageListAdapter)imgList.getAdapter()).setPictures(conceptModel.getPictures());
 		}
 	}
-
-//	public void initFragment(){
-//		if(conceptModel!=null){
-//			System.out.println(conceptModel.getOnlyPicture());
-//			ImageView imgcover = (ImageView) rootView.findViewById(R.id.imgView);
-//			Uri path = Uri.parse(conceptModel.getOnlyPicture());
-//			imgcover.setImageURI(path);
-//		}	
-//	}
 	
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 	     super.onActivityResult(requestCode, resultCode, data);
 
 		if (requestCode == RESULT_LOAD_IMAGE && null != data) {
-//	         ImageView imgcover = (ImageView) rootView.findViewById(R.id.imgView);
-//	         imgcover.setImageURI(data.getData());
-//	         conceptModel.setOnlyPicture(data.getData().toString());
 			conceptModel.addPicture(data.getData().toString());
 			((ImageListAdapter)imgList.getAdapter()).setPictures(conceptModel.getPictures());
 			initImageList();

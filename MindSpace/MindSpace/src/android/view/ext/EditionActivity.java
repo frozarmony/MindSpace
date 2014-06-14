@@ -292,9 +292,8 @@ public class EditionActivity extends ActionBarActivity {
             menu.setOnItemClickedListener(new SateliteClickedListener() {
             	  public void eventOccured(int id) {
             		  if(id == 1){
-//            			  currentConcept = viewMindMap.getModel().createNewConcept(viewMindMap.getDefaultPosition());
-//                		  currentConcept.setSize(viewMindMap.getDefaultSize());
-            			  currentConcept = viewMindMap.getModel().createNewConcept(new PointF(300,300));
+            			  currentConcept = viewMindMap.getModel().createNewConcept(viewMindMap.getDefaultPosition());
+            			  currentConcept.setSize(viewMindMap.getDefaultSize());
                 		  editConcept(currentConcept);
             		  }	  
             	  }
